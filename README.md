@@ -39,6 +39,12 @@ path.exists()
 path.isDirectory()
 ```
 
+#### Get an absolute path
+
+```swift
+let absolutePath = path.absolute()
+```
+
 #### Normalize a path
 
 This cleans up any redundant `..` or `.` and double slashes in paths.
