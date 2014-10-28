@@ -29,16 +29,28 @@ public struct Path : Equatable, Printable, StringLiteralConvertible, ExtendedGra
 
     // MARK: Init
 
-    init() {
+    public init() {
         self.path = ""
     }
 
-    init(_ path:String) {
+    public init(_ path:String) {
         self.path = path
     }
 
-    init(components:[String]) {
+    public init(components:[String]) {
         path = join(Path.separator, components)
+    }
+
+    public init(stringLiteral value: StringLiteralType) {
+        path = value
+    }
+
+    public init(unicodeScalarLiteral value: UnicodeScalarLiteralType) {
+        path = value
+    }
+
+    public init(extendedGraphemeClusterLiteral value: ExtendedGraphemeClusterLiteralType) {
+        path = value
     }
 
     // MARK: Printable
