@@ -62,17 +62,17 @@ public struct Path : Equatable, Printable, StringLiteralConvertible, ExtendedGra
     /** Method for testing whether a path is absolute.
     :return: true if the pathname begings with a slash
     */
-    func isAbsolute() -> Bool {
+    public func isAbsolute() -> Bool {
         return path.hasPrefix(Path.separator)
     }
 
     /// Returns true if a path is relative (not absolute)
-    func isRelative() -> Bool {
+    public func isRelative() -> Bool {
         return !isAbsolute()
     }
 
     /// Returns the absolute path in the actual filesystem
-    func absolute() -> Path {
+    public func absolute() -> Path {
         if isAbsolute() {
             return normalize()
         }
@@ -81,20 +81,20 @@ public struct Path : Equatable, Printable, StringLiteralConvertible, ExtendedGra
     }
 
     /// Normalizes the path, this clenas up redundant ".." and "." and double slashes
-    func normalize() -> Path {
+    public func normalize() -> Path {
         return Path(self.path.stringByStandardizingPath)
     }
 
     /// Returns whether a file or directory exists at a specified path
-    func exists() -> Bool {
+    public func exists() -> Bool {
         return NSFileManager().fileExistsAtPath(self.path)
     }
 
-    func delete() -> Bool {
+    public func delete() -> Bool {
         return NSFileManager().removeItemAtPath(self.path, error: nil)
     }
 
-    func move(destination:Path) -> Bool {
+    public func move(destination:Path) -> Bool {
         return NSFileManager().moveItemAtPath(self.path, toPath: destination.path, error: nil)
     }
 
