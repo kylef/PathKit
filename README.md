@@ -77,8 +77,8 @@ Path.current = "/usr/bin"
 #### Changing the current working directory
 
 ```swift
-with("/Users/kylef") {
-  // Path.current would be /Users/kylef
+path.chdir {
+  // Path.current would be set to path during execution of this closure
 }
 ```
 
