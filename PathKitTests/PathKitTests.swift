@@ -17,7 +17,7 @@ class PathKitTests: XCTestCase {
     }
 
     func testCurrent() {
-        let path = Path.current()
+        let path = Path.current
         XCTAssertEqual(path.description, NSFileManager().currentDirectoryPath)
     }
 
@@ -66,7 +66,7 @@ class PathKitTests: XCTestCase {
 
     func testConvertingRelativeToAbsolute() {
         let path = Path("swift")
-        XCTAssertEqual(path.absolute(), Path.current() + Path("swift"))
+        XCTAssertEqual(path.absolute(), Path.current + Path("swift"))
     }
 
     func testAbsolutePathIsAbsolute() {
@@ -115,5 +115,17 @@ class PathKitTests: XCTestCase {
     func testNonExistingPathDoesntExist() {
         let path = Path("/pathkit/test")
         XCTAssertFalse(path.exists())
+    }
+
+    // MARK: with
+
+    func testWith() {
+        var current:Path?
+
+        Path("/usr/bin").chdir {
+            current = Path.current
+        }
+
+        XCTAssertEqual(current!, Path("/usr/bin"))
     }
 }

@@ -23,8 +23,13 @@ public struct Path : Equatable, Printable, StringLiteralConvertible, ExtendedGra
     }
 
     // Returns the current working directory
-    public static func current() -> Path {
-        return self(NSFileManager().currentDirectoryPath)
+    public static var current:Path {
+        get {
+            return self(NSFileManager().currentDirectoryPath)
+        }
+        set {
+            NSFileManager().changeCurrentDirectoryPath(newValue.description)
+        }
     }
 
     // MARK: Init
@@ -77,7 +82,7 @@ public struct Path : Equatable, Printable, StringLiteralConvertible, ExtendedGra
             return normalize()
         }
 
-        return (Path.current() + self).normalize()
+        return (Path.current + self).normalize()
     }
 
     /// Normalizes the path, this clenas up redundant ".." and "." and double slashes
@@ -96,6 +101,13 @@ public struct Path : Equatable, Printable, StringLiteralConvertible, ExtendedGra
 
     public func move(destination:Path) -> Bool {
         return NSFileManager().moveItemAtPath(self.path, toPath: destination.path, error: nil)
+    }
+
+    public func chdir(block:(() -> ())) {
+        let previous = Path.current
+        Path.current = self
+        block()
+        Path.current = previous
     }
 
 }

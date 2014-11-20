@@ -65,6 +65,21 @@ path.delete()
 path.move(newPath)
 ```
 
+#### Current working directory
+
+```swift
+Path.current
+Path.current = "/usr/bin"
+```
+
+#### Changing the current working directory
+
+```swift
+with("/Users/kylef") {
+  // Path.current would be /Users/kylef
+}
+```
+
 ### Contact
 
 Kyle Fuller
