@@ -1,0 +1,8 @@
+language: objective-c
+osx_image: xcode61
+before_install:
+  - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
+  - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+script:
+  - set -o pipefail && xcodebuild test -project PathKit.xcodeproj -scheme PathKit | xcpretty -c
+
