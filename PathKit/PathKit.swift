@@ -3,7 +3,7 @@
 import Foundation
 
 /// Represents a filesystem path.
-public struct Path : Equatable, Printable, StringLiteralConvertible, ExtendedGraphemeClusterLiteralConvertible, UnicodeScalarLiteralConvertible {
+public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, ExtendedGraphemeClusterLiteralConvertible, UnicodeScalarLiteralConvertible {
     public static let separator = "/"
 
     private var path:String
@@ -62,6 +62,10 @@ public struct Path : Equatable, Printable, StringLiteralConvertible, ExtendedGra
 
     public var description:String {
         return self.path
+    }
+
+    public var hashValue:Int {
+        return path.hashValue
     }
 
     /** Method for testing whether a path is absolute.

@@ -55,6 +55,12 @@ class PathKitTests: XCTestCase {
         XCTAssertNotEqual(Path("/usr/bin/swift"), Path("/usr/bin/python"))
     }
 
+    // MARK: Hashable
+
+    func testHashable() {
+        XCTAssertEqual(Path("/usr/bin/swift").hashValue, Path("/usr/bin/swift").hashValue)
+    }
+
     // MARK: Printable
 
     func testPathDescription() {
