@@ -4,5 +4,6 @@ before_install:
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
   - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
 script:
-  - set -o pipefail && xcodebuild test -project PathKit.xcodeproj -scheme PathKit | xcpretty -c
-
+- set -o pipefail
+- xcodebuild -project PathKit.xcodeproj -scheme PathKit test | xcpretty -c
+- xcodebuild -project PathKit.xcodeproj -scheme PathKit test -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO | xcpretty -c

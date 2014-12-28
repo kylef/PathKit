@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		27CE0AF21A50C1D4004A105B /* UniversalFramework_Base.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27CE0AEF1A50C1D4004A105B /* UniversalFramework_Base.xcconfig */; };
+		27CE0AF31A50C1D4004A105B /* UniversalFramework_Framework.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27CE0AF01A50C1D4004A105B /* UniversalFramework_Framework.xcconfig */; };
+		27CE0AF41A50C1D4004A105B /* UniversalFramework_Test.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 27CE0AF11A50C1D4004A105B /* UniversalFramework_Test.xcconfig */; };
 		77DCBAD01A1E2A750054C841 /* PathKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 77DCBACF1A1E2A750054C841 /* PathKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		77DCBAD61A1E2A750054C841 /* PathKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77DCBACA1A1E2A750054C841 /* PathKit.framework */; };
 		77DCBADD1A1E2A750054C841 /* PathKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77DCBADC1A1E2A750054C841 /* PathKitTests.swift */; };
@@ -24,6 +27,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		27CE0AEF1A50C1D4004A105B /* UniversalFramework_Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UniversalFramework_Base.xcconfig; sourceTree = "<group>"; };
+		27CE0AF01A50C1D4004A105B /* UniversalFramework_Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UniversalFramework_Framework.xcconfig; sourceTree = "<group>"; };
+		27CE0AF11A50C1D4004A105B /* UniversalFramework_Test.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UniversalFramework_Test.xcconfig; sourceTree = "<group>"; };
 		77DCBACA1A1E2A750054C841 /* PathKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PathKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		77DCBACE1A1E2A750054C841 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		77DCBACF1A1E2A750054C841 /* PathKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PathKit.h; sourceTree = "<group>"; };
@@ -52,11 +58,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		27CE0AEE1A50C1D4004A105B /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				27CE0AEF1A50C1D4004A105B /* UniversalFramework_Base.xcconfig */,
+				27CE0AF01A50C1D4004A105B /* UniversalFramework_Framework.xcconfig */,
+				27CE0AF11A50C1D4004A105B /* UniversalFramework_Test.xcconfig */,
+			);
+			path = Configurations;
+			sourceTree = "<group>";
+		};
 		77DCBAC01A1E2A750054C841 = {
 			isa = PBXGroup;
 			children = (
 				77DCBACC1A1E2A750054C841 /* PathKit */,
 				77DCBAD91A1E2A750054C841 /* PathKitTests */,
+				27CE0AEE1A50C1D4004A105B /* Configurations */,
 				77DCBACB1A1E2A750054C841 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -195,6 +212,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27CE0AF41A50C1D4004A105B /* UniversalFramework_Test.xcconfig in Resources */,
+				27CE0AF31A50C1D4004A105B /* UniversalFramework_Framework.xcconfig in Resources */,
+				27CE0AF21A50C1D4004A105B /* UniversalFramework_Base.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +338,7 @@
 		};
 		77DCBAE11A1E2A750054C841 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27CE0AF01A50C1D4004A105B /* UniversalFramework_Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -328,7 +349,6 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = PathKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -337,6 +357,7 @@
 		};
 		77DCBAE21A1E2A750054C841 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27CE0AF01A50C1D4004A105B /* UniversalFramework_Framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -347,7 +368,6 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = PathKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -355,32 +375,24 @@
 		};
 		77DCBAE41A1E2A750054C841 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27CE0AF11A50C1D4004A105B /* UniversalFramework_Test.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = PathKitTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
 		77DCBAE51A1E2A750054C841 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27CE0AF11A50C1D4004A105B /* UniversalFramework_Test.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = PathKitTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
