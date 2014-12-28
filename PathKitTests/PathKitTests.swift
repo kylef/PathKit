@@ -134,4 +134,21 @@ class PathKitTests: XCTestCase {
 
         XCTAssertEqual(current!, Path("/usr/bin"))
     }
+
+    // MARK: Reading
+
+    func testReadData() {
+        let path = Path("/etc/manpaths")
+        let contents:NSData = path.read()!
+        let string = NSString(data:contents, encoding: NSUTF8StringEncoding)!
+
+        XCTAssertTrue(string.hasPrefix("/usr/share/man"))
+    }
+
+    func testReadString() {
+        let path = Path("/etc/manpaths")
+        let contents:String = path.read()!
+
+        XCTAssertTrue(contents.hasPrefix("/usr/share/man"))
+    }
 }

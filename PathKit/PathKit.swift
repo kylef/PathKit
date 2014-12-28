@@ -114,6 +114,20 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
         Path.current = previous
     }
 
+    // MARK: Contents
+
+    public func read() -> NSData? {
+        return NSFileManager.defaultManager().contentsAtPath(self.path)
+    }
+
+    public func read() -> String? {
+        if let data:NSData = read() {
+            return NSString(data:data, encoding: NSUTF8StringEncoding)
+        }
+
+        return nil
+    }
+
 }
 
 public func ==(lhs: Path, rhs: Path) -> Bool {
