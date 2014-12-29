@@ -151,4 +151,20 @@ class PathKitTests: XCTestCase {
 
         XCTAssertTrue(contents.hasPrefix("/usr/share/man"))
     }
+
+    // MARK: Children
+
+    func testChildren() {
+        let path = (Path(__FILE__) + "..").absolute()
+        let children = path.children()
+
+        XCTAssertEqual(children, [path + "Fixtures", path + "Info.plist", Path(__FILE__)])
+    }
+
+    func testChildrenWithoutDirectories() {
+        let path = (Path(__FILE__) + "..").absolute()
+        let children = path.children(directories: false)
+
+        XCTAssertEqual(children, [path + "Info.plist", Path(__FILE__)])
+    }
 }

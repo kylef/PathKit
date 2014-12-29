@@ -82,6 +82,18 @@ path.chdir {
 }
 ```
 
+#### Children paths
+
+```swift
+path.children()
+```
+
+#### Reading
+
+```swift
+path.read()
+```
+
 ### Contact
 
 Kyle Fuller

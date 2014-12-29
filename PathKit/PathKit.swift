@@ -133,6 +133,24 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
         return nil
     }
 
+    // MARK: Children
+
+    public func children(directories:Bool = true) -> [Path] {
+        let manager = NSFileManager()
+        if let contents = manager.contentsOfDirectoryAtPath(path, error: nil) as? [String] {
+            let paths = contents.map {
+                self + Path($0)
+            }
+
+            if directories {
+                return paths
+            }
+
+            return paths.filter { !$0.isDirectory() }
+        }
+        return []
+    }
+
 }
 
 public func ==(lhs: Path, rhs: Path) -> Bool {
