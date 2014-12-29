@@ -152,6 +152,29 @@ class PathKitTests: XCTestCase {
         XCTAssertTrue(contents.hasPrefix("/usr/share/man"))
     }
 
+    // MARK: Writing
+
+    func testWriteData() {
+        let path = Path("/tmp/pathkit-testing")
+        let data = "Hi".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+
+        XCTAssertFalse(path.exists())
+
+        XCTAssertTrue(path.write(data!))
+        XCTAssertEqual(path.read()!, "Hi")
+        XCTAssertTrue(path.delete())
+    }
+
+    func testWriteString() {
+        let path = Path("/tmp/pathkit-testing")
+
+        XCTAssertFalse(path.exists())
+
+        XCTAssertTrue(path.write("Hi"))
+        XCTAssertEqual(path.read()!, "Hi")
+        XCTAssertTrue(path.delete())
+    }
+
     // MARK: Children
 
     func testChildren() {

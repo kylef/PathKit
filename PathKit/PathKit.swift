@@ -133,6 +133,18 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
         return nil
     }
 
+    public func write(data:NSData) -> Bool {
+        return data.writeToFile(path, atomically: true)
+    }
+
+    public func write(string:String) -> Bool {
+        if let data = string.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true) {
+            return write(data)
+        }
+
+        return false
+    }
+
     // MARK: Children
 
     public func children(directories:Bool = true) -> [Path] {

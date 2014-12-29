@@ -94,6 +94,12 @@ path.children()
 path.read()
 ```
 
+#### Writing
+
+```swift
+path.write("Hello World!")
+```
+
 ### Contact
 
 Kyle Fuller
