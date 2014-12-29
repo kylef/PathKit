@@ -75,6 +75,11 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
         return path.hasPrefix(Path.separator)
     }
 
+    public func isDirectory() -> Bool {
+        var directory = ObjCBool(false)
+        return NSFileManager().fileExistsAtPath(path, isDirectory: &directory) && directory.boolValue
+    }
+
     /// Returns true if a path is relative (not absolute)
     public func isRelative() -> Bool {
         return !isAbsolute()
