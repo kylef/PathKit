@@ -22,7 +22,7 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
         return self(value)
     }
 
-    // Returns the current working directory
+    // Returns the current working directory of the process
     public static var current:Path {
         get {
             return self(NSFileManager().currentDirectoryPath)
@@ -38,10 +38,12 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
         self.path = ""
     }
 
+    /// Create a Path from a given String
     public init(_ path:String) {
         self.path = path
     }
 
+    /// Create a Path by joining multiple path components together
     public init(components:[String]) {
         path = join(Path.separator, components)
     }
@@ -69,12 +71,15 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
     }
 
     /** Method for testing whether a path is absolute.
-    :return: true if the pathname begings with a slash
+    :return: true if the path begings with a slash
     */
     public func isAbsolute() -> Bool {
         return path.hasPrefix(Path.separator)
     }
 
+    /** Method for testing whether a path is a directory.
+    :return: true if the path exists on disk and is a directory
+    */
     public func isDirectory() -> Bool {
         var directory = ObjCBool(false)
         return NSFileManager().fileExistsAtPath(path, isDirectory: &directory) && directory.boolValue
@@ -112,10 +117,14 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
         return NSFileManager().moveItemAtPath(self.path, toPath: destination.path, error: nil)
     }
 
-    public func chdir(block:(() -> ())) {
+    /** Changes the current working directory of the process to the path during the execution of the given block.
+    :param: closure A closure to be executed while the current directory is configured to the path.
+    :note: The original working directory is restored when the block exits.
+    */
+    public func chdir(closure:(() -> ())) {
         let previous = Path.current
         Path.current = self
-        block()
+        closure()
         Path.current = previous
     }
 
@@ -165,10 +174,14 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
 
 }
 
+/** Determines if two paths are identical
+:note: The comparison is string-based. Be aware that two different paths (foo.txt and ./foo.txt) can refer to the same file.
+*/
 public func ==(lhs: Path, rhs: Path) -> Bool {
     return lhs.path == rhs.path
 }
 
+/// Appends a Path fragment to another Path to produce a new Path
 public func +(lhs: Path, rhs: Path) -> Path {
     switch (lhs.path.hasSuffix(Path.separator), rhs.path.hasPrefix(Path.separator)) {
         case (true, true):
