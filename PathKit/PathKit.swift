@@ -136,7 +136,7 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
 
     public func read() -> String? {
         if let data:NSData = read() {
-            return NSString(data:data, encoding: NSUTF8StringEncoding)
+            return NSString(data:data, encoding: NSUTF8StringEncoding) as? String
         }
 
         return nil
