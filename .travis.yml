@@ -1,7 +1,0 @@
-language: objective-c
-before_install:
-- gem install cocoapods --no-rdoc --no-ri --no-document --quiet --pre
-- gem install xcpretty --no-rdoc --no-ri --no-document --quiet
-script:
-- set -o pipefail && xcodebuild test -project PathKit.xcodeproj -scheme PathKit | xcpretty -c
-- pod lib lint --quick
