@@ -1,6 +1,8 @@
 PathKit
 =======
 
+![Build Status](http://img.shields.io/circleci/project/kylef/PathKit/master.svg)](https://circleci.com/gh/kylef/PathKit)
+
 Effortless path operations in Swift.
 
 ## Usage
