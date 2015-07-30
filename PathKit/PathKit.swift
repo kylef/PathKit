@@ -3,29 +3,18 @@
 import Foundation
 
 /// Represents a filesystem path.
-public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, ExtendedGraphemeClusterLiteralConvertible, UnicodeScalarLiteralConvertible {
+public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteralConvertible {
     public static let separator = "/"
 
     private var path:String
 
     public typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
-    public static func convertFromExtendedGraphemeClusterLiteral(value: ExtendedGraphemeClusterLiteralType) -> Path {
-        return self(value)
-    }
-
     public typealias UnicodeScalarLiteralType = StringLiteralType
-    public static func convertFromUnicodeScalarLiteral(value: UnicodeScalarLiteralType) -> Path {
-        return self(value)
-    }
-
-    public static func convertFromStringLiteral(value: StringLiteralType) -> Path {
-        return self(value)
-    }
 
     // Returns the current working directory of the process
     public static var current:Path {
         get {
-            return self(NSFileManager().currentDirectoryPath)
+            return self.init(NSFileManager().currentDirectoryPath)
         }
         set {
             NSFileManager().changeCurrentDirectoryPath(newValue.description)
@@ -45,7 +34,7 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
 
     /// Create a Path by joining multiple path components together
     public init(components:[String]) {
-        path = join(Path.separator, components)
+        path = Path.separator.join(components)
     }
 
     public init(stringLiteral value: StringLiteralType) {
@@ -109,16 +98,16 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
         return NSFileManager().fileExistsAtPath(self.path)
     }
 
-    public func delete() -> Bool {
-        return NSFileManager().removeItemAtPath(self.path, error: nil)
+    public func delete() throws -> () {
+        try NSFileManager().removeItemAtPath(self.path)
     }
 
-    public func move(destination:Path) -> Bool {
-        return NSFileManager().moveItemAtPath(self.path, toPath: destination.path, error: nil)
+    public func move(destination:Path) throws -> () {
+        try NSFileManager().moveItemAtPath(self.path, toPath: destination.path)
     }
 
     /** Changes the current working directory of the process to the path during the execution of the given block.
-    :param: closure A closure to be executed while the current directory is configured to the path.
+    - parameter closure: A closure to be executed while the current directory is configured to the path.
     :note: The original working directory is restored when the block exits.
     */
     public func chdir(closure:(() -> ())) {
@@ -156,20 +145,18 @@ public struct Path : Equatable, Hashable, Printable, StringLiteralConvertible, E
 
     // MARK: Children
 
-    public func children(directories:Bool = true) -> [Path] {
+    public func children(directories directories:Bool = true) throws -> [Path] {
         let manager = NSFileManager()
-        if let contents = manager.contentsOfDirectoryAtPath(path, error: nil) as? [String] {
-            let paths = contents.map {
-                self + Path($0)
-            }
-
-            if directories {
-                return paths
-            }
-
-            return paths.filter { !$0.isDirectory() }
+        let contents = try manager.contentsOfDirectoryAtPath(path)
+        let paths = contents.map {
+            self + Path($0)
         }
-        return []
+
+        if directories {
+            return paths
+        }
+
+        return paths.filter { !$0.isDirectory() }
     }
 
 }
