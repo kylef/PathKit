@@ -9,6 +9,7 @@
 import Foundation
 import XCTest
 import PathKit
+import CatchingFire
 
 class PathKitTests: XCTestCase {
 
@@ -162,7 +163,7 @@ class PathKitTests: XCTestCase {
 
         XCTAssertTrue(path.write(data!))
         XCTAssertEqual(path.read()!, "Hi")
-        try! path.delete()
+        AssertNoThrow(try path.delete())
     }
 
     func testWriteString() {
@@ -172,22 +173,24 @@ class PathKitTests: XCTestCase {
 
         XCTAssertTrue(path.write("Hi"))
         XCTAssertEqual(path.read()!, "Hi")
-        try! path.delete()
+        AssertNoThrow(try path.delete())
     }
 
     // MARK: Children
 
     func testChildren() {
         let path = (Path(__FILE__) + "..").absolute()
-        let children = try! path.children()
-
-        XCTAssertEqual(children, [path + "Fixtures", path + "Info.plist", Path(__FILE__)])
+        AssertNoThrow {
+            let children = try path.children()
+            XCTAssertEqual(children, [path + "Fixtures", path + "Info.plist", Path(__FILE__)])
+        }
     }
 
     func testChildrenWithoutDirectories() {
         let path = (Path(__FILE__) + "..").absolute()
-        let children = try! path.children(directories: false)
-
-        XCTAssertEqual(children, [path + "Info.plist", Path(__FILE__)])
+        AssertNoThrow {
+            let children = try path.children(directories: false)
+            XCTAssertEqual(children, [path + "Info.plist", Path(__FILE__)])
+        }
     }
 }
