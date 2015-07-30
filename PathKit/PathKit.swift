@@ -88,7 +88,8 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
         return (Path.current + self).normalize()
     }
 
-    /// Normalizes the path, this clenas up redundant ".." and "." and double slashes
+    /// Normalizes the path, this cleans up redundant ".." and ".", double slashes
+    /// and resolves "~".
     public func normalize() -> Path {
         return Path(self.path.stringByStandardizingPath)
     }
