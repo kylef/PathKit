@@ -6,13 +6,13 @@ import Foundation
 public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteralConvertible {
     public static let separator = "/"
 
-    private var path:String
+    private var path: String
 
     public typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
     public typealias UnicodeScalarLiteralType = StringLiteralType
 
     // Returns the current working directory of the process
-    public static var current:Path {
+    public static var current: Path {
         get {
             return self.init(NSFileManager().currentDirectoryPath)
         }
@@ -28,7 +28,7 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
     }
 
     /// Create a Path from a given String
-    public init(_ path:String) {
+    public init(_ path: String) {
         self.path = path
     }
 
@@ -51,11 +51,11 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
 
     // MARK: Printable
 
-    public var description:String {
+    public var description: String {
         return self.path
     }
 
-    public var hashValue:Int {
+    public var hashValue: Int {
         return path.hashValue
     }
 
@@ -103,7 +103,7 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
         try NSFileManager().removeItemAtPath(self.path)
     }
 
-    public func move(destination:Path) throws -> () {
+    public func move(destination: Path) throws -> () {
         try NSFileManager().moveItemAtPath(self.path, toPath: destination.path)
     }
 
@@ -111,7 +111,7 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
     - parameter closure: A closure to be executed while the current directory is configured to the path.
     :note: The original working directory is restored when the block exits.
     */
-    public func chdir(closure:(() -> ())) {
+    public func chdir(closure: (() -> ())) {
         let previous = Path.current
         Path.current = self
         closure()
@@ -132,11 +132,11 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
         return nil
     }
 
-    public func write(data:NSData) -> Bool {
+    public func write(data: NSData) -> Bool {
         return data.writeToFile(path, atomically: true)
     }
 
-    public func write(string:String) -> Bool {
+    public func write(string: String) -> Bool {
         if let data = string.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true) {
             return write(data)
         }
@@ -146,7 +146,7 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
 
     // MARK: Children
 
-    public func children(directories directories:Bool = true) throws -> [Path] {
+    public func children(directories directories: Bool = true) throws -> [Path] {
         let manager = NSFileManager()
         let contents = try manager.contentsOfDirectoryAtPath(path)
         let paths = contents.map {

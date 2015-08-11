@@ -42,7 +42,7 @@ class PathKitTests: XCTestCase {
     // MARK: Convertable
 
     func testStringLiteralIsConvertableToPath() {
-        let path:Path = "/usr/bin/swift"
+        let path: Path = "/usr/bin/swift"
         XCTAssertEqual(path, Path("/usr/bin/swift"))
     }
 
@@ -127,7 +127,7 @@ class PathKitTests: XCTestCase {
     // MARK: with
 
     func testWith() {
-        var current:Path?
+        var current: Path?
 
         Path("/usr/bin").chdir {
             current = Path.current
@@ -140,7 +140,7 @@ class PathKitTests: XCTestCase {
 
     func testReadData() {
         let path = Path("/etc/manpaths")
-        let contents:NSData = path.read()!
+        let contents: NSData = path.read()!
         let string = NSString(data:contents, encoding: NSUTF8StringEncoding)!
 
         XCTAssertTrue(string.hasPrefix("/usr/share/man"))
@@ -148,7 +148,7 @@ class PathKitTests: XCTestCase {
 
     func testReadString() {
         let path = Path("/etc/manpaths")
-        let contents:String = path.read()!
+        let contents: String = path.read()!
 
         XCTAssertTrue(contents.hasPrefix("/usr/share/man"))
     }
