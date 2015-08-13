@@ -111,6 +111,46 @@ extension Path {
 }
 
 
+// MARK: Path Components
+
+extension Path {
+    /// The last path component
+    ///
+    /// - Returns: the last path component
+    ///
+    public var lastComponent: String {
+        return (path as NSString).lastPathComponent
+    }
+    
+    /// The last path component without file extension
+    ///
+    /// - Note: This returns "." for "..".
+    ///
+    /// - Returns: the last path component without file extension
+    ///
+    public var lastComponentWithoutExtension: String {
+        return (lastComponent as NSString).stringByDeletingPathExtension
+    }
+    
+    /// Splits the string representation on the directory separator.
+    /// Absolute paths remain the leading slash as first component.
+    ///
+    /// - Returns: all path components
+    ///
+    public var components: [String] {
+        return (path as NSString).pathComponents
+    }
+    
+    /// The file extension behind the last dot of the last component.
+    ///
+    /// - Returns: the file extension
+    ///
+    public var `extension`: String {
+        return (path as NSString).pathExtension
+    }
+}
+
+
 // MARK: File Info
 
 extension Path {

@@ -104,6 +104,35 @@ class PathKitTests: XCTestCase {
         let path = Path("/usr/./local/../bin/swift")
         XCTAssertEqual(path.normalize(), Path("/usr/bin/swift"))
     }
+    
+    // MARK: Last Component
+    
+    func testLastComponent() {
+        XCTAssertEqual(Path("a/b/c.d").lastComponent, "c.d")
+        XCTAssertEqual(Path("a/..").lastComponent,    "..")
+    }
+    
+    // MARK: Last Component Without Extension
+    
+    func testLastComponentWithoutExtension() {
+        XCTAssertEqual(Path("a/b/c.d").lastComponentWithoutExtension, "c")
+        XCTAssertEqual(Path("a/..").lastComponentWithoutExtension,    ".")
+    }
+    
+    // MARK: Components
+    
+    func testComponents() {
+        XCTAssertEqual(Path("a/b/c.d").components,   ["a", "b", "c.d"])
+        XCTAssertEqual(Path("/a/b/c.d").components,  ["/", "a", "b", "c.d"])
+        XCTAssertEqual(Path("~/a/b/c.d").components, ["~", "a", "b", "c.d"])
+    }
+    
+    // MARK: Extension
+    
+    func testExtension() {
+        XCTAssertEqual(Path("a/b/c.d").`extension`, "d")
+        XCTAssertEqual(Path("a/b.c.d").`extension`, "d")
+    }
 
     // MARK: Existance
 
