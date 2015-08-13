@@ -8,6 +8,8 @@ public struct Path {
 
     private var path: String
 
+    internal static var fileManager = NSFileManager.defaultManager()
+
     // MARK: Init
 
     public init() {
@@ -101,7 +103,7 @@ extension Path {
 extension Path {
     /// Returns whether a file or directory exists at a specified path
     public var exists: Bool {
-        return NSFileManager().fileExistsAtPath(self.path)
+        return Path.fileManager.fileExistsAtPath(self.path)
     }
     
     /** Method for testing whether a path is a directory.
@@ -109,9 +111,8 @@ extension Path {
     */
     public var isDirectory: Bool {
         var directory = ObjCBool(false)
-        return NSFileManager().fileExistsAtPath(path, isDirectory: &directory) && directory.boolValue
+        return Path.fileManager.fileExistsAtPath(normalize().path, isDirectory: &directory) && directory.boolValue
     }
-    
 }
 
 
@@ -119,11 +120,11 @@ extension Path {
 
 extension Path {
     public func delete() throws -> () {
-        try NSFileManager().removeItemAtPath(self.path)
+        try Path.fileManager.removeItemAtPath(self.path)
     }
 
     public func move(destination: Path) throws -> () {
-        try NSFileManager().moveItemAtPath(self.path, toPath: destination.path)
+        try Path.fileManager.moveItemAtPath(self.path, toPath: destination.path)
     }
 }
 
@@ -134,10 +135,10 @@ extension Path {
     // Returns the current working directory of the process
     public static var current: Path {
         get {
-            return self.init(NSFileManager().currentDirectoryPath)
+            return self.init(Path.fileManager.currentDirectoryPath)
         }
         set {
-            NSFileManager().changeCurrentDirectoryPath(newValue.description)
+            Path.fileManager.changeCurrentDirectoryPath(newValue.description)
         }
     }
     
@@ -158,7 +159,7 @@ extension Path {
 
 extension Path {
     public func read() -> NSData? {
-        return NSFileManager.defaultManager().contentsAtPath(self.path)
+        return Path.fileManager.contentsAtPath(self.path)
     }
 
     public func read() -> String? {
