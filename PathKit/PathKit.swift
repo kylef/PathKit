@@ -3,23 +3,10 @@
 import Foundation
 
 /// Represents a filesystem path.
-public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteralConvertible {
+public struct Path {
     public static let separator = "/"
 
     private var path: String
-
-    public typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
-    public typealias UnicodeScalarLiteralType = StringLiteralType
-
-    // Returns the current working directory of the process
-    public static var current: Path {
-        get {
-            return self.init(NSFileManager().currentDirectoryPath)
-        }
-        set {
-            NSFileManager().changeCurrentDirectoryPath(newValue.description)
-        }
-    }
 
     // MARK: Init
 
@@ -36,29 +23,50 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
     public init(components:[String]) {
         path = components.joinWithSeparator(Path.separator)
     }
+}
 
+
+// MARK: StringLiteralConvertible
+
+extension Path : StringLiteralConvertible {
+    public typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
+    public typealias UnicodeScalarLiteralType = StringLiteralType
+    
+    public init(extendedGraphemeClusterLiteral path: StringLiteralType) {
+        self.init(stringLiteral: path)
+    }
+    
+    public init(unicodeScalarLiteral path: StringLiteralType) {
+        self.init(stringLiteral: path)
+    }
+    
     public init(stringLiteral value: StringLiteralType) {
-        path = value
+        self.path = value
     }
+}
 
-    public init(unicodeScalarLiteral value: UnicodeScalarLiteralType) {
-        path = value
-    }
 
-    public init(extendedGraphemeClusterLiteral value: ExtendedGraphemeClusterLiteralType) {
-        path = value
-    }
+// MARK: CustomStringConvertible
 
-    // MARK: Printable
-
+extension Path : CustomStringConvertible {
     public var description: String {
         return self.path
     }
+}
 
+
+// MARK: Hashable
+
+extension Path : Hashable {
     public var hashValue: Int {
         return path.hashValue
     }
+}
 
+
+// MARK: Path Info
+
+extension Path {
     /** Method for testing whether a path is absolute.
     :return: true if the path begings with a slash
     */
@@ -93,12 +101,22 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
     public func normalize() -> Path {
         return Path((self.path as NSString).stringByStandardizingPath)
     }
+}
 
+
+// MARK: File Info
+
+extension Path {
     /// Returns whether a file or directory exists at a specified path
     public func exists() -> Bool {
         return NSFileManager().fileExistsAtPath(self.path)
     }
+}
 
+
+// MARK: File Manipulation
+
+extension Path {
     public func delete() throws -> () {
         try NSFileManager().removeItemAtPath(self.path)
     }
@@ -106,7 +124,22 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
     public func move(destination: Path) throws -> () {
         try NSFileManager().moveItemAtPath(self.path, toPath: destination.path)
     }
+}
 
+
+// MARK: Current Directory
+
+extension Path {
+    // Returns the current working directory of the process
+    public static var current: Path {
+        get {
+            return self.init(NSFileManager().currentDirectoryPath)
+        }
+        set {
+            NSFileManager().changeCurrentDirectoryPath(newValue.description)
+        }
+    }
+    
     /** Changes the current working directory of the process to the path during the execution of the given block.
     - parameter closure: A closure to be executed while the current directory is configured to the path.
     :note: The original working directory is restored when the block exits.
@@ -117,9 +150,12 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
         closure()
         Path.current = previous
     }
+}
 
-    // MARK: Contents
 
+// MARK: Contents
+
+extension Path {
     public func read() -> NSData? {
         return NSFileManager.defaultManager().contentsAtPath(self.path)
     }
@@ -143,9 +179,12 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
 
         return false
     }
+}
 
-    // MARK: Children
 
+// MARK: Traversing
+
+extension Path {
     public func children(directories directories: Bool = true) throws -> [Path] {
         let manager = NSFileManager()
         let contents = try manager.contentsOfDirectoryAtPath(path)
@@ -159,8 +198,12 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
 
         return paths.filter { !$0.isDirectory() }
     }
-
 }
+
+
+// MARK: Equatable
+
+extension Path : Equatable {}
 
 /** Determines if two paths are identical
 :note: The comparison is string-based. Be aware that two different paths (foo.txt and ./foo.txt) can refer to the same file.
@@ -168,6 +211,9 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
 public func ==(lhs: Path, rhs: Path) -> Bool {
     return lhs.path == rhs.path
 }
+
+
+// MARK: Operators
 
 /// Appends a Path fragment to another Path to produce a new Path
 public func +(lhs: Path, rhs: Path) -> Path {
