@@ -171,7 +171,7 @@ extension Path {
     }
 
     public func write(data: NSData) -> Bool {
-        return data.writeToFile(path, atomically: true)
+        return data.writeToFile(normalize().path, atomically: true)
     }
 
     public func write(string: String) -> Bool {
