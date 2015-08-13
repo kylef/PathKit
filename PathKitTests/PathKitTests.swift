@@ -202,6 +202,12 @@ class PathKitTests: XCTestCase {
         XCTAssertTrue(Path("/Users") ~= "~/..")
     }
     
+    // MARK: Comparable
+    
+    func testCompare() {
+        XCTAssertTrue(Path("a") < Path("b"))
+    }
+    
     // MARK: Appending
     
     func testAppendPathWithoutFollowingSlashToPathWithoutLeadingSlash() {

@@ -297,6 +297,16 @@ public func ~=(lhs: Path, rhs: Path) -> Bool {
 }
 
 
+// MARK: Comparable
+
+extension Path : Comparable {}
+
+/// Defines a strict total order over Paths based on their underlying string representation.
+public func <(lhs: Path, rhs: Path) -> Bool {
+    return lhs.path < rhs.path
+}
+
+
 // MARK: Operators
 
 /// Appends a Path fragment to another Path to produce a new Path
