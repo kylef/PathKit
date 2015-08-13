@@ -145,6 +145,13 @@ class PathKitTests: XCTestCase {
 
         XCTAssertTrue(contents.hasPrefix("/usr/share/man"))
     }
+    
+    func testReadNonExistingString() {
+        let path = Path("/tmp/pathkit-testing")
+        let contents: String? = path.read()
+        
+        XCTAssertEqual(contents, nil)
+    }
 
     // MARK: Writing
 
