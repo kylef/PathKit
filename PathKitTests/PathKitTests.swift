@@ -124,9 +124,9 @@ class PathKitTests: XCTestCase {
         XCTAssertFalse(path.exists)
     }
 
-    // MARK: with
+    // MARK: Change Directory
 
-    func testWith() {
+    func testChdir() {
         var current: Path?
 
         Path("/usr/bin").chdir {
