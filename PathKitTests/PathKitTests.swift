@@ -78,24 +78,24 @@ class PathKitTests: XCTestCase {
 
     func testAbsolutePathIsAbsolute() {
         let path = Path("/usr/bin/swift")
-        XCTAssertTrue(path.isAbsolute())
+        XCTAssertTrue(path.isAbsolute)
     }
 
     func testRelativePathIsNotAbsolute() {
         let path = Path("swift")
-        XCTAssertFalse(path.isAbsolute())
+        XCTAssertFalse(path.isAbsolute)
     }
 
     // MARK: Is Relative
 
     func testRelativePathIsRelative() {
         let path = Path("swift")
-        XCTAssertTrue(path.isRelative())
+        XCTAssertTrue(path.isRelative)
     }
 
     func testAbsolutePathIsNotRelative() {
         let path = Path("/usr/bin/swift")
-        XCTAssertFalse(path.isRelative())
+        XCTAssertFalse(path.isRelative)
     }
 
     // MARK: Normalization
@@ -116,12 +116,12 @@ class PathKitTests: XCTestCase {
 
     func testExistingPathExists() {
         let path = Path("/")
-        XCTAssertTrue(path.exists())
+        XCTAssertTrue(path.exists)
     }
 
     func testNonExistingPathDoesntExist() {
         let path = Path("/pathkit/test")
-        XCTAssertFalse(path.exists())
+        XCTAssertFalse(path.exists)
     }
 
     // MARK: with
@@ -159,7 +159,7 @@ class PathKitTests: XCTestCase {
         let path = Path("/tmp/pathkit-testing")
         let data = "Hi".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
 
-        XCTAssertFalse(path.exists())
+        XCTAssertFalse(path.exists)
 
         XCTAssertTrue(path.write(data!))
         XCTAssertEqual(path.read()!, "Hi")
@@ -169,7 +169,7 @@ class PathKitTests: XCTestCase {
     func testWriteString() {
         let path = Path("/tmp/pathkit-testing")
 
-        XCTAssertFalse(path.exists())
+        XCTAssertFalse(path.exists)
 
         XCTAssertTrue(path.write("Hi"))
         XCTAssertEqual(path.read()!, "Hi")

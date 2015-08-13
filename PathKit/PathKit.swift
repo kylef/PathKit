@@ -70,26 +70,18 @@ extension Path {
     /** Method for testing whether a path is absolute.
     :return: true if the path begings with a slash
     */
-    public func isAbsolute() -> Bool {
+    public var isAbsolute: Bool {
         return path.hasPrefix(Path.separator)
     }
 
-    /** Method for testing whether a path is a directory.
-    :return: true if the path exists on disk and is a directory
-    */
-    public func isDirectory() -> Bool {
-        var directory = ObjCBool(false)
-        return NSFileManager().fileExistsAtPath(path, isDirectory: &directory) && directory.boolValue
-    }
-
     /// Returns true if a path is relative (not absolute)
-    public func isRelative() -> Bool {
-        return !isAbsolute()
+    public var isRelative: Bool {
+        return !isAbsolute
     }
 
     /// Returns the absolute path in the actual filesystem
     public func absolute() -> Path {
-        if isAbsolute() {
+        if isAbsolute {
             return normalize()
         }
 
@@ -108,9 +100,18 @@ extension Path {
 
 extension Path {
     /// Returns whether a file or directory exists at a specified path
-    public func exists() -> Bool {
+    public var exists: Bool {
         return NSFileManager().fileExistsAtPath(self.path)
     }
+    
+    /** Method for testing whether a path is a directory.
+    :return: true if the path exists on disk and is a directory
+    */
+    public var isDirectory: Bool {
+        var directory = ObjCBool(false)
+        return NSFileManager().fileExistsAtPath(path, isDirectory: &directory) && directory.boolValue
+    }
+    
 }
 
 
@@ -196,7 +197,7 @@ extension Path {
             return paths
         }
 
-        return paths.filter { !$0.isDirectory() }
+        return paths.filter { !$0.isDirectory }
     }
 }
 
