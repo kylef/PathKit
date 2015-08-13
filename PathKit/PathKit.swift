@@ -283,6 +283,20 @@ public func ==(lhs: Path, rhs: Path) -> Bool {
 }
 
 
+// MARK: Pattern Matching
+
+/// Implements pattern-matching for paths.
+///
+/// - Returns: `true` iff one of the following conditions is true:
+///     - the paths are equal (based on `Path`'s `Equatable` implementation)
+///     - the paths can be normalized to equal Paths.
+///
+public func ~=(lhs: Path, rhs: Path) -> Bool {
+    return lhs == rhs
+        || lhs.normalize() == rhs.normalize()
+}
+
+
 // MARK: Operators
 
 /// Appends a Path fragment to another Path to produce a new Path

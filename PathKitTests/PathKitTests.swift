@@ -194,6 +194,14 @@ class PathKitTests: XCTestCase {
         }
     }
     
+    // MARK: Pattern Matching
+    
+    func testMatches() {
+        XCTAssertFalse(Path("/var")  ~= "~")
+        XCTAssertTrue(Path("/Users") ~= "/Users")
+        XCTAssertTrue(Path("/Users") ~= "~/..")
+    }
+    
     // MARK: Appending
     
     func testAppendPathWithoutFollowingSlashToPathWithoutLeadingSlash() {
