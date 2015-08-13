@@ -133,7 +133,7 @@ class PathKitTests: XCTestCase {
             current = Path.current
         }
 
-        XCTAssertEqual(current!, Path("/usr/bin"))
+        XCTAssertEqual(current, Path("/usr/bin"))
     }
 
     // MARK: Reading
@@ -162,7 +162,7 @@ class PathKitTests: XCTestCase {
         XCTAssertFalse(path.exists)
 
         XCTAssertTrue(path.write(data!))
-        XCTAssertEqual(path.read()!, "Hi")
+        XCTAssertEqual(path.read(), "Hi")
         AssertNoThrow(try path.delete())
     }
 
@@ -172,7 +172,7 @@ class PathKitTests: XCTestCase {
         XCTAssertFalse(path.exists)
 
         XCTAssertTrue(path.write("Hi"))
-        XCTAssertEqual(path.read()!, "Hi")
+        XCTAssertEqual(path.read(), "Hi")
         AssertNoThrow(try path.delete())
     }
 
