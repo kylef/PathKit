@@ -162,9 +162,9 @@ extension Path {
         return Path.fileManager.contentsAtPath(self.path)
     }
 
-    public func read() -> String? {
-        if let data:NSData = read() {
-            return NSString(data:data, encoding: NSUTF8StringEncoding) as? String
+    public func read(encoding: NSStringEncoding = NSUTF8StringEncoding) -> String? {
+        if let data: NSData = read() {
+            return NSString(data: data, encoding: encoding) as? String
         }
 
         return nil
@@ -174,8 +174,8 @@ extension Path {
         return data.writeToFile(normalize().path, atomically: true)
     }
 
-    public func write(string: String) -> Bool {
-        if let data = string.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true) {
+    public func write(string: String, encoding: NSStringEncoding = NSUTF8StringEncoding) -> Bool {
+        if let data = string.dataUsingEncoding(encoding, allowLossyConversion: true) {
             return write(data)
         }
 
