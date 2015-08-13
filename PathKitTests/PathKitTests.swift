@@ -105,13 +105,6 @@ class PathKitTests: XCTestCase {
         XCTAssertEqual(path.normalize(), Path("/usr/bin/swift"))
     }
 
-    // MARK: Test adding two path's together
-
-    func testAddingPaths() {
-        let path = Path("/usr") + Path("bin") + Path("swift")
-        XCTAssertEqual(path, Path("/usr/bin/swift"))
-    }
-
     // MARK: Existance
 
     func testExistingPathExists() {
@@ -192,5 +185,27 @@ class PathKitTests: XCTestCase {
             let children = try path.children(directories: false)
             XCTAssertEqual(children, [path + "Info.plist", Path(__FILE__)])
         }
+    }
+    
+    // MARK: Appending
+    
+    func testAppendPathWithoutFollowingSlashToPathWithoutLeadingSlash() {
+        let path = Path("/usr") + "var"
+        XCTAssertEqual(path, "/usr/var")
+    }
+    
+    func testAppendPathWithoutFollowingSlashToPathWithLeadingSlash() {
+        let path = Path("/usr") + "/var"
+        XCTAssertEqual(path, "/usr/var")
+    }
+    
+    func testAppendPathWithFollowingSlashToPathWithoutLeadingSlash() {
+        let path = Path("/usr/") + "var"
+        XCTAssertEqual(path, "/usr/var")
+    }
+    
+    func testAppendPathWithFollowingSlashToPathWithLeadingSlash() {
+        let path = Path("/usr/") + "/var"
+        XCTAssertEqual(path, "/usr/var")
     }
 }
