@@ -108,6 +108,15 @@ extension Path {
     public func normalize() -> Path {
         return Path((self.path as NSString).stringByStandardizingPath)
     }
+    
+    /// De-normalizes the path, by replacing the current user home directory with "~".
+    ///
+    /// - Returns: a new path made by removing extraneous path components from the underlying String
+    ///   representation.
+    ///
+    public func abbreviate() -> Path {
+        return Path((self.path as NSString).stringByAbbreviatingWithTildeInPath)
+    }
 }
 
 

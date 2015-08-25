@@ -104,6 +104,13 @@ class PathKitTests: XCTestCase {
         let path = Path("/usr/./local/../bin/swift")
         XCTAssertEqual(path.normalize(), Path("/usr/bin/swift"))
     }
+
+    // MARK: Abbreviation
+
+    func testAbbreviate() {
+        let path = Path("/Users/\(NSUserName())/Library")
+        XCTAssertEqual(path.abbreviate(), Path("~/Library"))
+    }
     
     // MARK: Last Component
     
