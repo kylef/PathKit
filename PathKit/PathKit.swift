@@ -222,7 +222,7 @@ extension Path {
     /// - Parameter closure: A closure to be executed while the current directory is configured to
     ///   the path.
     ///
-    public func chdir(closure: (() -> ())) {
+    public func chdir(closure: () -> ()) {
         let previous = Path.current
         Path.current = self
         closure()
