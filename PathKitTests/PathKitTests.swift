@@ -123,11 +123,19 @@ class PathKitTests: XCTestCase {
 
     // MARK: Symlink Destination
 
-    func testSymlinkDestination() {
-        let path = Path("/tmp")
+    func testRelativeSymlinkDestination() {
+        let path = fixtures + "symlinks/file"
         AssertNoThrow {
             let resolvedPath = try path.symlinkDestination()
-            XCTAssertEqual(resolvedPath, Path("/private/tmp"))
+            XCTAssertEqual(resolvedPath.normalize(), fixtures + "file")
+        }
+    }
+    
+    func testAbsoluteSymlinkDestination() {
+        let path = fixtures + "symlinks/swift"
+        AssertNoThrow {
+            let resolvedPath = try path.symlinkDestination()
+            XCTAssertEqual(resolvedPath, Path("/usr/bin/swift"))
         }
     }
     
@@ -342,13 +350,12 @@ class PathKitTests: XCTestCase {
     // MARK: SequenceType
 
     func testSequenceType() {
-        let path = Path(__FILE__).parent()
-        var children = ["Fixtures", "Info.plist", Path(__FILE__).lastComponent]
-        XCTAssertTrue(path.contains(Path(__FILE__)))
+        let path = fixtures + "directory"
+        var children = ["child", "subdirectory"].map { path + $0 }
         let generator = path.generate()
         while let child = generator.next() {
             generator.skipDescendants()
-            if let index = children.indexOf(child.lastComponent) {
+            if let index = children.indexOf(child) {
                 children.removeAtIndex(index)
             } else {
                 XCTFail("Generated unexpected element: <\(child)>")

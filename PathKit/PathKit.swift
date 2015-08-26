@@ -126,8 +126,12 @@ extension Path {
         let symlinkDestination = try Path.fileManager.destinationOfSymbolicLinkAtPath(path)
         let symlinkPath = Path(symlinkDestination)
         if symlinkPath.isRelative {
-            // Note: Don't use parent() here, this would resolve the symlink.
-            return Path((path as NSString).stringByDeletingLastPathComponent) + symlinkPath
+            if !symlinkDestination.characters.contains(Path.separator.characters.first!) {
+                return symlinkPath
+            } else {
+                // Note: Don't use parent() here, this would resolve the symlink.
+                return Path((path as NSString).stringByDeletingLastPathComponent) + symlinkDestination
+            }
         } else {
             return symlinkPath
         }
