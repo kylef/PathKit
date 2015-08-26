@@ -13,6 +13,10 @@ import CatchingFire
 
 class PathKitTests: XCTestCase {
 
+    var fixtures: Path {
+        return Path(__FILE__).parent() + "Fixtures"
+    }
+
     func testSeparator() {
         XCTAssertEqual(Path.separator, "/")
     }
@@ -154,8 +158,7 @@ class PathKitTests: XCTestCase {
     // MARK: Existance
 
     func testExistingPathExists() {
-        let path = Path("/")
-        XCTAssertTrue(path.exists)
+        XCTAssertTrue(fixtures.exists)
     }
 
     func testNonExistingPathDoesntExist() {
@@ -328,28 +331,26 @@ class PathKitTests: XCTestCase {
     // MARK: Children
 
     func testChildren() {
-        let path = Path(__FILE__).parent()
         AssertNoThrow {
-            let children = try path.children()
-            XCTAssertEqual(children, [path + "Fixtures", path + "Info.plist", Path(__FILE__)])
+            let children = try fixtures.children()
+            XCTAssertEqual(children, ["directory", "file", "permissions", "symlinks"].map { fixtures + $0 })
         }
     }
 
     func testChildrenWithoutDirectories() {
-        let path = Path(__FILE__).parent()
         AssertNoThrow {
-            let children = try path.children().filter { $0.isFile }
-            XCTAssertEqual(children, [path + "Info.plist", Path(__FILE__)])
+            let children = try fixtures.children().filter { $0.isFile }
+            XCTAssertEqual(children, [fixtures + "file"])
         }
     }
 
     // MARK: Recursive Children
 
     func testRecursiveChildren() {
-        let path = Path(__FILE__).parent()
         AssertNoThrow {
-            let children = try path.recursiveChildren()
-            XCTAssertEqual(children, [path + "Fixtures", path + "Fixtures/.git-keep", path + "Info.plist", Path(__FILE__)])
+            let parent = fixtures + "directory"
+            let children = try parent.recursiveChildren()
+            XCTAssertEqual(children, ["child", "subdirectory", "subdirectory/child"].map { parent + $0 })
         }
     }
 
