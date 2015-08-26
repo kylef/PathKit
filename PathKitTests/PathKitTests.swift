@@ -163,6 +163,59 @@ class PathKitTests: XCTestCase {
         XCTAssertFalse(path.exists)
     }
 
+    // MARK: Modifications
+
+    func testMkdir() {
+        let path = Path.temporary
+        let testDir = path + "test_mkdir"
+        do { try testDir.delete() } catch {}
+        AssertNoThrow { try testDir.mkdir() }
+        XCTAssertTrue(testDir.isDirectory)
+        AssertNoThrow { try testDir.delete() }
+    }
+
+    func testMkdirWithNonExistingImmediateDirFails() {
+        let path = Path.temporary
+        let testDir = path + "test_mkdir/test"
+        do { try testDir.delete() } catch {}
+        AssertThrows(NSCocoaError.FileNoSuchFileError) { try testDir.mkdir() }
+        XCTAssertFalse(testDir.isDirectory)
+    }
+
+    func testMkdirWithExistingDirFails() {
+        let path = Path.temporary
+        let testDir = path + "test_mkdir"
+        do { try testDir.delete() } catch {}
+        AssertNoThrow {
+            try testDir.mkdir()
+            XCTAssertTrue(testDir.isDirectory)
+            AssertThrows(NSCocoaError.FileWriteFileExistsError) { try testDir.mkdir() }
+            try testDir.delete()
+        }
+    }
+
+    func testMkpath() {
+        let path = Path.temporary
+        let testDir = path + "test_mkpath/test"
+        AssertNoThrow {
+            try testDir.mkpath()
+            XCTAssertTrue(testDir.isDirectory)
+            try testDir.delete()
+        }
+    }
+
+    func testMkpathWithExistingDir() {
+        let path = Path.temporary
+        let testDir = path + "test_mkdir"
+        do { try testDir.delete() } catch {}
+        AssertNoThrow {
+            try testDir.mkdir()
+            XCTAssertTrue(testDir.isDirectory)
+            try testDir.mkpath()
+            try testDir.delete()
+        }
+    }
+
     // MARK: Change Directory
 
     func testChdir() {

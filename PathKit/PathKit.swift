@@ -202,6 +202,25 @@ extension Path {
 // MARK: File Manipulation
 
 extension Path {
+    /// Create the directory.
+    ///
+    /// - Note: This method fails if any of the intermediate parent directories does not exist.
+    ///   This method also fails if any of the intermediate path elements corresponds to a file and
+    ///   not a directory.
+    ///
+    public func mkdir() throws -> () {
+        try Path.fileManager.createDirectoryAtPath(self.path, withIntermediateDirectories: false, attributes: nil)
+    }
+
+    /// Create the directory and any intermediate parent directories that do not exist.
+    ///
+    /// - Note: This method fails if any of the intermediate path elements corresponds to a file and
+    ///   not a directory.
+    ///
+    public func mkpath() throws -> () {
+        try Path.fileManager.createDirectoryAtPath(self.path, withIntermediateDirectories: true, attributes: nil)
+    }
+    
     /// Delete the file or directory.
     ///
     /// - Note: If the path specifies a directory, the contents of that directory are recursively
