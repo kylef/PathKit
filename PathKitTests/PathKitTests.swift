@@ -166,13 +166,13 @@ class PathKitTests: XCTestCase {
     // MARK: Change Directory
 
     func testChdir() {
-        var current: Path?
+        let current = Path.current
 
         Path("/usr/bin").chdir {
-            current = Path.current
+            XCTAssertEqual(Path.current, Path("/usr/bin"))
         }
 
-        XCTAssertEqual(current, Path("/usr/bin"))
+        XCTAssertEqual(Path.current, current)
     }
 
     // MARK: Reading
