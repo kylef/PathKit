@@ -380,6 +380,25 @@ extension Path {
         return Path(NSTemporaryDirectory())
     }
 
+    /// - Returns: the path of a temporary directory unique for the process.
+    /// - Note: Based on `NSProcessInfo.globallyUniqueString`.
+    ///
+    public static var processUniqueTemporary: Path {
+        let path = temporary + NSProcessInfo.processInfo().globallyUniqueString
+        if !path.exists {
+            try! path.mkdir()
+        }
+        return path
+    }
+
+    /// - Returns: the path of a temporary directory unique for each call.
+    /// - Note: Based on `NSUUID`.
+    ///
+    public static func uniqueTemporary() -> Path {
+        let path = processUniqueTemporary + NSUUID().UUIDString
+        try! path.mkdir()
+        return path
+    }
 }
 
 
