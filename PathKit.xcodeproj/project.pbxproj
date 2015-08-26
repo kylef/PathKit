@@ -25,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		187B2DA83A4D36AC575D1EE1 /* Pods_PathKitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PathKitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		29279AFC1B8DF4AE00A2A586 /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
 		631617147F5FFC51A3138E9B /* Pods-PathKitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PathKitTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PathKitTests/Pods-PathKitTests.release.xcconfig"; sourceTree = "<group>"; };
 		77DCBACA1A1E2A750054C841 /* PathKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PathKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		77DCBACE1A1E2A750054C841 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -114,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				77DCBADC1A1E2A750054C841 /* PathKitTests.swift */,
+				29279AFC1B8DF4AE00A2A586 /* Fixtures */,
 				77DCBADA1A1E2A750054C841 /* Supporting Files */,
 			);
 			path = PathKitTests;
