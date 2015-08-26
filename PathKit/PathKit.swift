@@ -374,13 +374,17 @@ public func <(lhs: Path, rhs: Path) -> Bool {
 
 /// Appends a Path fragment to another Path to produce a new Path
 public func +(lhs: Path, rhs: Path) -> Path {
-    switch (lhs.path.hasSuffix(Path.separator), rhs.path.hasPrefix(Path.separator)) {
-        case (true, true):
-            return Path("\(lhs.path)\(rhs.path.substringFromIndex(rhs.path.startIndex.successor()))")
-        case (false, false):
-            return Path("\(lhs.path)\(Path.separator)\(rhs.path)")
-        default:
-            return Path("\(lhs.path)\(rhs.path)")
-    }
+    return lhs + rhs.path
 }
 
+/// Appends a String fragment to another Path to produce a new Path
+public func +(lhs: Path, rhs: String) -> Path {
+    switch (lhs.path.hasSuffix(Path.separator), rhs.hasPrefix(Path.separator)) {
+    case (true, true):
+        return Path("\(lhs.path)\(rhs.substringFromIndex(rhs.startIndex.successor()))")
+    case (false, false):
+        return Path("\(lhs.path)\(Path.separator)\(rhs)")
+    default:
+        return Path("\(lhs.path)\(rhs)")
+    }
+}
