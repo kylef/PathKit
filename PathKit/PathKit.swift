@@ -241,7 +241,7 @@ extension Path {
     /// Changes the current working directory of the process to the path during the execution of the
     /// given block.
     ///
-    /// - Note: The original working directory is restored when the block exits.
+    /// - Note: The original working directory is restored when the block returns.
     /// - Parameter closure: A closure to be executed while the current directory is configured to
     ///   the path.
     ///
@@ -249,6 +249,25 @@ extension Path {
         let previous = Path.current
         Path.current = self
         closure()
+        Path.current = previous
+    }
+
+    /// Changes the current working directory of the process to the path during the execution of the
+    /// given block.
+    ///
+    /// - Note: The original working directory is restored when the block returns or throws.
+    /// - Parameter closure: A closure to be executed while the current directory is configured to
+    ///   the path.
+    ///
+    public func chdir(closure: () throws -> ()) throws {
+        let previous = Path.current
+        Path.current = self
+        do {
+            try closure()
+        } catch let error {
+            Path.current = previous
+            throw error
+        }
         Path.current = previous
     }
 }

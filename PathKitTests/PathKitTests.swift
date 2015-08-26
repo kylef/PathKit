@@ -175,6 +175,38 @@ class PathKitTests: XCTestCase {
         XCTAssertEqual(Path.current, current)
     }
 
+    func testThrowingChdirWithThrowingClosure() {
+        let current = Path.current
+
+        let error = NSError(domain: "org.cocode.PathKit", code: 1, userInfo: nil)
+        AssertThrows(error) {
+            try Path("/usr/bin").chdir {
+                XCTAssertEqual(Path.current, Path("/usr/bin"))
+                throw error
+            }
+        }
+
+        XCTAssertEqual(Path.current, current)
+    }
+
+    func testThrowingChdirWithNonThrowingClosure() {
+        let current = Path.current
+
+        let error = NSError(domain: "org.cocode.PathKit", code: 1, userInfo: nil)
+        AssertNoThrow {
+            try Path("/usr/bin").chdir {
+                XCTAssertEqual(Path.current, Path("/usr/bin"))
+                if Path.current != Path("/usr/bin") {
+                    // Will never happen as long as the previous assert succeeds,
+                    // but prevents a warning that the closure doesn't throw.
+                    throw error
+                }
+            }
+        }
+
+        XCTAssertEqual(Path.current, current)
+    }
+
     // MARK: Reading
 
     func testReadData() {
