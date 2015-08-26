@@ -311,6 +311,31 @@ extension Path {
     public func move(destination: Path) throws -> () {
         try Path.fileManager.moveItemAtPath(self.path, toPath: destination.path)
     }
+
+    /// Copy the file or directory to a new location synchronously.
+    ///
+    /// - Parameter destination: The new path. This path must include the name of the file or
+    ///   directory in its new location.
+    ///
+    public func copy(destination: Path) throws -> () {
+        try Path.fileManager.copyItemAtPath(self.path, toPath: destination.path)
+    }
+
+    /// Creates a hard link at a new destination.
+    ///
+    /// - Parameter destination: The location where the link will be created.
+    ///
+    public func link(destination: Path) throws -> () {
+        try Path.fileManager.linkItemAtPath(self.path, toPath: destination.path)
+    }
+
+    /// Creates a symbolic link at a new destination.
+    ///
+    /// - Parameter destintation: The location where the link will be created.
+    ///
+    public func symlink(destination: Path) throws -> () {
+        try Path.fileManager.createSymbolicLinkAtPath(self.path, withDestinationPath: destination.path)
+    }
 }
 
 
