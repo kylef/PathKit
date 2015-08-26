@@ -199,6 +199,75 @@ extension Path {
         }
         return directory.boolValue
     }
+    
+    /// Test whether a path is a regular file.
+    ///
+    /// - Returns: `true` if the path is neither a directory nor a symbolic link that points to a
+    ///   directory; `false` if the path is a directory or a symbolic link that points to a
+    ///   directory or the path doesn't exist on disk or its existence
+    ///   could not be determined
+    ///
+    public var isFile: Bool {
+        var directory = ObjCBool(false)
+        guard Path.fileManager.fileExistsAtPath(normalize().path, isDirectory: &directory) else {
+            return false
+        }
+        return !directory.boolValue
+    }
+    
+    /// Test whether a path is a symbolic link.
+    ///
+    /// - Returns: `true` if the path is a symbolic link; `false` if the path doesn't exist on disk
+    ///   or its existence could not be determined
+    ///
+    public var isSymlink: Bool {
+        do {
+            let _ = try Path.fileManager.destinationOfSymbolicLinkAtPath(path)
+            return true
+        } catch {
+            return false
+        }
+    }
+    
+    /// Test whether a path is readable
+    ///
+    /// - Returns: `true` if the current process has read privileges for the file at path;
+    ///   otherwise `false` if the process does not have read privileges or the existence of the
+    ///   file could not be determined.
+    ///
+    public var isReadable: Bool {
+        return Path.fileManager.isReadableFileAtPath(self.path)
+    }
+    
+    /// Test whether a path is writeable
+    ///
+    /// - Returns: `true` if the current process has write privileges for the file at path;
+    ///   otherwise `false` if the process does not have write privileges or the existence of the
+    ///   file could not be determined.
+    ///
+    public var isWritable: Bool {
+        return Path.fileManager.isWritableFileAtPath(self.path)
+    }
+    
+    /// Test whether a path is executable
+    ///
+    /// - Returns: `true` if the current process has execute privileges for the file at path;
+    ///   otherwise `false` if the process does not have execute privileges or the existence of the
+    ///   file could not be determined.
+    ///
+    public var isExecutable: Bool {
+        return Path.fileManager.isExecutableFileAtPath(self.path)
+    }
+    
+    /// Test whether a path is deletable
+    ///
+    /// - Returns: `true` if the current process has delete privileges for the file at path;
+    ///   otherwise `false` if the process does not have delete privileges or the existence of the
+    ///   file could not be determined.
+    ///
+    public var isDeletable: Bool {
+        return Path.fileManager.isDeletableFileAtPath(self.path)
+    }
 }
 
 

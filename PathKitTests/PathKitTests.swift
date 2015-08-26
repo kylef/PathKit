@@ -166,6 +166,39 @@ class PathKitTests: XCTestCase {
         XCTAssertFalse(path.exists)
     }
 
+    // MARK: File Info
+
+    func testIsDirectory() {
+        XCTAssertTrue((fixtures + "directory").isDirectory)
+        XCTAssertTrue((fixtures + "symlinks/directory").isDirectory)
+    }
+
+    func testIsSymlink() {
+        XCTAssertFalse((fixtures + "file/file").isSymlink)
+        XCTAssertTrue((fixtures + "symlinks/file").isSymlink)
+    }
+
+    func testIsFile() {
+        XCTAssertTrue((fixtures + "file").isFile)
+        XCTAssertTrue((fixtures + "symlinks/file").isFile)
+    }
+
+    func testIsExecutable() {
+        XCTAssertTrue((fixtures + "permissions/executable").isExecutable)
+    }
+
+    func testIsReadable() {
+        XCTAssertTrue((fixtures + "permissions/readable").isReadable)
+    }
+
+    func testIsWriteable() {
+        XCTAssertTrue((fixtures + "permissions/writable").isWritable)
+    }
+
+    func testIsDeletable() {
+        XCTAssertTrue((fixtures + "permissions/deletable").isDeletable)
+    }
+
     // MARK: Modifications
 
     func testMkdir() {
