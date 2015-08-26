@@ -347,6 +347,46 @@ extension Path {
 }
 
 
+// MARK: SequenceType
+
+extension Path : SequenceType {
+    /// Enumerates the contents of a directory, returning the paths of all files and directories
+    /// contained within that directory. These paths are relative to the directory.
+    public struct DirectoryEnumerator : GeneratorType {
+        public typealias Element = Path
+
+        let path: Path
+        let directoryEnumerator: NSDirectoryEnumerator
+
+        init(path: Path) {
+            self.path = path
+            self.directoryEnumerator = Path.fileManager.enumeratorAtPath(path.path)!
+        }
+
+        public func next() -> Path? {
+            if let next = directoryEnumerator.nextObject() as! String? {
+                return path + next
+            }
+            return nil
+        }
+
+        /// Skip recursion into the most recently obtained subdirectory.
+        public func skipDescendants() {
+            directoryEnumerator.skipDescendants()
+        }
+    }
+
+    /// Perform a deep enumeration of a directory.
+    ///
+    /// - Returns: a directory enumerator that can be used to perform a deep enumeration of the
+    ///   directory.
+    ///
+    public func generate() -> DirectoryEnumerator {
+        return DirectoryEnumerator(path: self)
+    }
+}
+
+
 // MARK: Equatable
 
 extension Path : Equatable {}

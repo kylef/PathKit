@@ -256,6 +256,24 @@ class PathKitTests: XCTestCase {
             XCTAssertEqual(children, [path + "Fixtures", path + "Fixtures/.git-keep", path + "Info.plist", Path(__FILE__)])
         }
     }
+
+    // MARK: SequenceType
+
+    func testSequenceType() {
+        let path = Path(__FILE__).parent()
+        var children = ["Fixtures", "Info.plist", Path(__FILE__).lastComponent]
+        XCTAssertTrue(path.contains(Path(__FILE__)))
+        let generator = path.generate()
+        while let child = generator.next() {
+            generator.skipDescendants()
+            if let index = children.indexOf(child.lastComponent) {
+                children.removeAtIndex(index)
+            } else {
+                XCTFail("Generated unexpected element: <\(child)>")
+            }
+        }
+        XCTAssertTrue(children.isEmpty)
+    }
     
     // MARK: Pattern Matching
     
