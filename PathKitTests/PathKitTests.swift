@@ -222,10 +222,17 @@ class PathKitTests: XCTestCase {
         AssertNoThrow(try path.delete())
     }
 
+    // MARK: Parent
+
+    func testParent() {
+        let path = Path(__FILE__)
+        XCTAssertEqual(path.parent().lastComponent, "PathKitTests")
+    }
+
     // MARK: Children
 
     func testChildren() {
-        let path = (Path(__FILE__) + "..").absolute()
+        let path = Path(__FILE__).parent()
         AssertNoThrow {
             let children = try path.children()
             XCTAssertEqual(children, [path + "Fixtures", path + "Info.plist", Path(__FILE__)])
@@ -233,10 +240,20 @@ class PathKitTests: XCTestCase {
     }
 
     func testChildrenWithoutDirectories() {
-        let path = (Path(__FILE__) + "..").absolute()
+        let path = Path(__FILE__).parent()
         AssertNoThrow {
-            let children = try path.children(directories: false)
+            let children = try path.children().filter { $0.isFile }
             XCTAssertEqual(children, [path + "Info.plist", Path(__FILE__)])
+        }
+    }
+
+    // MARK: Recursive Children
+
+    func testRecursiveChildren() {
+        let path = Path(__FILE__).parent()
+        AssertNoThrow {
+            let children = try path.recursiveChildren()
+            XCTAssertEqual(children, [path + "Fixtures", path + "Fixtures/.git-keep", path + "Info.plist", Path(__FILE__)])
         }
     }
     

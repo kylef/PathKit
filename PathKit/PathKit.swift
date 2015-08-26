@@ -316,18 +316,33 @@ extension Path {
 // MARK: Traversing
 
 extension Path {
-    public func children(directories directories: Bool = true) throws -> [Path] {
-        let manager = NSFileManager()
-        let contents = try manager.contentsOfDirectoryAtPath(path)
-        let paths = contents.map {
+    /// Get the parent directory
+    ///
+    /// - Returns: the normalized path of the parent directory
+    ///
+    public func parent() -> Path {
+        return (self + "..").normalize()
+    }
+    
+    /// Performs a shallow enumeration in a directory
+    ///
+    /// - Returns: paths to all files, directories and symbolic links contained in the directory
+    ///
+    public func children() throws -> [Path] {
+        return try Path.fileManager.contentsOfDirectoryAtPath(path).map {
             self + Path($0)
         }
-
-        if directories {
-            return paths
+    }
+    
+    /// Performs a deep enumeration in a directory
+    ///
+    /// - Returns: paths to all files, directories and symbolic links contained in the directory or
+    ///   any subdirectory.
+    ///
+    public func recursiveChildren() throws -> [Path] {
+        return try Path.fileManager.subpathsOfDirectoryAtPath(path).map {
+            self + Path($0)
         }
-
-        return paths.filter { !$0.isDirectory }
     }
 }
 
