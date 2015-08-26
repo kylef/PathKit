@@ -13,6 +13,11 @@ import CatchingFire
 
 class PathKitTests: XCTestCase {
 
+    override func setUp() {
+        super.setUp()
+        Path.current = Path(__FILE__).parent()
+    }
+
     var fixtures: Path {
         return Path(__FILE__).parent() + "Fixtures"
     }
