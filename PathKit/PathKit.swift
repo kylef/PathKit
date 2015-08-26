@@ -194,7 +194,10 @@ extension Path {
     ///
     public var isDirectory: Bool {
         var directory = ObjCBool(false)
-        return Path.fileManager.fileExistsAtPath(normalize().path, isDirectory: &directory) && directory.boolValue
+        guard Path.fileManager.fileExistsAtPath(normalize().path, isDirectory: &directory) else {
+            return false
+        }
+        return directory.boolValue
     }
 }
 
