@@ -80,6 +80,11 @@ class PathKitTests: XCTestCase {
         XCTAssertEqual(path.absolute(), Path.current + Path("swift"))
     }
 
+    func testConvertingAbsoluteToAbsolute() {
+        let path = Path("/usr/bin/swift")
+        XCTAssertEqual(path.absolute(), Path("/usr/bin/swift"))
+    }
+
     func testAbsolutePathIsAbsolute() {
         let path = Path("/usr/bin/swift")
         XCTAssertTrue(path.isAbsolute)
