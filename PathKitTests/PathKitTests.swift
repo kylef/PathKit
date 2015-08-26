@@ -111,6 +111,16 @@ class PathKitTests: XCTestCase {
         let path = Path("/Users/\(NSUserName())/Library")
         XCTAssertEqual(path.abbreviate(), Path("~/Library"))
     }
+
+    // MARK: Symlink Destination
+
+    func testSymlinkDestination() {
+        let path = Path("/tmp")
+        AssertNoThrow {
+            let resolvedPath = try path.symlinkDestination()
+            XCTAssertEqual(resolvedPath, Path("/private/tmp"))
+        }
+    }
     
     // MARK: Last Component
     

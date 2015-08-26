@@ -117,6 +117,20 @@ extension Path {
     public func abbreviate() -> Path {
         return Path((self.path as NSString).stringByAbbreviatingWithTildeInPath)
     }
+
+    /// Returns the path of the item pointed to by a symbolic link.
+    ///
+    /// - Returns: the path of directory or file to which the symbolic link refers
+    ///
+    public func symlinkDestination() throws -> Path {
+        let symlinkDestination = try Path.fileManager.destinationOfSymbolicLinkAtPath(path)
+        let symlinkPath = Path(symlinkDestination)
+        if symlinkPath.isRelative {
+            return Path((path as NSString).stringByDeletingLastPathComponent) + symlinkPath
+        } else {
+            return symlinkPath
+        }
+    }
 }
 
 
