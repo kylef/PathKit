@@ -143,7 +143,15 @@ class PathKitTests: XCTestCase {
             XCTAssertEqual(resolvedPath, Path("/usr/bin/swift"))
         }
     }
-    
+
+    func testRelativeSymlinkDestinationInSameDirectory() {
+        let path = fixtures + "symlinks/same-dir"
+        AssertNoThrow {
+            let resolvedPath = try path.symlinkDestination()
+            XCTAssertEqual(resolvedPath.normalize(), fixtures + "symlinks/file")
+        }
+    }
+
     // MARK: Last Component
     
     func testLastComponent() {
