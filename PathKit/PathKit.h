@@ -13,7 +13,3 @@ FOUNDATION_EXPORT double PathKitVersionNumber;
 
 //! Project version string for PathKit.
 FOUNDATION_EXPORT const unsigned char PathKitVersionString[];
-
-// In this header, you should import all the public headers of your framework using statements like #import <PathKit/PublicHeader.h>
-
-
