@@ -24,8 +24,15 @@ public struct Path {
     }
 
     /// Create a Path by joining multiple path components together
-    public init(components:[String]) {
-        path = components.joinWithSeparator(Path.separator)
+    public init<S : CollectionType where S.Generator.Element == String>(let components: S) {
+        if components.isEmpty {
+            path = "."
+        } else if components.first == Path.separator && components.count > 1 {
+            let p = components.joinWithSeparator(Path.separator)
+            path = p.substringFromIndex(p.startIndex.successor())
+        } else {
+            path = components.joinWithSeparator(Path.separator)
+        }
     }
 }
 
@@ -498,7 +505,7 @@ extension Path {
     /// - Returns: the normalized path of the parent directory
     ///
     public func parent() -> Path {
-        return (self + "..").normalize()
+        return self + ".."
     }
     
     /// Performs a shallow enumeration in a directory
@@ -606,17 +613,56 @@ public func <(lhs: Path, rhs: Path) -> Bool {
 
 /// Appends a Path fragment to another Path to produce a new Path
 public func +(lhs: Path, rhs: Path) -> Path {
-    return lhs + rhs.path
+    return lhs.path + rhs.path
 }
 
 /// Appends a String fragment to another Path to produce a new Path
 public func +(lhs: Path, rhs: String) -> Path {
-    switch (lhs.path.hasSuffix(Path.separator), rhs.hasPrefix(Path.separator)) {
-    case (true, true):
-        return Path("\(lhs.path)\(rhs.substringFromIndex(rhs.startIndex.successor()))")
-    case (false, false):
-        return Path("\(lhs.path)\(Path.separator)\(rhs)")
-    default:
-        return Path("\(lhs.path)\(rhs)")
+    return lhs.path + rhs
+}
+
+/// Appends a String fragment to another String to produce a new Path
+internal func +(lhs: String, rhs: String) -> Path {
+    if rhs.hasPrefix(Path.separator) {
+        // Absolute paths replace relative paths
+        return Path(rhs)
+    } else {
+        var lSlice = (lhs as NSString).pathComponents.fullSlice
+        var rSlice = (rhs as NSString).pathComponents.fullSlice
+
+        // Get rid of trailing "/" at the left side
+        if lSlice.count > 1 && lSlice.last == Path.separator {
+            lSlice.popLast()
+        }
+
+        // Advance after the first relevant "."
+        lSlice = lSlice.filter { $0 != "." }.fullSlice
+        rSlice = rSlice.filter { $0 != "." }.fullSlice
+
+        // Eats up trailing components of the left and leading ".." of the right side
+        while lSlice.last != ".." && rSlice.first == ".." {
+            if lSlice.count > 1 || lSlice.first != Path.separator {
+                // A leading "/" is never popped
+                lSlice.popLast()
+            }
+            rSlice.popFirst()
+
+            switch (lSlice.isEmpty, rSlice.isEmpty) {
+            case (true, _):
+                break
+            case (_, true):
+                break
+            default:
+                continue
+            }
+        }
+
+        return Path(components: lSlice + rSlice)
+    }
+}
+
+extension Array {
+    var fullSlice: ArraySlice<Element> {
+        return self[0..<self.endIndex]
     }
 }

@@ -322,8 +322,10 @@ class PathKitTests: XCTestCase {
     // MARK: Parent
 
     func testParent() {
-        let path = Path(__FILE__)
-        XCTAssertEqual(path.parent().lastComponent, "PathKitTests")
+        XCTAssertEqual((fixtures + "directory/child").parent(),    fixtures + "directory")
+        XCTAssertEqual((fixtures + "symlinks/directory").parent(), fixtures + "symlinks")
+        XCTAssertEqual((fixtures + "directory/..").parent(),       fixtures + "directory/../..")
+        XCTAssertEqual(Path("/").parent(),                         "/")
     }
 
     // MARK: Children
@@ -385,23 +387,32 @@ class PathKitTests: XCTestCase {
     
     // MARK: Appending
     
-    func testAppendPathWithoutFollowingSlashToPathWithoutLeadingSlash() {
-        let path = Path("/usr") + "var"
-        XCTAssertEqual(path, "/usr/var")
-    }
-    
-    func testAppendPathWithoutFollowingSlashToPathWithLeadingSlash() {
-        let path = Path("/usr") + "/var"
-        XCTAssertEqual(path, "/usr/var")
-    }
-    
-    func testAppendPathWithFollowingSlashToPathWithoutLeadingSlash() {
-        let path = Path("/usr/") + "var"
-        XCTAssertEqual(path, "/usr/var")
-    }
-    
-    func testAppendPathWithFollowingSlashToPathWithLeadingSlash() {
-        let path = Path("/usr/") + "/var"
-        XCTAssertEqual(path, "/usr/var")
+    func testAppendPath() {
+        // Trivial cases.
+        XCTAssertEqual(Path("a/b"), "a" + "b")
+        XCTAssertEqual(Path("a/b"), "a/" + "b")
+
+        // Appending (to) absolute paths
+        XCTAssertEqual(Path("/"),  "/" + "/")
+        XCTAssertEqual(Path("/"),  "/" + "..")
+        XCTAssertEqual(Path("/a"), "/" + "../a")
+        XCTAssertEqual(Path("/b"), "a" + "/b")
+
+        // Appending (to) '.'
+        XCTAssertEqual(Path("a"), "a" + ".")
+        XCTAssertEqual(Path("a"), "a" + "./.")
+        XCTAssertEqual(Path("a"), "." + "a")
+        XCTAssertEqual(Path("a"), "./." + "a")
+        XCTAssertEqual(Path("."), "." + ".")
+        XCTAssertEqual(Path("."), "./." + "./.")
+
+        // Appending (to) '..'
+        XCTAssertEqual(Path("."),       "a" + "..")
+        XCTAssertEqual(Path("a"),       "a/b" + "..")
+        XCTAssertEqual(Path("../.."),   ".." + "..")
+        XCTAssertEqual(Path("b"),       "a" + "../b")
+        XCTAssertEqual(Path("a/c"),     "a/b" + "../c")
+        XCTAssertEqual(Path("a/b/d/e"), "a/b/c" + "../d/e")
+        XCTAssertEqual(Path("../../a"), ".." + "../a")
     }
 }
