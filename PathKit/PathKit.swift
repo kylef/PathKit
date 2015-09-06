@@ -34,7 +34,7 @@ public struct Path : Equatable, Hashable, CustomStringConvertible, StringLiteral
 
     /// Create a Path by joining multiple path components together
     public init(components:[String]) {
-        path = Path.separator.join(components)
+        path = components.joinWithSeparator(Path.separator)
     }
 
     public init(stringLiteral value: StringLiteralType) {
