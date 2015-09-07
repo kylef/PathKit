@@ -32,7 +32,7 @@ class ManipulationTests : XCTestCase {
 
     override func setUp() {
         super.setUp()
-        Path.current = Path.uniqueTemporary()
+        Path.current = try! Path.uniqueTemporary()
     }
 
     override func tearDown() {
