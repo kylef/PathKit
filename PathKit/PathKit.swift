@@ -399,7 +399,8 @@ extension Path {
 // MARK: Temporary
 
 extension Path {
-    /// - Returns: the path of the temporary directory for the current user.
+    /// - Returns: the path to either the user’s or application’s home directory,
+    ///   depending on the platform.
     ///
     public static var home: Path {
         return Path(NSHomeDirectory())
