@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		29279AFF1B8E03CA00A2A586 /* ManipulationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29279AFE1B8E03CA00A2A586 /* ManipulationTests.swift */; };
 		3AA3508BB2BE82C46064B2DF /* Pods_PathKitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 187B2DA83A4D36AC575D1EE1 /* Pods_PathKitTests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		77DCBAD01A1E2A750054C841 /* PathKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 77DCBACF1A1E2A750054C841 /* PathKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		77DCBADD1A1E2A750054C841 /* PathKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77DCBADC1A1E2A750054C841 /* PathKitTests.swift */; };
@@ -25,6 +26,8 @@
 
 /* Begin PBXFileReference section */
 		187B2DA83A4D36AC575D1EE1 /* Pods_PathKitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PathKitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		29279AFC1B8DF4AE00A2A586 /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
+		29279AFE1B8E03CA00A2A586 /* ManipulationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManipulationTests.swift; sourceTree = "<group>"; };
 		631617147F5FFC51A3138E9B /* Pods-PathKitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PathKitTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PathKitTests/Pods-PathKitTests.release.xcconfig"; sourceTree = "<group>"; };
 		77DCBACA1A1E2A750054C841 /* PathKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PathKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		77DCBACE1A1E2A750054C841 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -114,6 +117,8 @@
 			isa = PBXGroup;
 			children = (
 				77DCBADC1A1E2A750054C841 /* PathKitTests.swift */,
+				29279AFE1B8E03CA00A2A586 /* ManipulationTests.swift */,
+				29279AFC1B8DF4AE00A2A586 /* Fixtures */,
 				77DCBADA1A1E2A750054C841 /* Supporting Files */,
 			);
 			path = PathKitTests;
@@ -295,6 +300,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29279AFF1B8E03CA00A2A586 /* ManipulationTests.swift in Sources */,
 				77DCBADD1A1E2A750054C841 /* PathKitTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
