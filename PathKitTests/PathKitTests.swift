@@ -167,7 +167,7 @@ class PathKitTests: XCTestCase {
     }
     
     // MARK: Components
-    
+
     func testComponents() {
         XCTAssertEqual(Path("a/b/c.d").components,   ["a", "b", "c.d"])
         XCTAssertEqual(Path("/a/b/c.d").components,  ["/", "a", "b", "c.d"])
@@ -179,6 +179,7 @@ class PathKitTests: XCTestCase {
     func testExtension() {
         XCTAssertEqual(Path("a/b/c.d").`extension`, "d")
         XCTAssertEqual(Path("a/b.c.d").`extension`, "d")
+        XCTAssertNil(Path("a/b").`extension`)
     }
 
     // MARK: Existance

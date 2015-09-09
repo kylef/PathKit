@@ -151,7 +151,7 @@ extension Path {
     public var lastComponent: String {
         return (path as NSString).lastPathComponent
     }
-    
+
     /// The last path component without file extension
     ///
     /// - Note: This returns "." for "..".
@@ -161,7 +161,7 @@ extension Path {
     public var lastComponentWithoutExtension: String {
         return (lastComponent as NSString).stringByDeletingPathExtension
     }
-    
+
     /// Splits the string representation on the directory separator.
     /// Absolute paths remain the leading slash as first component.
     ///
@@ -170,13 +170,18 @@ extension Path {
     public var components: [String] {
         return (path as NSString).pathComponents
     }
-    
+
     /// The file extension behind the last dot of the last component.
     ///
     /// - Returns: the file extension
     ///
-    public var `extension`: String {
-        return (path as NSString).pathExtension
+    public var `extension`: String? {
+        let pathExtension = (path as NSString).pathExtension
+        if  pathExtension.isEmpty {
+            return nil
+        }
+
+        return pathExtension
     }
 }
 
