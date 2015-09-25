@@ -1,0 +1,10 @@
+PODS:
+  - CatchingFire (0.2.0)
+
+DEPENDENCIES:
+  - CatchingFire
+
+SPEC CHECKSUMS:
+  CatchingFire: 935ecc35fc5864f12ef1c033a97e9a9affbf6056
+
+COCOAPODS: 0.38.2

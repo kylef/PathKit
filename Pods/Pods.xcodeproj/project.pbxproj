@@ -1,0 +1,508 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2DC49DDE75C002FE3FDF2537298D78FA /* Pods-PathKitTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9680C8CCB233624264FDC4DFF403D294 /* Pods-PathKitTests-dummy.m */; };
+		32A4CE49ADE210C81BFBAD55F08C4AC6 /* Pods-PathKitTests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = BA6435C445A0B2ECC944E2840EAFC268 /* Pods-PathKitTests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C848F63DCDA9B56034FF8C8B58FEF6AB /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B228C1A62B4D45AD5159E7B8E7169ED /* Cocoa.framework */; };
+		CFE051093487DAE7105A00AF7907EF67 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B228C1A62B4D45AD5159E7B8E7169ED /* Cocoa.framework */; };
+		CFF091C86D2B9CCD50EA115EE01BE304 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C26197DCE8B2ED913548810EFD3F7E82 /* XCTest.framework */; };
+		D73B5B44679EDFC719EC47C8C3688014 /* CatchingFire.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC426787E31F1AE25DDC9F173DA8CA3 /* CatchingFire.swift */; };
+		F79A2BADC0014A22177CF9FA7E571EE7 /* CatchingFire-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E4D7473761DD2BCC5A8C0F53D82BBA47 /* CatchingFire-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F89077171D750113E6EFAF3AB66A16B1 /* CatchingFire-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 603802CAC3327CD22481FE851CBBEEC4 /* CatchingFire-dummy.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		27FC24870932141800D886A9D51C5975 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5D37234EA02AF134040F6D92B7D3006A;
+			remoteInfo = CatchingFire;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		01702BE714BCBF92F9E52984A0C2A5B5 /* Pods-PathKitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-PathKitTests.debug.xcconfig"; sourceTree = "<group>"; };
+		0C68FCF15E3017E29E5A60E48CC87B5B /* CatchingFire.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = CatchingFire.xcconfig; sourceTree = "<group>"; };
+		22C0111171DA31162267FDB2B03DC987 /* Pods-PathKitTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-PathKitTests-frameworks.sh"; sourceTree = "<group>"; };
+		422828DBB60A03A4335035141CE9668A /* CatchingFire-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CatchingFire-prefix.pch"; sourceTree = "<group>"; };
+		4F60C457E406D4AD1F24C6700E8DEB05 /* CatchingFire.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = CatchingFire.modulemap; sourceTree = "<group>"; };
+		5B228C1A62B4D45AD5159E7B8E7169ED /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		603802CAC3327CD22481FE851CBBEEC4 /* CatchingFire-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "CatchingFire-dummy.m"; sourceTree = "<group>"; };
+		61DC47E98B9FB9C3AA1D32BFDDBF2673 /* CatchingFire-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "CatchingFire-Private.xcconfig"; sourceTree = "<group>"; };
+		63C9BD7BA4070E01A7492505E64A5D3E /* Pods-PathKitTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-PathKitTests-acknowledgements.plist"; sourceTree = "<group>"; };
+		849358E0EC6EBEB05F99E721842901DC /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		860C16180972564291C49ED8A66EEB83 /* Pods-PathKitTests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-PathKitTests-resources.sh"; sourceTree = "<group>"; };
+		8C250CA37B37FA02AC8E7653A06F6E2F /* Pods-PathKitTests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-PathKitTests.modulemap"; sourceTree = "<group>"; };
+		9680C8CCB233624264FDC4DFF403D294 /* Pods-PathKitTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-PathKitTests-dummy.m"; sourceTree = "<group>"; };
+		994BA01DD7BB262D891D1D33ACDCFA2A /* Pods_PathKitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PathKitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BA6428E9F66FD5A23C0A2E06ED26CD2F /* Podfile */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		BA6435C445A0B2ECC944E2840EAFC268 /* Pods-PathKitTests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-PathKitTests-umbrella.h"; sourceTree = "<group>"; };
+		BCC426787E31F1AE25DDC9F173DA8CA3 /* CatchingFire.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CatchingFire.swift; path = src/CatchingFire.swift; sourceTree = "<group>"; };
+		C26197DCE8B2ED913548810EFD3F7E82 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		DD4540E259A1780FFEB9F0196DFE36B3 /* Pods-PathKitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-PathKitTests.release.xcconfig"; sourceTree = "<group>"; };
+		E42D425B5FC4633B609285A4BCC84C37 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E4D7473761DD2BCC5A8C0F53D82BBA47 /* CatchingFire-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CatchingFire-umbrella.h"; sourceTree = "<group>"; };
+		E560DC36EF5BCEC0F2DF41EC5A7F8DD9 /* CatchingFire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CatchingFire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F79EF6F581AF8DEAA458341CAEEA49A5 /* Pods-PathKitTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-PathKitTests-acknowledgements.markdown"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0758A7DF2A53E7382A60D69F37544A8C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C848F63DCDA9B56034FF8C8B58FEF6AB /* Cocoa.framework in Frameworks */,
+				CFF091C86D2B9CCD50EA115EE01BE304 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FE002EA7621D739A9225D6299AA2275B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFE051093487DAE7105A00AF7907EF67 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1E2857EEF8D1E8C384FE2D82051855E2 /* OS X */ = {
+			isa = PBXGroup;
+			children = (
+				5B228C1A62B4D45AD5159E7B8E7169ED /* Cocoa.framework */,
+				C26197DCE8B2ED913548810EFD3F7E82 /* XCTest.framework */,
+			);
+			name = "OS X";
+			sourceTree = "<group>";
+		};
+		73FAF2E9371A2AEC94FC779092490560 /* Pods-PathKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				E42D425B5FC4633B609285A4BCC84C37 /* Info.plist */,
+				8C250CA37B37FA02AC8E7653A06F6E2F /* Pods-PathKitTests.modulemap */,
+				F79EF6F581AF8DEAA458341CAEEA49A5 /* Pods-PathKitTests-acknowledgements.markdown */,
+				63C9BD7BA4070E01A7492505E64A5D3E /* Pods-PathKitTests-acknowledgements.plist */,
+				9680C8CCB233624264FDC4DFF403D294 /* Pods-PathKitTests-dummy.m */,
+				22C0111171DA31162267FDB2B03DC987 /* Pods-PathKitTests-frameworks.sh */,
+				860C16180972564291C49ED8A66EEB83 /* Pods-PathKitTests-resources.sh */,
+				BA6435C445A0B2ECC944E2840EAFC268 /* Pods-PathKitTests-umbrella.h */,
+				01702BE714BCBF92F9E52984A0C2A5B5 /* Pods-PathKitTests.debug.xcconfig */,
+				DD4540E259A1780FFEB9F0196DFE36B3 /* Pods-PathKitTests.release.xcconfig */,
+			);
+			name = "Pods-PathKitTests";
+			path = "Target Support Files/Pods-PathKitTests";
+			sourceTree = "<group>";
+		};
+		7DB346D0F39D3F0E887471402A8071AB = {
+			isa = PBXGroup;
+			children = (
+				BA6428E9F66FD5A23C0A2E06ED26CD2F /* Podfile */,
+				D648CE86F139C7CCFD55D5B8A03BE74B /* Frameworks */,
+				D5B6D56608BDD5F12432AA1C7EEF09AF /* Pods */,
+				CCA510CFBEA2D207524CDA0D73C3B561 /* Products */,
+				A01B3B3D011228DD72D383F50B0F97EC /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		7F68C314F47E5B8523C677477D5E9C79 /* CatchingFire */ = {
+			isa = PBXGroup;
+			children = (
+				BCC426787E31F1AE25DDC9F173DA8CA3 /* CatchingFire.swift */,
+				FD544B72F4C52ED20CEACD832751FFB8 /* Support Files */,
+			);
+			path = CatchingFire;
+			sourceTree = "<group>";
+		};
+		A01B3B3D011228DD72D383F50B0F97EC /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				73FAF2E9371A2AEC94FC779092490560 /* Pods-PathKitTests */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		CCA510CFBEA2D207524CDA0D73C3B561 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E560DC36EF5BCEC0F2DF41EC5A7F8DD9 /* CatchingFire.framework */,
+				994BA01DD7BB262D891D1D33ACDCFA2A /* Pods_PathKitTests.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D5B6D56608BDD5F12432AA1C7EEF09AF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7F68C314F47E5B8523C677477D5E9C79 /* CatchingFire */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		D648CE86F139C7CCFD55D5B8A03BE74B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1E2857EEF8D1E8C384FE2D82051855E2 /* OS X */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FD544B72F4C52ED20CEACD832751FFB8 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				4F60C457E406D4AD1F24C6700E8DEB05 /* CatchingFire.modulemap */,
+				0C68FCF15E3017E29E5A60E48CC87B5B /* CatchingFire.xcconfig */,
+				61DC47E98B9FB9C3AA1D32BFDDBF2673 /* CatchingFire-Private.xcconfig */,
+				603802CAC3327CD22481FE851CBBEEC4 /* CatchingFire-dummy.m */,
+				422828DBB60A03A4335035141CE9668A /* CatchingFire-prefix.pch */,
+				E4D7473761DD2BCC5A8C0F53D82BBA47 /* CatchingFire-umbrella.h */,
+				849358E0EC6EBEB05F99E721842901DC /* Info.plist */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/CatchingFire";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		AB738B31348C2678D0B6F0D9981BC101 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F79A2BADC0014A22177CF9FA7E571EE7 /* CatchingFire-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAA41EC867D09BD018F75E400F5FD72B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				32A4CE49ADE210C81BFBAD55F08C4AC6 /* Pods-PathKitTests-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		0FB3679E3D17AF691D100C85B384CA70 /* Pods-PathKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0DF7AB675AE46FC671AFE8A636CB26E8 /* Build configuration list for PBXNativeTarget "Pods-PathKitTests" */;
+			buildPhases = (
+				2E518C80195B8EA25CAC98BE6F39AEB5 /* Sources */,
+				FE002EA7621D739A9225D6299AA2275B /* Frameworks */,
+				CAA41EC867D09BD018F75E400F5FD72B /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8D0B113F41A22AB2E554A430297C7CBE /* PBXTargetDependency */,
+			);
+			name = "Pods-PathKitTests";
+			productName = "Pods-PathKitTests";
+			productReference = 994BA01DD7BB262D891D1D33ACDCFA2A /* Pods_PathKitTests.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		5D37234EA02AF134040F6D92B7D3006A /* CatchingFire */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C00C0C88ACE92BDACD942E5BA62DC419 /* Build configuration list for PBXNativeTarget "CatchingFire" */;
+			buildPhases = (
+				4941E761F173082533B3662BEF575FB9 /* Sources */,
+				0758A7DF2A53E7382A60D69F37544A8C /* Frameworks */,
+				AB738B31348C2678D0B6F0D9981BC101 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CatchingFire;
+			productName = CatchingFire;
+			productReference = E560DC36EF5BCEC0F2DF41EC5A7F8DD9 /* CatchingFire.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D41D8CD98F00B204E9800998ECF8427E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
+			};
+			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7DB346D0F39D3F0E887471402A8071AB;
+			productRefGroup = CCA510CFBEA2D207524CDA0D73C3B561 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5D37234EA02AF134040F6D92B7D3006A /* CatchingFire */,
+				0FB3679E3D17AF691D100C85B384CA70 /* Pods-PathKitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2E518C80195B8EA25CAC98BE6F39AEB5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2DC49DDE75C002FE3FDF2537298D78FA /* Pods-PathKitTests-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4941E761F173082533B3662BEF575FB9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F89077171D750113E6EFAF3AB66A16B1 /* CatchingFire-dummy.m in Sources */,
+				D73B5B44679EDFC719EC47C8C3688014 /* CatchingFire.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8D0B113F41A22AB2E554A430297C7CBE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CatchingFire;
+			target = 5D37234EA02AF134040F6D92B7D3006A /* CatchingFire */;
+			targetProxy = 27FC24870932141800D886A9D51C5975 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		4AEAE8A1195A476E9BAFE4D52EF4692D /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 61DC47E98B9FB9C3AA1D32BFDDBF2673 /* CatchingFire-Private.xcconfig */;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 0.2.0;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 0.2.0;
+				DYLIB_CURRENT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_VERSION = A;
+				GCC_PREFIX_HEADER = "Target Support Files/CatchingFire/CatchingFire-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/CatchingFire/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MODULEMAP_FILE = "Target Support Files/CatchingFire/CatchingFire.modulemap";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = CatchingFire;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		52D4ECB745D1C035F94BD060EE7F6605 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+		6DABC6A546B057DB400EC78C985E0AC8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 61DC47E98B9FB9C3AA1D32BFDDBF2673 /* CatchingFire-Private.xcconfig */;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 0.2.0;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 0.2.0;
+				DYLIB_CURRENT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_VERSION = A;
+				GCC_PREFIX_HEADER = "Target Support Files/CatchingFire/CatchingFire-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/CatchingFire/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MODULEMAP_FILE = "Target Support Files/CatchingFire/CatchingFire.modulemap";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = CatchingFire;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		A070F153A04DD66F4E492261894B37FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = "RELEASE=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = "${SRCROOT}/../build";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BC22A131966858F05B415C97C0924023 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DD4540E259A1780FFEB9F0196DFE36B3 /* Pods-PathKitTests.release.xcconfig */;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "Target Support Files/Pods-PathKitTests/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MODULEMAP_FILE = "Target Support Files/Pods-PathKitTests/Pods-PathKitTests.modulemap";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = Pods_PathKitTests;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		EAD7CE894883F03048331400FEF190FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 01702BE714BCBF92F9E52984A0C2A5B5 /* Pods-PathKitTests.debug.xcconfig */;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "Target Support Files/Pods-PathKitTests/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MODULEMAP_FILE = "Target Support Files/Pods-PathKitTests/Pods-PathKitTests.modulemap";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = Pods_PathKitTests;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0DF7AB675AE46FC671AFE8A636CB26E8 /* Build configuration list for PBXNativeTarget "Pods-PathKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EAD7CE894883F03048331400FEF190FC /* Debug */,
+				BC22A131966858F05B415C97C0924023 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				52D4ECB745D1C035F94BD060EE7F6605 /* Debug */,
+				A070F153A04DD66F4E492261894B37FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C00C0C88ACE92BDACD942E5BA62DC419 /* Build configuration list for PBXNativeTarget "CatchingFire" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6DABC6A546B057DB400EC78C985E0AC8 /* Debug */,
+				4AEAE8A1195A476E9BAFE4D52EF4692D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+}
