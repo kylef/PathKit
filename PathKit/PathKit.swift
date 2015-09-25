@@ -446,8 +446,8 @@ extension Path {
     ///
     /// - Returns: the contents of the file at the specified path.
     ///
-    public func read() -> NSData? {
-        return Path.fileManager.contentsAtPath(self.path)
+    public func read() throws -> NSData {
+        return try NSData(contentsOfFile: path, options: NSDataReadingOptions(rawValue: 0))
     }
 
     /// Reads the file contents and encoded its bytes to string applying the given encoding.
@@ -457,12 +457,8 @@ extension Path {
     ///
     /// - Returns: the contents of the file at the specified path as string.
     ///
-    public func read(encoding: NSStringEncoding = NSUTF8StringEncoding) -> String? {
-        if let data: NSData = read() {
-            return NSString(data: data, encoding: encoding) as? String
-        }
-
-        return nil
+    public func read(encoding: NSStringEncoding = NSUTF8StringEncoding) throws -> String {
+      return try NSString(contentsOfFile: path, encoding: encoding) as String
     }
 
     /// Write a file.

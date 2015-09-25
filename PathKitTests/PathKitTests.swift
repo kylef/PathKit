@@ -285,24 +285,41 @@ class PathKitTests: XCTestCase {
 
     func testReadData() {
         let path = Path("/etc/manpaths")
-        let contents: NSData = path.read()!
-        let string = NSString(data:contents, encoding: NSUTF8StringEncoding)!
+        let contents:NSData? = AssertNoThrow(try path.read())
+        let string = NSString(data:contents!, encoding: NSUTF8StringEncoding)!
 
         XCTAssertTrue(string.hasPrefix("/usr/share/man"))
     }
 
+    func testReadNonExistingData() {
+        let path = Path("/tmp/pathkit-testing")
+
+        do {
+            try path.read() as NSData
+            XCTFail("Error was not failed from `read()`")
+        } catch let error as NSError {
+            XCTAssertEqual(error.domain, NSCocoaErrorDomain)
+            XCTAssertEqual(error.code, NSFileReadNoSuchFileError)
+        }
+    }
+
     func testReadString() {
         let path = Path("/etc/manpaths")
-        let contents: String = path.read()!
+        let contents:String? = try? path.read()
 
-        XCTAssertTrue(contents.hasPrefix("/usr/share/man"))
+        XCTAssertTrue(contents?.hasPrefix("/usr/share/man") ?? false)
     }
     
     func testReadNonExistingString() {
         let path = Path("/tmp/pathkit-testing")
-        let contents: String? = path.read()
-        
-        XCTAssertEqual(contents, nil)
+
+        do {
+            try path.read() as String
+            XCTFail("Error was not failed from `read()`")
+        } catch let error as NSError {
+            XCTAssertEqual(error.domain, NSCocoaErrorDomain)
+            XCTAssertEqual(error.code, NSFileReadNoSuchFileError)
+        }
     }
 
     // MARK: Writing
@@ -314,7 +331,7 @@ class PathKitTests: XCTestCase {
         XCTAssertFalse(path.exists)
 
         XCTAssertTrue(path.write(data!))
-        XCTAssertEqual(path.read(), "Hi")
+        XCTAssertEqual(try? path.read(), "Hi")
         AssertNoThrow(try path.delete())
     }
 
@@ -324,7 +341,7 @@ class PathKitTests: XCTestCase {
         XCTAssertFalse(path.exists)
 
         XCTAssertTrue(path.write("Hi"))
-        XCTAssertEqual(path.read(), "Hi")
+        XCTAssertEqual(try? path.read(), "Hi")
         AssertNoThrow(try path.delete())
     }
 
