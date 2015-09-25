@@ -296,7 +296,7 @@ class PathKitTests: XCTestCase {
 
         do {
             try path.read() as NSData
-            XCTFail("Error was not failed from `read()`")
+            XCTFail("Error was not thrown from `read()`")
         } catch let error as NSError {
             XCTAssertEqual(error.domain, NSCocoaErrorDomain)
             XCTAssertEqual(error.code, NSFileReadNoSuchFileError)
@@ -315,7 +315,7 @@ class PathKitTests: XCTestCase {
 
         do {
             try path.read() as String
-            XCTFail("Error was not failed from `read()`")
+            XCTFail("Error was not thrown from `read()`")
         } catch let error as NSError {
             XCTAssertEqual(error.domain, NSCocoaErrorDomain)
             XCTAssertEqual(error.code, NSFileReadNoSuchFileError)
@@ -330,9 +330,22 @@ class PathKitTests: XCTestCase {
 
         XCTAssertFalse(path.exists)
 
-        XCTAssertTrue(path.write(data!))
+        AssertNoThrow(try path.write(data!))
         XCTAssertEqual(try? path.read(), "Hi")
         AssertNoThrow(try path.delete())
+    }
+
+    func testWriteDataThrowsOnFailure() {
+      let path = Path("/")
+      let data = "Hi".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+
+      do {
+          try path.write(data!)
+          XCTFail("Error was not thrown from `write()`")
+      } catch let error as NSError {
+          XCTAssertEqual(error.domain, NSCocoaErrorDomain)
+          XCTAssertEqual(error.code, NSFileWriteNoPermissionError)
+      }
     }
 
     func testWriteString() {
@@ -340,9 +353,21 @@ class PathKitTests: XCTestCase {
 
         XCTAssertFalse(path.exists)
 
-        XCTAssertTrue(path.write("Hi"))
+        AssertNoThrow(try path.write("Hi"))
         XCTAssertEqual(try? path.read(), "Hi")
         AssertNoThrow(try path.delete())
+    }
+
+    func testWriteStringThrowsOnFailure() {
+      let path = Path("/")
+
+      do {
+          try path.write("hi")
+          XCTFail("Error was not thrown from `write()`")
+      } catch let error as NSError {
+          XCTAssertEqual(error.domain, NSCocoaErrorDomain)
+          XCTAssertEqual(error.code, NSFileWriteNoPermissionError)
+      }
     }
 
     // MARK: Parent

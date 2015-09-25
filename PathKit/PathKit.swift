@@ -468,8 +468,8 @@ extension Path {
     ///
     /// - Parameter data: the contents to write to file.
     ///
-    public func write(data: NSData) -> Bool {
-        return data.writeToFile(normalize().path, atomically: true)
+    public func write(data: NSData) throws {
+        try data.writeToFile(normalize().path, options: .DataWritingAtomic)
     }
 
     /// Reads the file.
@@ -484,12 +484,8 @@ extension Path {
     ///
     /// - Returns: the contents of the file at the specified path as string.
     ///
-    public func write(string: String, encoding: NSStringEncoding = NSUTF8StringEncoding) -> Bool {
-        if let data = string.dataUsingEncoding(encoding, allowLossyConversion: true) {
-            return write(data)
-        }
-
-        return false
+    public func write(string: String, encoding: NSStringEncoding = NSUTF8StringEncoding) throws {
+        try string.writeToFile(normalize().path, atomically: true, encoding: encoding)
     }
 }
 
