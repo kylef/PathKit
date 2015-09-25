@@ -633,7 +633,7 @@ internal func +(lhs: String, rhs: String) -> Path {
 
         // Get rid of trailing "/" at the left side
         if lSlice.count > 1 && lSlice.last == Path.separator {
-            lSlice.popLast()
+            lSlice.removeLast()
         }
 
         // Advance after the first relevant "."
@@ -642,11 +642,13 @@ internal func +(lhs: String, rhs: String) -> Path {
 
         // Eats up trailing components of the left and leading ".." of the right side
         while lSlice.last != ".." && rSlice.first == ".." {
-            if lSlice.count > 1 || lSlice.first != Path.separator {
+            if (lSlice.count > 1 || lSlice.first != Path.separator) && !lSlice.isEmpty {
                 // A leading "/" is never popped
-                lSlice.popLast()
+                lSlice.removeLast()
             }
-            rSlice.popFirst()
+            if !rSlice.isEmpty {
+              rSlice.removeFirst()
+            }
 
             switch (lSlice.isEmpty, rSlice.isEmpty) {
             case (true, _):
