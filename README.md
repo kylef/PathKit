@@ -98,11 +98,17 @@ path.read()
 path.write("Hello World!")
 ```
 
+#### Glob
+
+```swift
+let paths = Path.glob("*.swift")
+```
+
 ### Contact
 
 Kyle Fuller
 
-- http://kylefuller.co.uk
+- https://fuller.li
 - https://twitter.com/kylefuller
 
 ### License

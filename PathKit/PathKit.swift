@@ -1,6 +1,8 @@
 // PathKit - Effortless path operations
 
+import Darwin
 import Foundation
+
 
 /// Represents a filesystem path.
 public struct Path {
@@ -521,6 +523,38 @@ extension Path {
             self + Path($0)
         }
     }
+}
+
+
+// MARK: Globbing
+
+extension Path {
+  public static func glob(pattern: String) -> [Path] {
+    var gt = glob_t()
+    let cPattern = strdup(pattern)
+    defer {
+      globfree(&gt)
+      free(cPattern)
+    }
+
+    let flags = GLOB_TILDE | GLOB_BRACE | GLOB_MARK
+    if Darwin.glob(cPattern, flags, nil, &gt) == 0 {
+      return (0..<Int(gt.gl_matchc)).flatMap { index in
+        if let path = String.fromCString(gt.gl_pathv[index]) {
+          return Path(path)
+        }
+
+        return nil
+      }
+    }
+
+    // GLOB_NOMATCH
+    return []
+  }
+
+  public func glob(pattern: String) -> [Path] {
+    return Path.glob((self + pattern).description)
+  }
 }
 
 
