@@ -375,7 +375,7 @@ extension Path {
   /// - Parameter closure: A closure to be executed while the current directory is configured to
   ///   the path.
   ///
-  public func chdir(closure: () -> ()) {
+  public func chdir(@noescape closure: () -> ()) {
     let previous = Path.current
     Path.current = self
     closure()
@@ -389,7 +389,7 @@ extension Path {
   /// - Parameter closure: A closure to be executed while the current directory is configured to
   ///   the path.
   ///
-  public func chdir(closure: () throws -> ()) throws {
+  public func chdir(@noescape closure: () throws -> ()) throws {
     let previous = Path.current
     Path.current = self
     do {
