@@ -371,35 +371,16 @@ extension Path {
   /// Changes the current working directory of the process to the path during the execution of the
   /// given block.
   ///
-  /// - Note: The original working directory is restored when the block returns.
-  /// - Parameter closure: A closure to be executed while the current directory is configured to
-  ///   the path.
-  ///
-  public func chdir(@noescape closure: () -> ()) {
-    let previous = Path.current
-    Path.current = self
-    closure()
-    Path.current = previous
-  }
-
-  /// Changes the current working directory of the process to the path during the execution of the
-  /// given block.
-  ///
   /// - Note: The original working directory is restored when the block returns or throws.
   /// - Parameter closure: A closure to be executed while the current directory is configured to
   ///   the path.
   ///
-  public func chdir(@noescape closure: () throws -> ()) throws {
+  public func chdir(@noescape closure: () throws -> ()) rethrows {
     let previous = Path.current
     Path.current = self
-    do {
-      try closure()
-    } catch let error {
-      Path.current = previous
-      throw error
+    defer { Path.current = previous }
+    try closure()
     }
-    Path.current = previous
-  }
 }
 
 
