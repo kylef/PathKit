@@ -63,7 +63,7 @@ extension Path : StringLiteralConvertible {
 
 extension Path : CustomStringConvertible {
   public var description: String {
-    return self.path
+    return path
   }
 }
 
@@ -115,7 +115,7 @@ extension Path {
   ///   representation.
   ///
   public func normalize() -> Path {
-    return Path((self.path as NSString).stringByStandardizingPath)
+    return Path((path as NSString).stringByStandardizingPath)
   }
 
   /// De-normalizes the path, by replacing the current user home directory with "~".
@@ -124,7 +124,7 @@ extension Path {
   ///   representation.
   ///
   public func abbreviate() -> Path {
-    return Path((self.path as NSString).stringByAbbreviatingWithTildeInPath)
+    return Path((path as NSString).stringByAbbreviatingWithTildeInPath)
   }
 
   /// Returns the path of the item pointed to by a symbolic link.
@@ -151,7 +151,7 @@ extension Path {
   /// - Returns: the last path component
   ///
   public var lastComponent: String {
-    return (path as NSString).lastPathComponent
+    return components.last ?? path
   }
 
   /// The last path component without file extension
@@ -167,10 +167,15 @@ extension Path {
   /// Splits the string representation on the directory separator.
   /// Absolute paths remain the leading slash as first component.
   ///
-  /// - Returns: all path components
+  /// - Returns: all path components21
   ///
   public var components: [String] {
-    return (path as NSString).pathComponents
+    var components = path.componentsSeparatedByString(Path.separator)
+    if components.first == "" {
+      components.removeFirst()
+      components.insert("/", atIndex: 0)
+    }
+    return components
   }
 
   /// The file extension behind the last dot of the last component.
@@ -191,13 +196,18 @@ extension Path {
 // MARK: File Info
 
 extension Path {
+  private var stats: stat {
+    var stats = stat()
+    stat(path, &stats)
+    return stats
+  }
   /// Test whether a file or directory exists at a specified path
   ///
   /// - Returns: `false` iff the path doesn't exist on disk or its existence could not be
   ///   determined
   ///
   public var exists: Bool {
-    return Path.fileManager.fileExistsAtPath(self.path)
+    return access(path, F_OK) == 0
   }
 
   /// Test whether a path is a directory.
@@ -207,11 +217,7 @@ extension Path {
   ///   could not be determined
   ///
   public var isDirectory: Bool {
-    var directory = ObjCBool(false)
-    guard Path.fileManager.fileExistsAtPath(normalize().path, isDirectory: &directory) else {
-      return false
-    }
-    return directory.boolValue
+    return (stats.st_mode & S_IFDIR) > 0
   }
 
   /// Test whether a path is a regular file.
@@ -222,11 +228,7 @@ extension Path {
   ///   could not be determined
   ///
   public var isFile: Bool {
-    var directory = ObjCBool(false)
-    guard Path.fileManager.fileExistsAtPath(normalize().path, isDirectory: &directory) else {
-      return false
-    }
-    return !directory.boolValue
+    return (stats.st_mode & S_IFREG) > 0
   }
 
   /// Test whether a path is a symbolic link.
@@ -235,12 +237,7 @@ extension Path {
   ///   or its existence could not be determined
   ///
   public var isSymlink: Bool {
-    do {
-      let _ = try Path.fileManager.destinationOfSymbolicLinkAtPath(path)
-      return true
-    } catch {
-      return false
-    }
+    return (stats.st_mode & S_IFLNK) > 0
   }
 
   /// Test whether a path is readable
@@ -250,7 +247,7 @@ extension Path {
   ///   file could not be determined.
   ///
   public var isReadable: Bool {
-    return Path.fileManager.isReadableFileAtPath(self.path)
+    return access(path, R_OK) == 0
   }
 
   /// Test whether a path is writeable
@@ -260,7 +257,7 @@ extension Path {
   ///   file could not be determined.
   ///
   public var isWritable: Bool {
-    return Path.fileManager.isWritableFileAtPath(self.path)
+    return access(path, W_OK) == 0
   }
 
   /// Test whether a path is executable
@@ -270,7 +267,7 @@ extension Path {
   ///   file could not be determined.
   ///
   public var isExecutable: Bool {
-    return Path.fileManager.isExecutableFileAtPath(self.path)
+    return access(path, X_OK) == 0
   }
 
   /// Test whether a path is deletable
@@ -280,7 +277,7 @@ extension Path {
   ///   file could not be determined.
   ///
   public var isDeletable: Bool {
-    return Path.fileManager.isDeletableFileAtPath(self.path)
+    return isWritable
   }
 }
 
@@ -294,8 +291,8 @@ extension Path {
   ///   This method also fails if any of the intermediate path elements corresponds to a file and
   ///   not a directory.
   ///
-  public func mkdir() throws -> () {
-    try Path.fileManager.createDirectoryAtPath(self.path, withIntermediateDirectories: false, attributes: nil)
+  public func mkdir() throws {
+    try Path.fileManager.createDirectoryAtPath(path, withIntermediateDirectories: false, attributes: nil)
   }
 
   /// Create the directory and any intermediate parent directories that do not exist.
@@ -303,8 +300,8 @@ extension Path {
   /// - Note: This method fails if any of the intermediate path elements corresponds to a file and
   ///   not a directory.
   ///
-  public func mkpath() throws -> () {
-    try Path.fileManager.createDirectoryAtPath(self.path, withIntermediateDirectories: true, attributes: nil)
+  public func mkpath() throws {
+    try Path.fileManager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
   }
 
   /// Delete the file or directory.
@@ -312,8 +309,10 @@ extension Path {
   /// - Note: If the path specifies a directory, the contents of that directory are recursively
   ///   removed.
   ///
-  public func delete() throws -> () {
-    try Path.fileManager.removeItemAtPath(self.path)
+  public func delete() throws {
+    if unlink(path) != 0 {
+      // TODO throw error
+    }
   }
 
   /// Move the file or directory to a new location synchronously.
@@ -321,8 +320,10 @@ extension Path {
   /// - Parameter destination: The new path. This path must include the name of the file or
   ///   directory in its new location.
   ///
-  public func move(destination: Path) throws -> () {
-    try Path.fileManager.moveItemAtPath(self.path, toPath: destination.path)
+  public func move(destination: Path) throws {
+    if rename(path, destination.path) != 0 {
+      // TODO throw error
+    }
   }
 
   /// Copy the file or directory to a new location synchronously.
@@ -330,24 +331,24 @@ extension Path {
   /// - Parameter destination: The new path. This path must include the name of the file or
   ///   directory in its new location.
   ///
-  public func copy(destination: Path) throws -> () {
-    try Path.fileManager.copyItemAtPath(self.path, toPath: destination.path)
+  public func copy(destination: Path) throws {
+    try Path.fileManager.copyItemAtPath(path, toPath: destination.path)
   }
 
   /// Creates a hard link at a new destination.
   ///
   /// - Parameter destination: The location where the link will be created.
   ///
-  public func link(destination: Path) throws -> () {
-    try Path.fileManager.linkItemAtPath(self.path, toPath: destination.path)
+  public func link(destination: Path) throws {
+    try Path.fileManager.linkItemAtPath(path, toPath: destination.path)
   }
 
   /// Creates a symbolic link at a new destination.
   ///
   /// - Parameter destintation: The location where the link will be created.
   ///
-  public func symlink(destination: Path) throws -> () {
-    try Path.fileManager.createSymbolicLinkAtPath(self.path, withDestinationPath: destination.path)
+  public func symlink(destination: Path) throws {
+    try Path.fileManager.createSymbolicLinkAtPath(path, withDestinationPath: destination.path)
   }
 }
 
@@ -361,10 +362,12 @@ extension Path {
   ///
   public static var current: Path {
     get {
-      return self.init(Path.fileManager.currentDirectoryPath)
+      let cwd = getcwd(nil, 0)
+      defer { free(cwd) }
+      return self.init(String.fromCString(cwd) ?? "")
     }
     set {
-      Path.fileManager.changeCurrentDirectoryPath(newValue.description)
+      Darwin.chdir(newValue.path)
     }
   }
 
@@ -534,7 +537,7 @@ extension Path {
   }
 
   public func glob(pattern: String) -> [Path] {
-    return Path.glob((self + pattern).description)
+    return Path.glob((self + pattern).path)
   }
 }
 
