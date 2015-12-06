@@ -1,0 +1,6 @@
+language: objective-c
+osx_image: xcode7.1
+script:
+- set -o pipefail
+- xcodebuild -workspace PathKit.xcworkspace -scheme PathKit test -sdk macosx | xcpretty -c
+- pod lib lint
