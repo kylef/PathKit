@@ -26,7 +26,7 @@ public struct Path {
   }
 
   /// Create a Path by joining multiple path components together
-  public init<S : CollectionType where S.Generator.Element == String>(let components: S) {
+  public init<S : CollectionType where S.Generator.Element == String>(components: S) {
     if components.isEmpty {
       path = "."
     } else if components.first == Path.separator && components.count > 1 {
