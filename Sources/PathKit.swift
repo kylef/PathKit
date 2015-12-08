@@ -1,6 +1,15 @@
 // PathKit - Effortless path operations
 
+#if os(Linux)
+import Glibc
+
+let system_glob = Glibc.glob
+#else
 import Darwin
+
+let system_glob = Darwin.glob
+#endif
+
 import Foundation
 
 
@@ -31,7 +40,13 @@ public struct Path {
       path = "."
     } else if components.first == Path.separator && components.count > 1 {
       let p = components.joinWithSeparator(Path.separator)
+#if os(Linux)
+      let index = p.startIndex.distanceTo(p.startIndex.successor())
+      path = NSString(string: p).substringFromIndex(index)
+#else
       path = p.substringFromIndex(p.startIndex.successor())
+#endif
+
     } else {
       path = components.joinWithSeparator(Path.separator)
     }
@@ -115,7 +130,7 @@ extension Path {
   ///   representation.
   ///
   public func normalize() -> Path {
-    return Path((self.path as NSString).stringByStandardizingPath)
+    return Path(NSString(string: self.path).stringByStandardizingPath)
   }
 
   /// De-normalizes the path, by replacing the current user home directory with "~".
@@ -124,7 +139,12 @@ extension Path {
   ///   representation.
   ///
   public func abbreviate() -> Path {
-    return Path((self.path as NSString).stringByAbbreviatingWithTildeInPath)
+#if os(Linux)
+    // TODO: actually de-normalize the path
+    return self
+#else
+    return Path(NSString(string: self.path).stringByAbbreviatingWithTildeInPath)
+#endif
   }
 
   /// Returns the path of the item pointed to by a symbolic link.
@@ -151,7 +171,7 @@ extension Path {
   /// - Returns: the last path component
   ///
   public var lastComponent: String {
-    return (path as NSString).lastPathComponent
+    return NSString(string: path).lastPathComponent
   }
 
   /// The last path component without file extension
@@ -161,7 +181,7 @@ extension Path {
   /// - Returns: the last path component without file extension
   ///
   public var lastComponentWithoutExtension: String {
-    return (lastComponent as NSString).stringByDeletingPathExtension
+    return NSString(string: lastComponent).stringByDeletingPathExtension
   }
 
   /// Splits the string representation on the directory separator.
@@ -170,7 +190,7 @@ extension Path {
   /// - Returns: all path components
   ///
   public var components: [String] {
-    return (path as NSString).pathComponents
+    return NSString(string: path).pathComponents
   }
 
   /// The file extension behind the last dot of the last component.
@@ -178,7 +198,7 @@ extension Path {
   /// - Returns: the file extension
   ///
   public var `extension`: String? {
-    let pathExtension = (path as NSString).pathExtension
+    let pathExtension = NSString(string: path).pathExtension
     if  pathExtension.isEmpty {
       return nil
     }
@@ -391,13 +411,21 @@ extension Path {
   ///   depending on the platform.
   ///
   public static var home: Path {
+#if os(Linux)
+    return Path(NSProcessInfo.processInfo().environment["HOME"] ?? "/")
+#else
     return Path(NSHomeDirectory())
+#endif
   }
 
   /// - Returns: the path of the temporary directory for the current user.
   ///
   public static var temporary: Path {
+#if os(Linux)
+    return Path(NSProcessInfo.processInfo().environment["TMP"] ?? "/tmp")
+#else
     return Path(NSTemporaryDirectory())
+#endif
   }
 
   /// - Returns: the path of a temporary directory unique for the process.
@@ -441,7 +469,7 @@ extension Path {
   /// - Returns: the contents of the file at the specified path as string.
   ///
   public func read(encoding: NSStringEncoding = NSUTF8StringEncoding) throws -> String {
-    return try NSString(contentsOfFile: path, encoding: encoding) as String
+    return try NSString(contentsOfFile: path, encoding: encoding).substringFromIndex(0) as String
   }
 
   /// Write a file.
@@ -468,7 +496,7 @@ extension Path {
   /// - Returns: the contents of the file at the specified path as string.
   ///
   public func write(string: String, encoding: NSStringEncoding = NSUTF8StringEncoding) throws {
-    try string.writeToFile(normalize().path, atomically: true, encoding: encoding)
+    try NSString(string: string).writeToFile(normalize().path, atomically: true, encoding: encoding)
   }
 }
 
@@ -519,8 +547,13 @@ extension Path {
     }
 
     let flags = GLOB_TILDE | GLOB_BRACE | GLOB_MARK
-    if Darwin.glob(cPattern, flags, nil, &gt) == 0 {
-      return (0..<Int(gt.gl_matchc)).flatMap { index in
+    if system_glob(cPattern, flags, nil, &gt) == 0 {
+#if os(Linux)
+      let matchc = gt.gl_pathc
+#else
+      let matchc = gt.gl_matchc
+#endif
+      return (0..<Int(matchc)).flatMap { index in
         if let path = String.fromCString(gt.gl_pathv[index]) {
           return Path(path)
         }
@@ -635,8 +668,8 @@ internal func +(lhs: String, rhs: String) -> Path {
     // Absolute paths replace relative paths
     return Path(rhs)
   } else {
-    var lSlice = (lhs as NSString).pathComponents.fullSlice
-    var rSlice = (rhs as NSString).pathComponents.fullSlice
+    var lSlice = NSString(string: lhs).pathComponents.fullSlice
+    var rSlice = NSString(string: rhs).pathComponents.fullSlice
 
     // Get rid of trailing "/" at the left side
     if lSlice.count > 1 && lSlice.last == Path.separator {
