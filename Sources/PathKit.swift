@@ -116,8 +116,9 @@ extension Path {
   /// - Returns: the absolute path in the actual filesystem
   ///
   public func absolute() -> Path {
-    if isAbsolute {
-      return normalize()
+    let expandedPath = Path(NSString(string: self.path).stringByExpandingTildeInPath)
+    if expandedPath.isAbsolute {
+        return expandedPath.normalize()
     }
 
     return (Path.current + self).normalize()
