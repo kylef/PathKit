@@ -46,37 +46,37 @@ public struct Path {
     /// Create a Path by joining multiple path components together
     #if !swift(>=3.0)
     public init<S : Collection where S.Generator.Element == String>(components: S) {
-        if components.isEmpty {
-            path = "."
-        } else if components.first == Path.separator && components.count > 1 {
-            let p = components.joinWithSeparator(Path.separator)
-            #if os(Linux)
-                let index = p.startIndex.distanceTo(p.startIndex.successor())
-                path = NSString(string: p).substringFromIndex(index)
-            #else
-                path = p.substringFromIndex(p.startIndex.successor())
-            #endif
-            
-        } else {
-            path = components.joinWithSeparator(Path.separator)
-        }
-    }
-    #else
-    public init<S : Collection where S.Iterator.Element == String>(components: S) {
     if components.isEmpty {
     path = "."
     } else if components.first == Path.separator && components.count > 1 {
-    let p = components.joined(separator: Path.separator)
+    let p = components.joinWithSeparator(Path.separator)
     #if os(Linux)
     let index = p.startIndex.distanceTo(p.startIndex.successor())
     path = NSString(string: p).substringFromIndex(index)
     #else
-        path = p.substring(from: p.startIndex.successor())
+    path = p.substringFromIndex(p.startIndex.successor())
     #endif
     
     } else {
-    path = components.joined(separator: Path.separator)
+    path = components.joinWithSeparator(Path.separator)
     }
+    }
+    #else
+    public init<S : Collection where S.Iterator.Element == String>(components: S) {
+        if components.isEmpty {
+            path = "."
+        } else if components.first == Path.separator && components.count > 1 {
+            let p = components.joined(separator: Path.separator)
+            #if os(Linux)
+                let index = p.startIndex.distanceTo(p.startIndex.successor())
+                path = NSString(string: p).substringFromIndex(index)
+            #else
+                path = p.substring(from: p.startIndex.successor())
+            #endif
+            
+        } else {
+            path = components.joined(separator: Path.separator)
+        }
     }
     
     #endif
@@ -158,11 +158,11 @@ extension Path {
     ///   representation.
     ///
     public func normalize() -> Path {
-#if !swift(>=3.0)
-        return Path(NSString(string: self.path).stringByStandardizingPath)
-#else
-        return Path(NSString(string: self.path).standardizingPath)
-#endif
+        #if !swift(>=3.0)
+            return Path(NSString(string: self.path).stringByStandardizingPath)
+        #else
+            return Path(NSString(string: self.path).standardizingPath)
+        #endif
     }
     
     /// De-normalizes the path, by replacing the current user home directory with "~".
@@ -176,10 +176,10 @@ extension Path {
             return self
         #else
             #if !swift(>=3.0)
-            return Path(NSString(string: self.path).stringByAbbreviatingWithTildeInPath)
+                return Path(NSString(string: self.path).stringByAbbreviatingWithTildeInPath)
             #else
-            return Path(NSString(string: self.path).abbreviatingWithTildeInPath)
-           #endif
+                return Path(NSString(string: self.path).abbreviatingWithTildeInPath)
+            #endif
         #endif
     }
     
@@ -222,9 +222,9 @@ extension Path {
     ///
     public var lastComponentWithoutExtension: String {
         #if !swift(>=3.0)
-        return NSString(string: lastComponent).stringByDeletingPathExtension
+            return NSString(string: lastComponent).stringByDeletingPathExtension
         #else
-        return NSString(string: lastComponent).deletingPathExtension
+            return NSString(string: lastComponent).deletingPathExtension
         #endif
     }
     
@@ -262,7 +262,7 @@ extension Path {
     ///
     public var exists: Bool {
         #if !swift(>=3.0)
-        return Path.fileManager.fileExistsAtPath(self.path)
+            return Path.fileManager.fileExistsAtPath(self.path)
         #else
             return Path.fileManager.fileExists(atPath:self.path)
         #endif
@@ -277,9 +277,9 @@ extension Path {
     public var isDirectory: Bool {
         var directory = ObjCBool(false)
         #if !swift(>=3.0)
-        guard Path.fileManager.fileExistsAtPath(normalize().path, isDirectory: &directory) else {
+            guard Path.fileManager.fileExistsAtPath(normalize().path, isDirectory: &directory) else {
             return false
-        }
+            }
         #else
             guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
                 return false
@@ -299,7 +299,7 @@ extension Path {
         var directory = ObjCBool(false)
         #if !swift(>=3.0)
             guard Path.fileManager.fileExistsAtPath(normalize().path, isDirectory: &directory) else {
-                return false
+            return false
             }
         #else
             guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
@@ -552,9 +552,9 @@ extension Path {
     ///
     public static func uniqueTemporary() throws -> Path {
         #if !swift(>=3.0)
-        let path = try processUniqueTemporary() + NSUUID().UUIDString
+            let path = try processUniqueTemporary() + NSUUID().UUIDString
         #else
-        let path = try processUniqueTemporary() + NSUUID().uuidString
+            let path = try processUniqueTemporary() + NSUUID().uuidString
         #endif
         try path.mkdir()
         return path
@@ -582,9 +582,9 @@ extension Path {
     ///
     public func read(encoding: NSStringEncoding = NSUTF8StringEncoding) throws -> String {
         #if !swift(>=3.0)
-        return try NSString(contentsOfFile: path, encoding: encoding).substringFromIndex(0) as String
+            return try NSString(contentsOfFile: path, encoding: encoding).substringFromIndex(0) as String
         #else
-        return try NSString(contentsOfFile: path, encoding: encoding).substring(from:0) as String
+            return try NSString(contentsOfFile: path, encoding: encoding).substring(from:0) as String
         #endif
     }
     
@@ -617,9 +617,9 @@ extension Path {
     ///
     public func write(string: String, encoding: NSStringEncoding = NSUTF8StringEncoding) throws {
         #if !swift(>=3.0)
-        try NSString(string: string).writeToFile(normalize().path, atomically: true, encoding: encoding)
+            try NSString(string: string).writeToFile(normalize().path, atomically: true, encoding: encoding)
         #else
-        try NSString(string: string).write(toFile:normalize().path, atomically: true, encoding: encoding)
+            try NSString(string: string).write(toFile:normalize().path, atomically: true, encoding: encoding)
         #endif
     }
 }
@@ -642,12 +642,12 @@ extension Path {
     ///
     public func children() throws -> [Path] {
         #if !swift(>=3.0)
-        return try Path.fileManager.contentsOfDirectoryAtPath(path).map {
+            return try Path.fileManager.contentsOfDirectoryAtPath(path).map {
             self + Path($0)
             }
         #else
-        return try Path.fileManager.contentsOfDirectory(atPath:path).map {
-            self + Path($0)
+            return try Path.fileManager.contentsOfDirectory(atPath:path).map {
+                self + Path($0)
             }
         #endif
         
@@ -660,13 +660,13 @@ extension Path {
     ///
     public func recursiveChildren() throws -> [Path] {
         #if !swift(>=3.0)
-        return try Path.fileManager.subpathsOfDirectoryAtPath(path).map {
+            return try Path.fileManager.subpathsOfDirectoryAtPath(path).map {
             self + Path($0)
-        }
+            }
         #else
-        return try Path.fileManager.subpathsOfDirectory(atPath:path).map {
-            self + Path($0)
-        }
+            return try Path.fileManager.subpathsOfDirectory(atPath:path).map {
+                self + Path($0)
+            }
         #endif
     }
 }
@@ -691,20 +691,20 @@ extension Path {
                 let matchc = gt.gl_matchc
             #endif
             #if !swift(>=3.0)
-            return (0..<Int(matchc)).flatMap { index in
+                return (0..<Int(matchc)).flatMap { index in
                 if let path = String.fromCString(gt.gl_pathv[index]) {
-                    return Path(path)
+                return Path(path)
                 }
                 
                 return nil
-            }
+                }
             #else
                 return (0..<Int(matchc)).flatMap { index in
                     if let path = String(validatingUTF8: gt.gl_pathv[index]) {
-                return Path(path)
-                }
+                        return Path(path)
+                    }
                     
-                return nil
+                    return nil
                 }
             #endif
         }
@@ -759,11 +759,11 @@ extension Path : Sequence {
     ///
     #if !swift(>=3.0)
     public func generate() -> DirectoryEnumerator {
-        return DirectoryEnumerator(path: self)
+    return DirectoryEnumerator(path: self)
     }
     #else
     public func makeIterator() -> DirectoryEnumerator {
-    return DirectoryEnumerator(path: self)
+        return DirectoryEnumerator(path: self)
     }
     #endif
 }
