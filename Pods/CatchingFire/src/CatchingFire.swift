@@ -8,6 +8,10 @@
 
 import XCTest
 
+#if !swift(>=3.0)
+    typealias ErrorProtocol = ErrorType
+#endif
+
 
 /// This allows you to write safe tests for the happy path of failable functions.
 /// It helps you to avoid the `try!` operator in tests.
@@ -77,11 +81,11 @@ public func AssertNoThrow(@noescape closure: () throws -> ()) {
 ///
 /// If the expression or closure doesn't throw the expected error, your test fails.
 ///
-public func AssertThrows<R, E where E: ErrorType>(expectedError: E, @autoclosure _ closure: () throws -> R) -> () {
+public func AssertThrows<R, E where E: ErrorProtocol>(expectedError: E, @autoclosure _ closure: () throws -> R) -> () {
     AssertThrows(expectedError) { try closure() }
 }
 
-public func AssertThrows<E where E: ErrorType>(expectedError: E, @noescape _ closure: () throws -> ()) -> () {
+public func AssertThrows<E where E: ErrorProtocol>(expectedError: E, @noescape _ closure: () throws -> ()) -> () {
     do {
         try closure()
         XCTFail("Expected to catch <\(expectedError)>, "
@@ -95,11 +99,11 @@ public func AssertThrows<E where E: ErrorType>(expectedError: E, @noescape _ clo
     }
 }
 
-public func AssertThrows<R, E where E: ErrorType, E: Equatable>(expectedError: E, @autoclosure _ closure: () throws -> R) -> () {
+public func AssertThrows<R, E where E: ErrorProtocol, E: Equatable>(expectedError: E, @autoclosure _ closure: () throws -> R) -> () {
     AssertThrows(expectedError) { try closure() }
 }
 
-public func AssertThrows<E where E: ErrorType, E: Equatable>(expectedError: E, @noescape _ closure: () throws -> ()) -> () {
+public func AssertThrows<E where E: ErrorProtocol, E: Equatable>(expectedError: E, @noescape _ closure: () throws -> ()) -> () {
     do {
         try closure()
         XCTFail("Expected to catch <\(expectedError)>, "
@@ -116,7 +120,7 @@ public func AssertThrows<E where E: ErrorType, E: Equatable>(expectedError: E, @
 }
 
 /// Implement pattern matching for ErrorTypes
-internal func ~=(lhs: ErrorType, rhs: ErrorType) -> Bool {
+internal func ~=(lhs: ErrorProtocol, rhs: ErrorProtocol) -> Bool {
     return lhs._domain == rhs._domain
         && rhs._code   == rhs._code
 }
@@ -131,7 +135,7 @@ internal func ~=(lhs: ErrorType, rhs: ErrorType) -> Bool {
 ////  put them in a separate enum and import your framework as `@testable` in your tests without
 ///   affecting the public API, if that matters.
 ///
-public struct Error : ErrorType {
+public struct Error : ErrorProtocol {
     public let domain: String
     public let code: Int
     
@@ -153,7 +157,7 @@ public func ==(lhs: Error, rhs: Error) -> Bool {
 }
 
 /// Implement pattern matching for Error & ErrorType
-public func ~=(lhs: Error, rhs: ErrorType) -> Bool {
+public func ~=(lhs: Error, rhs: ErrorProtocol) -> Bool {
     return lhs._domain == rhs._domain
         && rhs._code   == rhs._code
 }
