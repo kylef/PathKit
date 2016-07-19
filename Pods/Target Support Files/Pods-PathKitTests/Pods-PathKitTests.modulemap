@@ -1,6 +1,0 @@
-framework module Pods_PathKitTests {
-  umbrella header "Pods-PathKitTests-umbrella.h"
-
-  export *
-  module * { export * }
-}
