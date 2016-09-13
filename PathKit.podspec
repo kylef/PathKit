@@ -10,6 +10,6 @@ Pod::Spec.new do |spec|
   spec.source_files = 'Sources/PathKit.swift'
   spec.ios.deployment_target = '8.0'
   spec.osx.deployment_target = '10.9'
+  spec.tvos.deployment_target = '9.0'
   spec.requires_arc = true
 end
-
