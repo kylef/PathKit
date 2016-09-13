@@ -225,7 +225,11 @@ extension Path {
     guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
       return false
     }
+#if os(Linux)
     return directory
+#else
+    return directory.boolValue
+#endif
   }
 
   /// Test whether a path is a regular file.
@@ -240,7 +244,11 @@ extension Path {
     guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
       return false
     }
-    return !directory
+#if os(Linux)
+  return !directory
+#else
+  return !directory.boolValue
+#endif
   }
 
   /// Test whether a path is a symbolic link.
