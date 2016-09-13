@@ -40,13 +40,7 @@ public struct Path {
       path = "."
     } else if components.first == Path.separator && components.count > 1 {
       let p = components.joined(separator: Path.separator)
-#if os(Linux)
-      let index = p.startIndex.distanceTo(p.startIndex.successor())
-      path = NSString(string: p).substringFromIndex(index)
-#else
       path = p.substring(from: p.characters.index(after: p.startIndex))
-#endif
-
     } else {
       path = components.joined(separator: Path.separator)
     }
@@ -231,7 +225,7 @@ extension Path {
     guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
       return false
     }
-    return directory.boolValue
+    return directory
   }
 
   /// Test whether a path is a regular file.
@@ -246,7 +240,7 @@ extension Path {
     guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
       return false
     }
-    return !directory.boolValue
+    return !directory
   }
 
   /// Test whether a path is a symbolic link.
@@ -384,7 +378,7 @@ extension Path {
       return self.init(Path.fileManager.currentDirectoryPath)
     }
     set {
-      Path.fileManager.changeCurrentDirectoryPath(newValue.description)
+      _ = Path.fileManager.changeCurrentDirectoryPath(newValue.description)
     }
   }
 
@@ -411,21 +405,13 @@ extension Path {
   ///   depending on the platform.
   ///
   public static var home: Path {
-#if os(Linux)
-    return Path(NSProcessInfo.processInfo().environment["HOME"] ?? "/")
-#else
     return Path(NSHomeDirectory())
-#endif
   }
 
   /// - Returns: the path of the temporary directory for the current user.
   ///
   public static var temporary: Path {
-#if os(Linux)
-    return Path(NSProcessInfo.processInfo().environment["TMP"] ?? "/tmp")
-#else
     return Path(NSTemporaryDirectory())
-#endif
   }
 
   /// - Returns: the path of a temporary directory unique for the process.

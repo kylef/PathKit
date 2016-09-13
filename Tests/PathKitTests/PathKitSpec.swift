@@ -3,6 +3,10 @@ import Spectre
 import PathKit
 
 
+struct ThrowError: Error, Equatable {}
+func == (lhs:ThrowError, rhs:ThrowError) -> Bool { return true }
+
+
 public func testPathKit() {
 describe("PathKit") {
   let fixtures = Path(#file).parent() + "Fixtures"
@@ -101,10 +105,12 @@ describe("PathKit") {
     try expect(path.normalize()) == Path("/usr/bin/swift")
   }
 
+#if !os(Linux)
   $0.it("can be abbreviated") {
     let path = Path("/Users/\(NSUserName())/Library")
     try expect(path.abbreviate()) == Path("~/Library")
   }
+#endif
 
   $0.describe("symlinking") {
     $0.it("can create a symlink with a relative destination") {
@@ -119,11 +125,13 @@ describe("PathKit") {
       try expect(resolvedPath) == Path("/usr/bin/swift")
     }
 
+#if !os(Linux)
     $0.it("can create a relative symlink in the same directory") {
       let path = fixtures + "symlinks/same-dir"
       let resolvedPath = try path.symlinkDestination()
       try expect(resolvedPath.normalize()) == fixtures + "symlinks/file"
     }
+#endif
   }
 
   $0.it("can return the last component") {
@@ -187,9 +195,12 @@ describe("PathKit") {
       try expect((fixtures + "permissions/writable").isWritable).to.beTrue()
     }
 
+#if !os(Linux)
+    // fatal error: isDeletableFile(atPath:) is not yet implemented
     $0.it("can test if a path is deletable") {
       try expect((fixtures + "permissions/deletable").isDeletable).to.beTrue()
     }
+#endif
   }
 
   $0.describe("changing directory") {
@@ -205,8 +216,8 @@ describe("PathKit") {
 
     $0.it("can change directory with a throwing closure") {
       let current = Path.current
+      let error = ThrowError()
 
-      let error = NSError(domain: "org.cocode.PathKit", code: 1, userInfo: nil)
       try expect {
         try Path("/usr/bin").chdir {
           try expect(Path.current) == Path("/usr/bin")
@@ -224,33 +235,33 @@ describe("PathKit") {
     }
 
     $0.it("can provide the tempoary directory") {
-      try expect((Path.temporary + "../../..").normalize()) == Path("/var/folders")
+      try expect(Path.temporary) == Path(NSTemporaryDirectory())
       try expect(Path.temporary.exists).to.beTrue()
     }
   }
 
   $0.describe("reading") {
-    $0.it("can read NSData from a file") {
-      let path = Path("/etc/manpaths")
+    $0.it("can read Data from a file") {
+      let path = fixtures + "hello"
       let contents: Data? = try path.read()
       let string = NSString(data:contents! as Data, encoding: String.Encoding.utf8.rawValue)!
 
-      try expect(string.hasPrefix("/usr/share/man")).to.beTrue()
+      try expect(string) == "Hello World\n"
     }
 
     $0.it("errors when you read from a non-existing file as NSData") {
       let path = Path("/tmp/pathkit-testing")
 
       try expect {
-        try path.read() as NSData
+        try path.read() as Data
       }.toThrow()
     }
 
     $0.it("can read a String from a file") {
-      let path = Path("/etc/manpaths")
+      let path = fixtures + "hello"
       let contents: String? = try path.read()
 
-      try expect(contents?.hasPrefix("/usr/share/man")).to.beTrue()
+      try expect(contents) == "Hello World\n"
     }
 
     $0.it("errors when you read from a non-existing file as a String") {
@@ -274,7 +285,11 @@ describe("PathKit") {
       try path.delete()
     }
 
-    $0.it("throws an error on failure writing NSData") {
+    $0.it("throws an error on failure writing data") {
+      #if os(Linux)
+      throw skip()
+      #endif
+
       let path = Path("/")
       let data = "Hi".data(using: String.Encoding.utf8, allowLossyConversion: true)
 
@@ -291,7 +306,11 @@ describe("PathKit") {
       try path.delete()
     }
 
-    $0.it("thows an error on failure writing a String") {
+    $0.it("throws an error on failure writing a String") {
+      #if os(Linux)
+      throw skip()
+      #endif
+
       let path = Path("/")
 
       try expect {
@@ -308,17 +327,23 @@ describe("PathKit") {
   }
 
   $0.it("can return the children") {
-    let children = try fixtures.children()
-    try expect(children) == ["directory", "file", "permissions", "symlinks"].map { fixtures + $0 }
+    let children = try fixtures.children().sorted(by: <)
+    let expected = ["hello", "directory", "file", "permissions", "symlinks"].map { fixtures + $0 }.sorted(by: <)
+    try expect(children) == expected
   }
 
   $0.it("can return the recursive children") {
     let parent = fixtures + "directory"
-    let children = try parent.recursiveChildren()
-    try expect(children) == ["child", "subdirectory", "subdirectory/child"].map { parent + $0 }
+    let children = try parent.recursiveChildren().sorted(by: <)
+    let expected = ["child", "subdirectory", "subdirectory/child"].map { parent + $0 }.sorted(by: <)
+    try expect(children) == expected
   }
 
   $0.it("conforms to SequenceType") {
+    #if os(Linux)
+    throw skip()
+    #endif
+
     let path = fixtures + "directory"
     var children = ["child", "subdirectory"].map { path + $0 }
     let generator = path.makeIterator()
@@ -337,7 +362,7 @@ describe("PathKit") {
   $0.it("can be pattern matched") {
     try expect(Path("/var") ~= "~").to.beFalse()
     try expect(Path("/Users") ~= "/Users").to.beTrue()
-    try expect(Path("/Users") ~= "~/..").to.beTrue()
+    try expect((Path.home + "..") ~= "~/..").to.beTrue()
   }
 
   $0.it("can be compared") {
@@ -378,15 +403,15 @@ describe("PathKit") {
       let pattern = (fixtures + "permissions/*able").description
       let paths = Path.glob(pattern)
 
-      let results = try (fixtures + "permissions").children().map { $0.absolute() }
-      try expect(paths) == results
+      let results = try (fixtures + "permissions").children().map { $0.absolute() }.sorted(by: <)
+      try expect(paths) == results.sorted(by: <)
     }
 
     $0.it("can glob inside a directory") {
       let paths = fixtures.glob("permissions/*able")
 
-      let results = try (fixtures + "permissions").children().map { $0.absolute() }
-      try expect(paths) == results
+      let results = try (fixtures + "permissions").children().map { $0.absolute() }.sorted(by: <)
+      try expect(paths) == results.sorted(by: <)
     }
   }
 }
