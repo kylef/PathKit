@@ -3,6 +3,7 @@ import Spectre
 import PathKit
 
 
+public func testPathKit() {
 describe("PathKit") {
   let fixtures = Path(#file).parent() + "Fixtures"
 
@@ -15,7 +16,7 @@ describe("PathKit") {
   }
 
   $0.it("returns the current working directory") {
-    try expect(Path.current.description) == NSFileManager().currentDirectoryPath
+    try expect(Path.current.description) == FileManager().currentDirectoryPath
   }
 
   $0.describe("initialisation") {
@@ -231,8 +232,8 @@ describe("PathKit") {
   $0.describe("reading") {
     $0.it("can read NSData from a file") {
       let path = Path("/etc/manpaths")
-      let contents: NSData? = try path.read()
-      let string = NSString(data:contents!, encoding: NSUTF8StringEncoding)!
+      let contents: Data? = try path.read()
+      let string = NSString(data:contents! as Data, encoding: String.Encoding.utf8.rawValue)!
 
       try expect(string.hasPrefix("/usr/share/man")).to.beTrue()
     }
@@ -264,7 +265,7 @@ describe("PathKit") {
   $0.describe("writing") {
     $0.it("can write NSData to a file") {
       let path = Path("/tmp/pathkit-testing")
-      let data = "Hi".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+      let data = "Hi".data(using: String.Encoding.utf8, allowLossyConversion: true)
 
       try expect(path.exists).to.beFalse()
 
@@ -275,7 +276,7 @@ describe("PathKit") {
 
     $0.it("throws an error on failure writing NSData") {
       let path = Path("/")
-      let data = "Hi".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+      let data = "Hi".data(using: String.Encoding.utf8, allowLossyConversion: true)
 
       try expect {
         try path.write(data!)
@@ -320,13 +321,13 @@ describe("PathKit") {
   $0.it("conforms to SequenceType") {
     let path = fixtures + "directory"
     var children = ["child", "subdirectory"].map { path + $0 }
-    let generator = path.generate()
+    let generator = path.makeIterator()
     while let child = generator.next() {
       generator.skipDescendants()
-      if let index = children.indexOf(child) {
-        children.removeAtIndex(index)
+      if let index = children.index(of: child) {
+        children.remove(at: index)
       } else {
-        throw failure(reason: "Generated unexpected element: <\(child)>")
+        throw failure("Generated unexpected element: <\(child)>")
       }
     }
 
@@ -388,4 +389,5 @@ describe("PathKit") {
       try expect(paths) == results
     }
   }
+}
 }
