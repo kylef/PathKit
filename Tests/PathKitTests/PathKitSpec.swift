@@ -83,6 +83,27 @@ describe("PathKit") {
       }
     }
 
+    $0.describe("a relative path with tilde") {
+      let path = Path("~")
+
+      $0.it("can be converted to an absolute path") {
+        #if os(Linux)
+          try expect(path.absolute()) == "/home/" + NSUserName()
+        #else
+          try expect(path.absolute()) == "/Users/" + NSUserName()
+        #endif
+      }
+
+      $0.it("is not absolute") {
+        try expect(path.isAbsolute) == false
+      }
+
+      $0.it("is relative") {
+        try expect(path.isRelative) == true
+      }
+
+    }
+
     $0.describe("an absolute path") {
       let path = Path("/usr/bin/swift")
 
