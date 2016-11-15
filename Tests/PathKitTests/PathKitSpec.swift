@@ -86,9 +86,16 @@ describe("PathKit") {
     $0.describe("a relative path with tilde") {
       let path = Path("~")
 
+	  print("Username = \(NSUserName())")
+
       $0.it("can be converted to an absolute path") {
         #if os(Linux)
-          try expect(path.absolute()) == "/home/" + NSUserName()
+          if NSUserName() == "root" {
+            try expect(path.absolute()) == "/root"		
+          }
+          else {
+            try expect(path.absolute()) == "/home/" + NSUserName()
+          }
         #else
           try expect(path.absolute()) == "/Users/" + NSUserName()
         #endif
