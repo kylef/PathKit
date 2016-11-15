@@ -309,14 +309,14 @@ describe("PathKit") {
     $0.it("throws an error on failure writing data") {
       #if os(Linux)
       throw skip()
-      #endif
-
+      #else
       let path = Path("/")
       let data = "Hi".data(using: String.Encoding.utf8, allowLossyConversion: true)
 
       try expect {
         try path.write(data!)
       }.toThrow()
+      #endif
     }
 
     $0.it("can write a String to a file") {
@@ -330,13 +330,13 @@ describe("PathKit") {
     $0.it("throws an error on failure writing a String") {
       #if os(Linux)
       throw skip()
-      #endif
-
+      #else
       let path = Path("/")
 
       try expect {
         try path.write("hi")
       }.toThrow()
+      #endif
     }
   }
 
@@ -363,8 +363,7 @@ describe("PathKit") {
   $0.it("conforms to SequenceType") {
     #if os(Linux)
     throw skip()
-    #endif
-
+    #else
     let path = fixtures + "directory"
     var children = ["child", "subdirectory"].map { path + $0 }
     let generator = path.makeIterator()
@@ -378,6 +377,7 @@ describe("PathKit") {
     }
 
     try expect(children.isEmpty).to.beTrue()
+    #endif
   }
 
   $0.it("can be pattern matched") {
