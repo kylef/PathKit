@@ -86,8 +86,6 @@ describe("PathKit") {
     $0.describe("a relative path with tilde") {
       let path = Path("~")
 
-	  print("Username = \(NSUserName())")
-
       $0.it("can be converted to an absolute path") {
         #if os(Linux)
           if NSUserName() == "root" {
