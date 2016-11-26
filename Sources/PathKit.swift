@@ -83,7 +83,7 @@ extension Path {
   }
 
   public var url: URL {
-	return URL(fileURLWithPath: path)
+    return URL(fileURLWithPath: path)
   }
 }
 
@@ -125,10 +125,10 @@ extension Path {
       return normalize()
     }
 
-	let expandedPath = Path(NSString(string: self.path).expandingTildeInPath)
-	if expandedPath.isAbsolute {
-		return expandedPath.normalize()
-	}
+  let expandedPath = Path(NSString(string: self.path).expandingTildeInPath)
+  if expandedPath.isAbsolute {
+    return expandedPath.normalize()
+  }
 
     return (Path.current + self).normalize()
   }
