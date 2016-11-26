@@ -67,6 +67,7 @@ extension Path : ExpressibleByStringLiteral {
   }
 }
 
+
 // MARK: CustomStringConvertible
 
 extension Path : CustomStringConvertible {
@@ -74,6 +75,7 @@ extension Path : CustomStringConvertible {
     return self.path
   }
 }
+
 
 // MARK: Conversion
 
