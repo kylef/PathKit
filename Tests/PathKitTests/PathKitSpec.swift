@@ -45,8 +45,16 @@ describe("PathKit") {
       try expect(path.description) == "/usr/bin/swift"
     }
 
-    $0.it("can be converted to a string") {
+    $0.it("can be converted to a string description") {
       try expect(Path("/usr/bin/swift").description) == "/usr/bin/swift"
+    }
+    
+    $0.it("can be converted to a string") {
+      try expect(Path("/usr/bin/swift").string) == "/usr/bin/swift"
+    }
+    
+    $0.it("can be converted to a url") {
+      try expect(Path("/usr/bin/swift").url) == URL(fileURLWithPath: "/usr/bin/swift")
     }
   }
 
