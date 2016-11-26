@@ -468,7 +468,7 @@ extension Path {
   /// - Returns: the contents of the file at the specified path.
   ///
   public func read() throws -> Data {
-    return try Data(contentsOf: URL(fileURLWithPath: path), options: NSData.ReadingOptions(rawValue: 0))
+    return try Data(contentsOf: self.url, options: NSData.ReadingOptions(rawValue: 0))
   }
 
   /// Reads the file contents and encoded its bytes to string applying the given encoding.
@@ -490,7 +490,7 @@ extension Path {
   /// - Parameter data: the contents to write to file.
   ///
   public func write(_ data: Data) throws {
-    try data.write(to: URL(fileURLWithPath: normalize().path), options: .atomic)
+    try data.write(to: normalize().url, options: .atomic)
   }
 
   /// Reads the file.
