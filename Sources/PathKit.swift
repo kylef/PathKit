@@ -599,10 +599,19 @@ extension Path : Sequence {
       self.path = path
       self.directoryEnumerator = Path.fileManager.enumerator(atPath: path.path)!
     }
+    
+    init(path: Path, options: FileManager.DirectoryEnumerationOptions) {
+      self.path = path
+      self.directoryEnumerator = Path.fileManager.enumerator(at: URL(fileURLWithPath: path.path), includingPropertiesForKeys: nil, options: options)!
+    }
 
     public func next() -> Path? {
-      if let next = directoryEnumerator.nextObject() as! String? {
+      let next = directoryEnumerator.nextObject()
+      
+      if let next = next as? String {
         return path + next
+      } else if let next = next as? URL {
+        return Path(next.path)
       }
       return nil
     }
@@ -620,6 +629,17 @@ extension Path : Sequence {
   ///
   public func makeIterator() -> DirectoryEnumerator {
     return DirectoryEnumerator(path: self)
+  }
+
+  /// Perform a deep enumeration of a directory.
+  ///
+  /// - Parameter options: FileManager directory enumerator options.
+  ///
+  /// - Returns: a directory enumerator that can be used to perform a deep enumeration of the
+  ///   directory.
+  ///
+  public func makeIterator(options: FileManager.DirectoryEnumerationOptions) -> DirectoryEnumerator {
+    return DirectoryEnumerator(path: self, options: options)
   }
 }
 
