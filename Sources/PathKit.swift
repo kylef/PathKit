@@ -67,12 +67,23 @@ extension Path : ExpressibleByStringLiteral {
   }
 }
 
-
 // MARK: CustomStringConvertible
 
 extension Path : CustomStringConvertible {
   public var description: String {
     return self.path
+  }
+}
+
+// MARK: Conversion
+
+extension Path {
+  public var string: String {
+    return self.path
+  }
+
+  public var url: URL {
+	return URL(fileURLWithPath: path)
   }
 }
 
