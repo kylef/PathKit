@@ -152,8 +152,15 @@ extension Path {
   ///
   public func abbreviate() -> Path {
 #if os(Linux)
-    // TODO: actually de-normalize the path
-    return self
+    let env = ProcessInfo.processInfo.environment
+    guard let home = env["HOME"], self.path.contains(home) else { return self }
+    let withoutHome = Path(self.path.replacingOccurrences(of: home, with: ""))
+
+    if withoutHome.path.isEmpty || withoutHome.isRelative {
+      return Path("~/" + withoutHome.path)
+    } else {
+      return Path("~" + withoutHome.path)
+    }
 #else
     return Path(NSString(string: self.path).abbreviatingWithTildeInPath)
 #endif

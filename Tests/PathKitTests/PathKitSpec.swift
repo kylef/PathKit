@@ -139,12 +139,20 @@ describe("PathKit") {
     try expect(path.normalize()) == Path("/usr/bin/swift")
   }
 
-#if !os(Linux)
   $0.it("can be abbreviated") {
+#if os(Linux)
+    let env = ProcessInfo.processInfo.environment
+    let home = env["HOME"]
+    try expect(home) != ""
+
+    try expect(Path("\(home!)/foo/bar").abbreviate()) == Path("~/foo/bar")
+    try expect(Path("\(home!)").abbreviate()) == Path("~/")
+    try expect(Path("\(home!)/").abbreviate()) == Path("~/")
+#else
     let path = Path("/Users/\(NSUserName())/Library")
     try expect(path.abbreviate()) == Path("~/Library")
-  }
 #endif
+  }
 
   $0.describe("symlinking") {
     $0.it("can create a symlink with a relative destination") {
