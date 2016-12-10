@@ -156,11 +156,13 @@ extension Path {
     guard let home = env["HOME"], !home.isEmpty else { return self }
     guard let homeRange = self.path.range(of: home, options: [.anchored, .caseInsensitive]) else { return self }
     let withoutHome = Path(self.path.replacingCharacters(in: homeRange, with: ""))
-
-    if withoutHome.path.isEmpty || withoutHome.isRelative {
-      return Path("~/" + withoutHome.path)
+    
+    if withoutHome.path.isEmpty || withoutHome.path == "/" {
+        return Path("~")
+    } else if withoutHome.isAbsolute {
+        return Path("~" + withoutHome.path)
     } else {
-      return Path("~" + withoutHome.path)
+        return Path("~/" + withoutHome.path)
     }
 #else
     return Path(NSString(string: self.path).abbreviatingWithTildeInPath)

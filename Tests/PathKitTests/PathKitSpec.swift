@@ -143,11 +143,9 @@ describe("PathKit") {
     let env = ProcessInfo.processInfo.environment
     guard let home = env["HOME"] else { throw failure("$HOME must be defined in the environment") }
     
-    print(Path("\(home)/backups\(home)/foo/bar").abbreviate())
-    
     try expect(Path("\(home)/foo/bar").abbreviate()) == Path("~/foo/bar")
-    try expect(Path("\(home)").abbreviate()) == Path("~/")
-    try expect(Path("\(home)/").abbreviate()) == Path("~/")
+    try expect(Path("\(home)").abbreviate()) == Path("~")
+    try expect(Path("\(home)/").abbreviate()) == Path("~")
     try expect(Path("\(home)/backups\(home)").abbreviate()) == Path("~/backups\(home)")
     try expect(Path("\(home)/backups\(home)/foo/bar").abbreviate()) == Path("~/backups\(home)/foo/bar")
   }
