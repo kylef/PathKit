@@ -140,18 +140,16 @@ describe("PathKit") {
   }
 
   $0.it("can be abbreviated") {
-#if os(Linux)
     let env = ProcessInfo.processInfo.environment
-    let home = env["HOME"]
-    try expect(home) != ""
-
-    try expect(Path("\(home!)/foo/bar").abbreviate()) == Path("~/foo/bar")
-    try expect(Path("\(home!)").abbreviate()) == Path("~/")
-    try expect(Path("\(home!)/").abbreviate()) == Path("~/")
-#else
-    let path = Path("/Users/\(NSUserName())/Library")
-    try expect(path.abbreviate()) == Path("~/Library")
-#endif
+    guard let home = env["HOME"] else { throw failure("$HOME must be defined in the environment") }
+    
+    print(Path("\(home)/backups\(home)/foo/bar").abbreviate())
+    
+    try expect(Path("\(home)/foo/bar").abbreviate()) == Path("~/foo/bar")
+    try expect(Path("\(home)").abbreviate()) == Path("~/")
+    try expect(Path("\(home)/").abbreviate()) == Path("~/")
+    try expect(Path("\(home)/backups\(home)").abbreviate()) == Path("~/backups\(home)")
+    try expect(Path("\(home)/backups\(home)/foo/bar").abbreviate()) == Path("~/backups\(home)/foo/bar")
   }
 
   $0.describe("symlinking") {

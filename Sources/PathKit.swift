@@ -153,8 +153,9 @@ extension Path {
   public func abbreviate() -> Path {
 #if os(Linux)
     let env = ProcessInfo.processInfo.environment
-    guard let home = env["HOME"], self.path.contains(home) else { return self }
-    let withoutHome = Path(self.path.replacingOccurrences(of: home, with: ""))
+    guard let home = env["HOME"], !home.isEmpty else { return self }
+    guard let homeRange = self.path.range(of: home, options: [.anchored, .caseInsensitive]) else { return self }
+    let withoutHome = Path(self.path.replacingCharacters(in: homeRange, with: ""))
 
     if withoutHome.path.isEmpty || withoutHome.isRelative {
       return Path("~/" + withoutHome.path)
