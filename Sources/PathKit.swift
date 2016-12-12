@@ -587,6 +587,17 @@ extension Path {
 // MARK: SequenceType
 
 extension Path : Sequence {
+  public struct DirectoryEnumerationOptions : OptionSet {
+    public let rawValue: UInt
+    public init(rawValue: UInt) {
+      self.rawValue = rawValue
+    }
+
+    public static var skipsSubdirectoryDescendants = DirectoryEnumerationOptions(rawValue: FileManager.DirectoryEnumerationOptions.skipsSubdirectoryDescendants.rawValue)
+    public static var skipsPackageDescendants = DirectoryEnumerationOptions(rawValue: FileManager.DirectoryEnumerationOptions.skipsPackageDescendants.rawValue)
+    public static var skipsHiddenFiles = DirectoryEnumerationOptions(rawValue: FileManager.DirectoryEnumerationOptions.skipsHiddenFiles.rawValue)
+  }
+  
   /// Enumerates the contents of a directory, returning the paths of all files and directories
   /// contained within that directory. These paths are relative to the directory.
   public struct DirectoryEnumerator : IteratorProtocol {
@@ -600,7 +611,8 @@ extension Path : Sequence {
       self.directoryEnumerator = Path.fileManager.enumerator(atPath: path.path)!
     }
     
-    init(path: Path, options: FileManager.DirectoryEnumerationOptions) {
+    init(path: Path, options mask: DirectoryEnumerationOptions) {
+      let options = FileManager.DirectoryEnumerationOptions(rawValue: mask.rawValue)
       self.path = path
       self.directoryEnumerator = Path.fileManager.enumerator(at: path.url, includingPropertiesForKeys: nil, options: options)!
     }
@@ -638,7 +650,7 @@ extension Path : Sequence {
   /// - Returns: a directory enumerator that can be used to perform a deep enumeration of the
   ///   directory.
   ///
-  public func makeIterator(options: FileManager.DirectoryEnumerationOptions) -> DirectoryEnumerator {
+  public func makeIterator(options: DirectoryEnumerationOptions) -> DirectoryEnumerator {
     return DirectoryEnumerator(path: self, options: options)
   }
 }
