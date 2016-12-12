@@ -400,7 +400,7 @@ describe("PathKit") {
       #else
       let path = fixtures + "directory"
       var children = ["child", "subdirectory"].map { path + $0 }
-      let generator = path.makeIterator(options: .skipsHiddenFiles)
+      let generator = path.iterateChildren(options: .skipsHiddenFiles).makeIterator()
       while let child = generator.next() {
         generator.skipDescendants()
         if let index = children.index(of: child) {

@@ -597,6 +597,20 @@ extension Path : Sequence {
     public static var skipsPackageDescendants = DirectoryEnumerationOptions(rawValue: FileManager.DirectoryEnumerationOptions.skipsPackageDescendants.rawValue)
     public static var skipsHiddenFiles = DirectoryEnumerationOptions(rawValue: FileManager.DirectoryEnumerationOptions.skipsHiddenFiles.rawValue)
   }
+
+  /// Represents a path sequence with specific enumeration options
+  public struct PathSequence : Sequence {
+    private var path: Path
+    private var options: DirectoryEnumerationOptions
+    init(path: Path, options: DirectoryEnumerationOptions) {
+      self.path = path
+      self.options = options
+    }
+
+    public func makeIterator() -> DirectoryEnumerator {
+      return DirectoryEnumerator(path: path, options: options)
+    }
+  }
   
   /// Enumerates the contents of a directory, returning the paths of all files and directories
   /// contained within that directory. These paths are relative to the directory.
@@ -606,12 +620,7 @@ extension Path : Sequence {
     let path: Path
     let directoryEnumerator: FileManager.DirectoryEnumerator
 
-    init(path: Path) {
-      self.path = path
-      self.directoryEnumerator = Path.fileManager.enumerator(atPath: path.path)!
-    }
-    
-    init(path: Path, options mask: DirectoryEnumerationOptions) {
+    init(path: Path, options mask: DirectoryEnumerationOptions = []) {
       let options = FileManager.DirectoryEnumerationOptions(rawValue: mask.rawValue)
       self.path = path
       self.directoryEnumerator = Path.fileManager.enumerator(at: path.url, includingPropertiesForKeys: nil, options: options)!
@@ -620,9 +629,7 @@ extension Path : Sequence {
     public func next() -> Path? {
       let next = directoryEnumerator.nextObject()
       
-      if let next = next as? String {
-        return path + next
-      } else if let next = next as? URL {
+      if let next = next as? URL {
         return Path(next.path)
       }
       return nil
@@ -647,11 +654,11 @@ extension Path : Sequence {
   ///
   /// - Parameter options: FileManager directory enumerator options.
   ///
-  /// - Returns: a directory enumerator that can be used to perform a deep enumeration of the
+  /// - Returns: a path sequence that can be used to perform a deep enumeration of the
   ///   directory.
   ///
-  public func makeIterator(options: DirectoryEnumerationOptions) -> DirectoryEnumerator {
-    return DirectoryEnumerator(path: self, options: options)
+  public func iterateChildren(options: DirectoryEnumerationOptions = []) -> PathSequence {
+    return PathSequence(path: self, options: options)
   }
 }
 
