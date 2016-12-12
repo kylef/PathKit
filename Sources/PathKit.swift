@@ -602,7 +602,7 @@ extension Path : Sequence {
     
     init(path: Path, options: FileManager.DirectoryEnumerationOptions) {
       self.path = path
-      self.directoryEnumerator = Path.fileManager.enumerator(at: URL(fileURLWithPath: path.path), includingPropertiesForKeys: nil, options: options)!
+      self.directoryEnumerator = Path.fileManager.enumerator(at: path.url, includingPropertiesForKeys: nil, options: options)!
     }
 
     public func next() -> Path? {
