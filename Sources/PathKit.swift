@@ -72,7 +72,7 @@ extension Path : ExpressibleByStringLiteral {
 
 extension Path : CustomStringConvertible {
   public var description: String {
-    return self.path
+    return path
   }
 }
 
@@ -81,7 +81,7 @@ extension Path : CustomStringConvertible {
 
 extension Path {
   public var string: String {
-    return self.path
+    return path
   }
 
   public var url: URL {
@@ -142,7 +142,7 @@ extension Path {
   ///   representation.
   ///
   public func normalize() -> Path {
-    return Path(NSString(string: self.path).standardizingPath)
+    return Path(NSString(string: path).standardizingPath)
   }
 
   /// De-normalizes the path, by replacing the current user home directory with "~".
@@ -155,7 +155,7 @@ extension Path {
     // TODO: actually de-normalize the path
     return self
 #else
-    return Path(NSString(string: self.path).abbreviatingWithTildeInPath)
+    return Path(NSString(string: path).abbreviatingWithTildeInPath)
 #endif
   }
 
@@ -229,7 +229,7 @@ extension Path {
   ///   determined
   ///
   public var exists: Bool {
-    return Path.fileManager.fileExists(atPath: self.path)
+    return Path.fileManager.fileExists(atPath: path)
   }
 
   /// Test whether a path is a directory.
@@ -290,7 +290,7 @@ extension Path {
   ///   file could not be determined.
   ///
   public var isReadable: Bool {
-    return Path.fileManager.isReadableFile(atPath: self.path)
+    return Path.fileManager.isReadableFile(atPath: path)
   }
 
   /// Test whether a path is writeable
@@ -300,7 +300,7 @@ extension Path {
   ///   file could not be determined.
   ///
   public var isWritable: Bool {
-    return Path.fileManager.isWritableFile(atPath: self.path)
+    return Path.fileManager.isWritableFile(atPath: path)
   }
 
   /// Test whether a path is executable
@@ -310,7 +310,7 @@ extension Path {
   ///   file could not be determined.
   ///
   public var isExecutable: Bool {
-    return Path.fileManager.isExecutableFile(atPath: self.path)
+    return Path.fileManager.isExecutableFile(atPath: path)
   }
 
   /// Test whether a path is deletable
@@ -320,7 +320,7 @@ extension Path {
   ///   file could not be determined.
   ///
   public var isDeletable: Bool {
-    return Path.fileManager.isDeletableFile(atPath: self.path)
+    return Path.fileManager.isDeletableFile(atPath: path)
   }
 }
 
@@ -335,7 +335,7 @@ extension Path {
   ///   not a directory.
   ///
   public func mkdir() throws -> () {
-    try Path.fileManager.createDirectory(atPath: self.path, withIntermediateDirectories: false, attributes: nil)
+    try Path.fileManager.createDirectory(atPath: path, withIntermediateDirectories: false, attributes: nil)
   }
 
   /// Create the directory and any intermediate parent directories that do not exist.
@@ -344,7 +344,7 @@ extension Path {
   ///   not a directory.
   ///
   public func mkpath() throws -> () {
-    try Path.fileManager.createDirectory(atPath: self.path, withIntermediateDirectories: true, attributes: nil)
+    try Path.fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
   }
 
   /// Delete the file or directory.
@@ -353,7 +353,7 @@ extension Path {
   ///   removed.
   ///
   public func delete() throws -> () {
-    try Path.fileManager.removeItem(atPath: self.path)
+    try Path.fileManager.removeItem(atPath: path)
   }
 
   /// Move the file or directory to a new location synchronously.
@@ -362,7 +362,7 @@ extension Path {
   ///   directory in its new location.
   ///
   public func move(_ destination: Path) throws -> () {
-    try Path.fileManager.moveItem(atPath: self.path, toPath: destination.path)
+    try Path.fileManager.moveItem(atPath: path, toPath: destination.path)
   }
 
   /// Copy the file or directory to a new location synchronously.
@@ -371,7 +371,7 @@ extension Path {
   ///   directory in its new location.
   ///
   public func copy(_ destination: Path) throws -> () {
-    try Path.fileManager.copyItem(atPath: self.path, toPath: destination.path)
+    try Path.fileManager.copyItem(atPath: path, toPath: destination.path)
   }
 
   /// Creates a hard link at a new destination.
@@ -379,7 +379,7 @@ extension Path {
   /// - Parameter destination: The location where the link will be created.
   ///
   public func link(_ destination: Path) throws -> () {
-    try Path.fileManager.linkItem(atPath: self.path, toPath: destination.path)
+    try Path.fileManager.linkItem(atPath: path, toPath: destination.path)
   }
 
   /// Creates a symbolic link at a new destination.
@@ -387,7 +387,7 @@ extension Path {
   /// - Parameter destintation: The location where the link will be created.
   ///
   public func symlink(_ destination: Path) throws -> () {
-    try Path.fileManager.createSymbolicLink(atPath: self.path, withDestinationPath: destination.path)
+    try Path.fileManager.createSymbolicLink(atPath: path, withDestinationPath: destination.path)
   }
 }
 
@@ -470,7 +470,7 @@ extension Path {
   /// - Returns: the contents of the file at the specified path.
   ///
   public func read() throws -> Data {
-    return try Data(contentsOf: self.url, options: NSData.ReadingOptions(rawValue: 0))
+    return try Data(contentsOf: url, options: NSData.ReadingOptions(rawValue: 0))
   }
 
   /// Reads the file contents and encoded its bytes to string applying the given encoding.
@@ -679,45 +679,41 @@ internal func +(lhs: String, rhs: String) -> Path {
   if rhs.hasPrefix(Path.separator) {
     // Absolute paths replace relative paths
     return Path(rhs)
-  } else {
-    var lSlice = NSString(string: lhs).pathComponents.fullSlice
-    var rSlice = NSString(string: rhs).pathComponents.fullSlice
+  }
 
-    // Get rid of trailing "/" at the left side
-    if lSlice.count > 1 && lSlice.last == Path.separator {
+  var lSlice = NSString(string: lhs).pathComponents.fullSlice
+  var rSlice = NSString(string: rhs).pathComponents.fullSlice
+
+  // Get rid of trailing "/" at the left side
+  if lSlice.count > 1 && lSlice.last == Path.separator {
+    lSlice.removeLast()
+  }
+
+  // Advance after the first relevant "."
+  lSlice = lSlice.filter { $0 != "." }.fullSlice
+  rSlice = rSlice.filter { $0 != "." }.fullSlice
+
+  // Eats up trailing components of the left and leading ".." of the right side
+  while lSlice.last != ".." && rSlice.first == ".." {
+    if (lSlice.count > 1 || lSlice.first != Path.separator) && !lSlice.isEmpty {
+      // A leading "/" is never popped
       lSlice.removeLast()
     }
-
-    // Advance after the first relevant "."
-    lSlice = lSlice.filter { $0 != "." }.fullSlice
-    rSlice = rSlice.filter { $0 != "." }.fullSlice
-
-    // Eats up trailing components of the left and leading ".." of the right side
-    while lSlice.last != ".." && rSlice.first == ".." {
-      if (lSlice.count > 1 || lSlice.first != Path.separator) && !lSlice.isEmpty {
-        // A leading "/" is never popped
-        lSlice.removeLast()
-      }
-      if !rSlice.isEmpty {
-        rSlice.removeFirst()
-      }
-
-      switch (lSlice.isEmpty, rSlice.isEmpty) {
-      case (true, _):
-        break
-      case (_, true):
-        break
-      default:
-        continue
-      }
+    if !rSlice.isEmpty {
+      rSlice.removeFirst()
     }
 
-    return Path(components: lSlice + rSlice)
+    if lSlice.isEmpty || rSlice.isEmpty  {
+      break
+    }
   }
+  
+  return Path(components: lSlice + rSlice)
+  
 }
 
 extension Array {
   var fullSlice: ArraySlice<Element> {
-    return self[self.indices.suffix(from: 0)]
+    return self[indices]
   }
 }
