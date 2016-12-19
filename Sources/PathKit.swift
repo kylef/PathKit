@@ -123,7 +123,7 @@ extension Path {
       return normalize()
     }
 
-  let expandedPath = Path(NSString(string: self.path).expandingTildeInPath)
+  let expandedPath = Path(NSString(string: path).expandingTildeInPath)
   if expandedPath.isAbsolute {
     return expandedPath.normalize()
   }
