@@ -1,6 +1,6 @@
 import Foundation
 import Spectre
-import PathKit
+@testable import PathKit
 
 
 struct ThrowError: Error, Equatable {}
@@ -148,6 +148,40 @@ describe("PathKit") {
     try expect(Path("\(home)/").abbreviate()) == Path("~")
     try expect(Path("\(home)/backups\(home)").abbreviate()) == Path("~/backups\(home)")
     try expect(Path("\(home)/backups\(home)/foo/bar").abbreviate()) == Path("~/backups\(home)/foo/bar")
+    
+    #if os(Linux)
+        try expect(Path("\(home.uppercased())").abbreviate()) == Path("\(home.uppercased())")
+    #else
+        try expect(Path("\(home.uppercased())").abbreviate()) == Path("~")
+    #endif
+  }
+  
+  struct FakeFSInfo: FileSystemInfo {
+    let caseSensitive: Bool
+    
+    func isFSCaseSensitiveAt(path: Path) -> Bool {
+      return caseSensitive
+    }
+  }
+
+  $0.it("can abbreviate paths on a case sensitive fs") {
+    let env = ProcessInfo.processInfo.environment
+    guard let home = env["HOME"] else { throw failure("$HOME must be defined in the environment") }
+    let fakeFSInfo = FakeFSInfo(caseSensitive: true)
+    var path = Path("\(home.uppercased())")
+    path.fileSystemInfo = fakeFSInfo
+    
+    try expect(path.abbreviate().string) == home.uppercased()
+  }
+  
+  $0.it("can abbreviate paths on a case insensitive fs") {
+    let env = ProcessInfo.processInfo.environment
+    guard let home = env["HOME"] else { throw failure("$HOME must be defined in the environment") }
+    let fakeFSInfo = FakeFSInfo(caseSensitive: false)
+    var path = Path("\(home.uppercased())")
+    path.fileSystemInfo = fakeFSInfo
+    
+    try expect(path.abbreviate()) == Path("~")
   }
 
   $0.describe("symlinking") {

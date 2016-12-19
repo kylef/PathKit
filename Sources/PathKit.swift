@@ -22,6 +22,8 @@ public struct Path {
   internal var path: String
 
   internal static var fileManager = FileManager.default
+  
+  internal var fileSystemInfo: FileSystemInfo = DefaultFileSystemInfo()
 
   // MARK: Init
 
@@ -151,10 +153,11 @@ extension Path {
   ///   representation.
   ///
   public func abbreviate() -> Path {
-#if os(Linux)
     let env = ProcessInfo.processInfo.environment
+    let rangeOptions: String.CompareOptions = fileSystemInfo.isFSCaseSensitiveAt(path: self) ?
+      [.anchored] : [.anchored, .caseInsensitive]
     guard let home = env["HOME"], !home.isEmpty else { return self }
-    guard let homeRange = self.path.range(of: home, options: [.anchored, .caseInsensitive]) else { return self }
+    guard let homeRange = self.path.range(of: home, options: rangeOptions) else { return self }
     let withoutHome = Path(self.path.replacingCharacters(in: homeRange, with: ""))
     
     if withoutHome.path.isEmpty || withoutHome.path == Path.separator {
@@ -164,9 +167,6 @@ extension Path {
     } else {
         return Path("~") + withoutHome.path
     }
-#else
-    return Path(NSString(string: self.path).abbreviatingWithTildeInPath)
-#endif
   }
 
   /// Returns the path of the item pointed to by a symbolic link.
@@ -184,6 +184,30 @@ extension Path {
   }
 }
 
+internal protocol FileSystemInfo {
+  func isFSCaseSensitiveAt(path: Path) -> Bool
+}
+
+internal struct DefaultFileSystemInfo: FileSystemInfo {
+  func isFSCaseSensitiveAt(path: Path) -> Bool {
+    #if os(Linux)
+      // URL resourceValues(forKeys:) is not supported on non-darwin platforms...
+      // But we can (fairly?) safely assume for now that the Linux FS is case sensitive.
+      // TODO: refactor when/if resourceValues is available, or look into using something
+      // like stat or pathconf to determine if the mountpoint is case sensitive.
+      return true
+    #else
+      var isCaseSensitive = false
+      // Calling resourceValues will fail if the path does not exist on the filesystem, which
+      // makes sense, but means we can only guarantee the return value is correct if the
+      // path actually exists.
+      if let resourceValues = try? path.url.resourceValues(forKeys: [.volumeSupportsCaseSensitiveNamesKey]) {
+        isCaseSensitive = resourceValues.volumeSupportsCaseSensitiveNames ?? isCaseSensitive
+      }
+      return isCaseSensitive
+    #endif
+  }
+}
 
 // MARK: Path Components
 
