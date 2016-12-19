@@ -535,23 +535,16 @@ extension Path {
     }
 
     let flags = GLOB_TILDE | GLOB_BRACE | GLOB_MARK
-    if system_glob(cPattern, flags, nil, &gt) == 0 {
-#if os(Linux)
-      let matchc = gt.gl_pathc
-#else
-      let matchc = gt.gl_matchc
-#endif
-      return (0..<Int(matchc)).flatMap { index in
-        if let path = String(validatingUTF8: gt.gl_pathv[index]!) {
-          return Path(path)
-        }
-
-        return nil
-      }
-    }
-
     // GLOB_NOMATCH
-    return []
+    guard system_glob(cPattern, flags, nil, &gt) != 0 else { return [] }
+    #if os(Linux)
+      let matchc = gt.gl_pathc
+    #else
+      let matchc = gt.gl_matchc
+    #endif
+    return (0..<Int(matchc)).flatMap { index in
+      String(validatingUTF8: gt.gl_pathv[index]!).map { Path($0) }
+    }
   }
 
   public func glob(_ pattern: String) -> [Path] {
