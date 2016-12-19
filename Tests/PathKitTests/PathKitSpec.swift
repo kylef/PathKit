@@ -140,8 +140,7 @@ describe("PathKit") {
   }
 
   $0.it("can be abbreviated") {
-    let env = ProcessInfo.processInfo.environment
-    guard let home = env["HOME"] else { throw failure("$HOME must be defined in the environment") }
+    let home = Path.home.string
     
     try expect(Path("\(home)/foo/bar").abbreviate()) == Path("~/foo/bar")
     try expect(Path("\(home)").abbreviate()) == Path("~")
@@ -165,8 +164,7 @@ describe("PathKit") {
   }
 
   $0.it("can abbreviate paths on a case sensitive fs") {
-    let env = ProcessInfo.processInfo.environment
-    guard let home = env["HOME"] else { throw failure("$HOME must be defined in the environment") }
+    let home = Path.home.string
     let fakeFSInfo = FakeFSInfo(caseSensitive: true)
     var path = Path("\(home.uppercased())")
     path.fileSystemInfo = fakeFSInfo
@@ -175,8 +173,7 @@ describe("PathKit") {
   }
   
   $0.it("can abbreviate paths on a case insensitive fs") {
-    let env = ProcessInfo.processInfo.environment
-    guard let home = env["HOME"] else { throw failure("$HOME must be defined in the environment") }
+    let home = Path.home.string
     let fakeFSInfo = FakeFSInfo(caseSensitive: false)
     var path = Path("\(home.uppercased())")
     path.fileSystemInfo = fakeFSInfo

@@ -153,10 +153,9 @@ extension Path {
   ///   representation.
   ///
   public func abbreviate() -> Path {
-    let env = ProcessInfo.processInfo.environment
     let rangeOptions: String.CompareOptions = fileSystemInfo.isFSCaseSensitiveAt(path: self) ?
       [.anchored] : [.anchored, .caseInsensitive]
-    guard let home = env["HOME"], !home.isEmpty else { return self }
+    let home = Path.home.string
     guard let homeRange = self.path.range(of: home, options: rangeOptions) else { return self }
     let withoutHome = Path(self.path.replacingCharacters(in: homeRange, with: ""))
     
