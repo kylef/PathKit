@@ -12,16 +12,15 @@ let system_glob = Darwin.glob
 
 import Foundation
 
-
 /// Represents a filesystem path.
 public struct Path {
   /// The character used by the OS to separate two path elements
   public static let separator = "/"
 
   /// The underlying string representation
-  internal var path: String
+  fileprivate var path: String
 
-  internal static var fileManager = FileManager.default
+  fileprivate static var fileManager = FileManager.default
 
   // MARK: Init
 
@@ -76,7 +75,6 @@ extension Path : CustomStringConvertible {
   }
 }
 
-
 // MARK: Conversion
 
 extension Path {
@@ -89,7 +87,6 @@ extension Path {
   }
 }
 
-
 // MARK: Hashable
 
 extension Path : Hashable {
@@ -97,7 +94,6 @@ extension Path : Hashable {
     return path.hashValue
   }
 }
-
 
 // MARK: Path Info
 
@@ -240,14 +236,8 @@ extension Path {
   ///
   public var isDirectory: Bool {
     var directory = ObjCBool(false)
-    guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
-      return false
-    }
-#if os(Linux)
-    return directory
-#else
-    return directory.boolValue
-#endif
+    return Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) &&
+           Bool(directory)
   }
 
   /// Test whether a path is a regular file.
@@ -258,15 +248,7 @@ extension Path {
   ///   could not be determined
   ///
   public var isFile: Bool {
-    var directory = ObjCBool(false)
-    guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
-      return false
-    }
-#if os(Linux)
-  return !directory
-#else
-  return !directory.boolValue
-#endif
+    return !isDirectory
   }
 
   /// Test whether a path is a symbolic link.
@@ -275,12 +257,7 @@ extension Path {
   ///   or its existence could not be determined
   ///
   public var isSymlink: Bool {
-    do {
-      let _ = try Path.fileManager.destinationOfSymbolicLink(atPath: path)
-      return true
-    } catch {
-      return false
-    }
+    return (try? Path.fileManager.destinationOfSymbolicLink(atPath: path)) != nil
   }
 
   /// Test whether a path is readable
@@ -401,7 +378,7 @@ extension Path {
   ///
   public static var current: Path {
     get {
-      return self.init(Path.fileManager.currentDirectoryPath)
+      return Path(Path.fileManager.currentDirectoryPath)
     }
     set {
       _ = Path.fileManager.changeCurrentDirectoryPath(newValue.description)
@@ -480,7 +457,7 @@ extension Path {
   ///
   /// - Returns: the contents of the file at the specified path as string.
   ///
-  public func read(_ encoding: String.Encoding = String.Encoding.utf8) throws -> String {
+  public func read(_ encoding: String.Encoding = .utf8) throws -> String {
     return try NSString(contentsOfFile: path, encoding: encoding.rawValue).substring(from: 0) as String
   }
 
@@ -507,7 +484,7 @@ extension Path {
   ///
   /// - Returns: the contents of the file at the specified path as string.
   ///
-  public func write(_ string: String, encoding: String.Encoding = String.Encoding.utf8) throws {
+  public func write(_ string: String, encoding: String.Encoding = .utf8) throws {
     try string.write(toFile: normalize().path, atomically: true, encoding: encoding)
   }
 }
@@ -545,7 +522,6 @@ extension Path {
     }
   }
 }
-
 
 // MARK: Globbing
 
@@ -601,10 +577,7 @@ extension Path : Sequence {
     }
 
     public func next() -> Path? {
-      if let next = directoryEnumerator.nextObject() as! String? {
-        return path + next
-      }
-      return nil
+      return (directoryEnumerator.nextObject() as! String?).map { path + $0 }
     }
 
     /// Skip recursion into the most recently obtained subdirectory.
@@ -626,16 +599,17 @@ extension Path : Sequence {
 
 // MARK: Equatable
 
-extension Path : Equatable {}
-
-/// Determines if two paths are identical
-///
-/// - Note: The comparison is string-based. Be aware that two different paths (foo.txt and
-///   ./foo.txt) can refer to the same file.
-///
-public func ==(lhs: Path, rhs: Path) -> Bool {
-  return lhs.path == rhs.path
+extension Path : Equatable {
+  /// Determines if two paths are identical
+  ///
+  /// - Note: The comparison is string-based. Be aware that two different paths (foo.txt and
+  ///   ./foo.txt) can refer to the same file.
+  ///
+  public static func ==(lhs: Path, rhs: Path) -> Bool {
+    return lhs.path == rhs.path
+  }
 }
+
 
 
 // MARK: Pattern Matching
@@ -654,13 +628,12 @@ public func ~=(lhs: Path, rhs: Path) -> Bool {
 
 // MARK: Comparable
 
-extension Path : Comparable {}
-
-/// Defines a strict total order over Paths based on their underlying string representation.
-public func <(lhs: Path, rhs: Path) -> Bool {
-  return lhs.path < rhs.path
+extension Path : Comparable {
+  /// Defines a strict total order over Paths based on their underlying string representation.
+  public static func <(lhs: Path, rhs: Path) -> Bool {
+    return lhs.path < rhs.path
+  }
 }
-
 
 // MARK: Operators
 
@@ -717,3 +690,14 @@ extension Array {
     return self[indices]
   }
 }
+
+extension Bool {
+  init(_ value: ObjCBool) {
+    #if os(Linux)
+      self = value
+    #else
+      self = value.boolValue
+    #endif
+  }
+}
+
