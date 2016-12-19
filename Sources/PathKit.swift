@@ -12,16 +12,15 @@ let system_glob = Darwin.glob
 
 import Foundation
 
-
 /// Represents a filesystem path.
 public struct Path {
   /// The character used by the OS to separate two path elements
   public static let separator = "/"
 
   /// The underlying string representation
-  internal var path: String
+  fileprivate var path: String
 
-  internal static var fileManager = FileManager.default
+  fileprivate static var fileManager = FileManager.default
 
   // MARK: Init
 
@@ -72,23 +71,21 @@ extension Path : ExpressibleByStringLiteral {
 
 extension Path : CustomStringConvertible {
   public var description: String {
-    return self.path
+    return path
   }
 }
-
 
 // MARK: Conversion
 
 extension Path {
   public var string: String {
-    return self.path
+    return path
   }
 
   public var url: URL {
     return URL(fileURLWithPath: path)
   }
 }
-
 
 // MARK: Hashable
 
@@ -97,7 +94,6 @@ extension Path : Hashable {
     return path.hashValue
   }
 }
-
 
 // MARK: Path Info
 
@@ -127,7 +123,7 @@ extension Path {
       return normalize()
     }
 
-  let expandedPath = Path(NSString(string: self.path).expandingTildeInPath)
+  let expandedPath = Path(NSString(string: path).expandingTildeInPath)
   if expandedPath.isAbsolute {
     return expandedPath.normalize()
   }
@@ -142,7 +138,7 @@ extension Path {
   ///   representation.
   ///
   public func normalize() -> Path {
-    return Path(NSString(string: self.path).standardizingPath)
+    return Path(NSString(string: path).standardizingPath)
   }
 
   /// De-normalizes the path, by replacing the current user home directory with "~".
@@ -155,7 +151,7 @@ extension Path {
     // TODO: actually de-normalize the path
     return self
 #else
-    return Path(NSString(string: self.path).abbreviatingWithTildeInPath)
+    return Path(NSString(string: path).abbreviatingWithTildeInPath)
 #endif
   }
 
@@ -229,7 +225,7 @@ extension Path {
   ///   determined
   ///
   public var exists: Bool {
-    return Path.fileManager.fileExists(atPath: self.path)
+    return Path.fileManager.fileExists(atPath: path)
   }
 
   /// Test whether a path is a directory.
@@ -240,14 +236,8 @@ extension Path {
   ///
   public var isDirectory: Bool {
     var directory = ObjCBool(false)
-    guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
-      return false
-    }
-#if os(Linux)
-    return directory
-#else
-    return directory.boolValue
-#endif
+    return Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) &&
+           Bool(directory)
   }
 
   /// Test whether a path is a regular file.
@@ -258,15 +248,7 @@ extension Path {
   ///   could not be determined
   ///
   public var isFile: Bool {
-    var directory = ObjCBool(false)
-    guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
-      return false
-    }
-#if os(Linux)
-  return !directory
-#else
-  return !directory.boolValue
-#endif
+    return !isDirectory
   }
 
   /// Test whether a path is a symbolic link.
@@ -275,12 +257,7 @@ extension Path {
   ///   or its existence could not be determined
   ///
   public var isSymlink: Bool {
-    do {
-      let _ = try Path.fileManager.destinationOfSymbolicLink(atPath: path)
-      return true
-    } catch {
-      return false
-    }
+    return (try? Path.fileManager.destinationOfSymbolicLink(atPath: path)) != nil
   }
 
   /// Test whether a path is readable
@@ -290,7 +267,7 @@ extension Path {
   ///   file could not be determined.
   ///
   public var isReadable: Bool {
-    return Path.fileManager.isReadableFile(atPath: self.path)
+    return Path.fileManager.isReadableFile(atPath: path)
   }
 
   /// Test whether a path is writeable
@@ -300,7 +277,7 @@ extension Path {
   ///   file could not be determined.
   ///
   public var isWritable: Bool {
-    return Path.fileManager.isWritableFile(atPath: self.path)
+    return Path.fileManager.isWritableFile(atPath: path)
   }
 
   /// Test whether a path is executable
@@ -310,7 +287,7 @@ extension Path {
   ///   file could not be determined.
   ///
   public var isExecutable: Bool {
-    return Path.fileManager.isExecutableFile(atPath: self.path)
+    return Path.fileManager.isExecutableFile(atPath: path)
   }
 
   /// Test whether a path is deletable
@@ -320,7 +297,7 @@ extension Path {
   ///   file could not be determined.
   ///
   public var isDeletable: Bool {
-    return Path.fileManager.isDeletableFile(atPath: self.path)
+    return Path.fileManager.isDeletableFile(atPath: path)
   }
 }
 
@@ -335,7 +312,7 @@ extension Path {
   ///   not a directory.
   ///
   public func mkdir() throws -> () {
-    try Path.fileManager.createDirectory(atPath: self.path, withIntermediateDirectories: false, attributes: nil)
+    try Path.fileManager.createDirectory(atPath: path, withIntermediateDirectories: false, attributes: nil)
   }
 
   /// Create the directory and any intermediate parent directories that do not exist.
@@ -344,7 +321,7 @@ extension Path {
   ///   not a directory.
   ///
   public func mkpath() throws -> () {
-    try Path.fileManager.createDirectory(atPath: self.path, withIntermediateDirectories: true, attributes: nil)
+    try Path.fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
   }
 
   /// Delete the file or directory.
@@ -353,7 +330,7 @@ extension Path {
   ///   removed.
   ///
   public func delete() throws -> () {
-    try Path.fileManager.removeItem(atPath: self.path)
+    try Path.fileManager.removeItem(atPath: path)
   }
 
   /// Move the file or directory to a new location synchronously.
@@ -362,7 +339,7 @@ extension Path {
   ///   directory in its new location.
   ///
   public func move(_ destination: Path) throws -> () {
-    try Path.fileManager.moveItem(atPath: self.path, toPath: destination.path)
+    try Path.fileManager.moveItem(atPath: path, toPath: destination.path)
   }
 
   /// Copy the file or directory to a new location synchronously.
@@ -371,7 +348,7 @@ extension Path {
   ///   directory in its new location.
   ///
   public func copy(_ destination: Path) throws -> () {
-    try Path.fileManager.copyItem(atPath: self.path, toPath: destination.path)
+    try Path.fileManager.copyItem(atPath: path, toPath: destination.path)
   }
 
   /// Creates a hard link at a new destination.
@@ -379,7 +356,7 @@ extension Path {
   /// - Parameter destination: The location where the link will be created.
   ///
   public func link(_ destination: Path) throws -> () {
-    try Path.fileManager.linkItem(atPath: self.path, toPath: destination.path)
+    try Path.fileManager.linkItem(atPath: path, toPath: destination.path)
   }
 
   /// Creates a symbolic link at a new destination.
@@ -387,7 +364,7 @@ extension Path {
   /// - Parameter destintation: The location where the link will be created.
   ///
   public func symlink(_ destination: Path) throws -> () {
-    try Path.fileManager.createSymbolicLink(atPath: self.path, withDestinationPath: destination.path)
+    try Path.fileManager.createSymbolicLink(atPath: path, withDestinationPath: destination.path)
   }
 }
 
@@ -401,7 +378,7 @@ extension Path {
   ///
   public static var current: Path {
     get {
-      return self.init(Path.fileManager.currentDirectoryPath)
+      return Path(Path.fileManager.currentDirectoryPath)
     }
     set {
       _ = Path.fileManager.changeCurrentDirectoryPath(newValue.description)
@@ -470,7 +447,7 @@ extension Path {
   /// - Returns: the contents of the file at the specified path.
   ///
   public func read() throws -> Data {
-    return try Data(contentsOf: self.url, options: NSData.ReadingOptions(rawValue: 0))
+    return try Data(contentsOf: url, options: NSData.ReadingOptions(rawValue: 0))
   }
 
   /// Reads the file contents and encoded its bytes to string applying the given encoding.
@@ -480,7 +457,7 @@ extension Path {
   ///
   /// - Returns: the contents of the file at the specified path as string.
   ///
-  public func read(_ encoding: String.Encoding = String.Encoding.utf8) throws -> String {
+  public func read(_ encoding: String.Encoding = .utf8) throws -> String {
     return try NSString(contentsOfFile: path, encoding: encoding.rawValue).substring(from: 0) as String
   }
 
@@ -507,7 +484,7 @@ extension Path {
   ///
   /// - Returns: the contents of the file at the specified path as string.
   ///
-  public func write(_ string: String, encoding: String.Encoding = String.Encoding.utf8) throws {
+  public func write(_ string: String, encoding: String.Encoding = .utf8) throws {
     try string.write(toFile: normalize().path, atomically: true, encoding: encoding)
   }
 }
@@ -546,7 +523,6 @@ extension Path {
   }
 }
 
-
 // MARK: Globbing
 
 extension Path {
@@ -559,23 +535,16 @@ extension Path {
     }
 
     let flags = GLOB_TILDE | GLOB_BRACE | GLOB_MARK
-    if system_glob(cPattern, flags, nil, &gt) == 0 {
-#if os(Linux)
-      let matchc = gt.gl_pathc
-#else
-      let matchc = gt.gl_matchc
-#endif
-      return (0..<Int(matchc)).flatMap { index in
-        if let path = String(validatingUTF8: gt.gl_pathv[index]!) {
-          return Path(path)
-        }
-
-        return nil
-      }
-    }
-
     // GLOB_NOMATCH
-    return []
+    guard system_glob(cPattern, flags, nil, &gt) != 0 else { return [] }
+    #if os(Linux)
+      let matchc = gt.gl_pathc
+    #else
+      let matchc = gt.gl_matchc
+    #endif
+    return (0..<Int(matchc)).flatMap { index in
+      String(validatingUTF8: gt.gl_pathv[index]!).map { Path($0) }
+    }
   }
 
   public func glob(_ pattern: String) -> [Path] {
@@ -601,10 +570,7 @@ extension Path : Sequence {
     }
 
     public func next() -> Path? {
-      if let next = directoryEnumerator.nextObject() as! String? {
-        return path + next
-      }
-      return nil
+      return (directoryEnumerator.nextObject() as! String?).map { path + $0 }
     }
 
     /// Skip recursion into the most recently obtained subdirectory.
@@ -626,16 +592,17 @@ extension Path : Sequence {
 
 // MARK: Equatable
 
-extension Path : Equatable {}
-
-/// Determines if two paths are identical
-///
-/// - Note: The comparison is string-based. Be aware that two different paths (foo.txt and
-///   ./foo.txt) can refer to the same file.
-///
-public func ==(lhs: Path, rhs: Path) -> Bool {
-  return lhs.path == rhs.path
+extension Path : Equatable {
+  /// Determines if two paths are identical
+  ///
+  /// - Note: The comparison is string-based. Be aware that two different paths (foo.txt and
+  ///   ./foo.txt) can refer to the same file.
+  ///
+  public static func ==(lhs: Path, rhs: Path) -> Bool {
+    return lhs.path == rhs.path
+  }
 }
+
 
 
 // MARK: Pattern Matching
@@ -654,13 +621,12 @@ public func ~=(lhs: Path, rhs: Path) -> Bool {
 
 // MARK: Comparable
 
-extension Path : Comparable {}
-
-/// Defines a strict total order over Paths based on their underlying string representation.
-public func <(lhs: Path, rhs: Path) -> Bool {
-  return lhs.path < rhs.path
+extension Path : Comparable {
+  /// Defines a strict total order over Paths based on their underlying string representation.
+  public static func <(lhs: Path, rhs: Path) -> Bool {
+    return lhs.path < rhs.path
+  }
 }
-
 
 // MARK: Operators
 
@@ -679,45 +645,52 @@ internal func +(lhs: String, rhs: String) -> Path {
   if rhs.hasPrefix(Path.separator) {
     // Absolute paths replace relative paths
     return Path(rhs)
-  } else {
-    var lSlice = NSString(string: lhs).pathComponents.fullSlice
-    var rSlice = NSString(string: rhs).pathComponents.fullSlice
+  }
 
-    // Get rid of trailing "/" at the left side
-    if lSlice.count > 1 && lSlice.last == Path.separator {
+  var lSlice = NSString(string: lhs).pathComponents.fullSlice
+  var rSlice = NSString(string: rhs).pathComponents.fullSlice
+
+  // Get rid of trailing "/" at the left side
+  if lSlice.count > 1 && lSlice.last == Path.separator {
+    lSlice.removeLast()
+  }
+
+  // Advance after the first relevant "."
+  lSlice = lSlice.filter { $0 != "." }.fullSlice
+  rSlice = rSlice.filter { $0 != "." }.fullSlice
+
+  // Eats up trailing components of the left and leading ".." of the right side
+  while lSlice.last != ".." && rSlice.first == ".." {
+    if (lSlice.count > 1 || lSlice.first != Path.separator) && !lSlice.isEmpty {
+      // A leading "/" is never popped
       lSlice.removeLast()
     }
-
-    // Advance after the first relevant "."
-    lSlice = lSlice.filter { $0 != "." }.fullSlice
-    rSlice = rSlice.filter { $0 != "." }.fullSlice
-
-    // Eats up trailing components of the left and leading ".." of the right side
-    while lSlice.last != ".." && rSlice.first == ".." {
-      if (lSlice.count > 1 || lSlice.first != Path.separator) && !lSlice.isEmpty {
-        // A leading "/" is never popped
-        lSlice.removeLast()
-      }
-      if !rSlice.isEmpty {
-        rSlice.removeFirst()
-      }
-
-      switch (lSlice.isEmpty, rSlice.isEmpty) {
-      case (true, _):
-        break
-      case (_, true):
-        break
-      default:
-        continue
-      }
+    if !rSlice.isEmpty {
+      rSlice.removeFirst()
     }
 
-    return Path(components: lSlice + rSlice)
+    if lSlice.isEmpty || rSlice.isEmpty  {
+      break
+    }
   }
+  
+  return Path(components: lSlice + rSlice)
+  
 }
 
 extension Array {
   var fullSlice: ArraySlice<Element> {
-    return self[self.indices.suffix(from: 0)]
+    return self[indices]
   }
 }
+
+extension Bool {
+  init(_ value: ObjCBool) {
+    #if os(Linux)
+      self = value
+    #else
+      self = value.boolValue
+    #endif
+  }
+}
+
