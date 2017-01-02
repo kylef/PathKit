@@ -404,28 +404,50 @@ describe("PathKit") {
   $0.it("can return the recursive children") {
     let parent = fixtures + "directory"
     let children = try parent.recursiveChildren().sorted(by: <)
-    let expected = ["child", "subdirectory", "subdirectory/child"].map { parent + $0 }.sorted(by: <)
+    let expected = [".hiddenFile", "child", "subdirectory", "subdirectory/child"].map { parent + $0 }.sorted(by: <)
     try expect(children) == expected
   }
 
-  $0.it("conforms to SequenceType") {
-    #if os(Linux)
-    throw skip()
-    #else
-    let path = fixtures + "directory"
-    var children = ["child", "subdirectory"].map { path + $0 }
-    let generator = path.makeIterator()
-    while let child = generator.next() {
-      generator.skipDescendants()
-      if let index = children.index(of: child) {
-        children.remove(at: index)
-      } else {
-        throw failure("Generated unexpected element: <\(child)>")
+  $0.describe("conforms to SequenceType") {
+    $0.it("without options") {
+      #if os(Linux)
+      throw skip()
+      #else
+      let path = fixtures + "directory"
+      var children = ["child", "subdirectory", ".hiddenFile"].map { path + $0 }
+      let generator = path.makeIterator()
+      while let child = generator.next() {
+        generator.skipDescendants()
+        if let index = children.index(of: child) {
+          children.remove(at: index)
+        } else {
+          throw failure("Generated unexpected element: <\(child)>")
+        }
       }
-    }
 
-    try expect(children.isEmpty).to.beTrue()
-    #endif
+      try expect(children.isEmpty).to.beTrue()
+      #endif
+    }
+  
+    $0.it("with options") {
+      #if os(Linux)
+      throw skip()
+      #else
+      let path = fixtures + "directory"
+      var children = ["child", "subdirectory"].map { path + $0 }
+      let generator = path.iterateChildren(options: .skipsHiddenFiles).makeIterator()
+      while let child = generator.next() {
+        generator.skipDescendants()
+        if let index = children.index(of: child) {
+          children.remove(at: index)
+        } else {
+          throw failure("Generated unexpected element: <\(child)>")
+        }
+      }
+
+      try expect(children.isEmpty).to.beTrue()
+      #endif
+    }
   }
 
   $0.it("can be pattern matched") {
