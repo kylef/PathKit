@@ -4,6 +4,12 @@
 
 Effortless path operations in Swift.
 
+## Installation
+Add this to your Package.swift
+```swift
+.Package(url: "https://github.com/kylef/Pathkit.git, majorVersion: 0, minor: 7)
+```
+
 ## Usage
 
 ```swift
@@ -14,6 +20,11 @@ let path = Path("/usr/bin/swift")
 
 ```swift
 let path = Path("/usr/bin") + Path("swift")
+```
+
+```swift
+var path = Path("/usr/bin")
+path += Path("swift")
 ```
 
 #### Determine if a path is absolute
@@ -51,7 +62,7 @@ let absolutePath = path.absolute
 This cleans up any redundant `..` or `.` and double slashes in paths.
 
 ```swift
-let normalizedPath = path.normalize
+let normalizedPath = path.normalized
 ```
 
 #### Deleting a path

@@ -91,7 +91,7 @@ extension Path {
     /**
      Test whether a path is absolute.
 
-     - Note: `true` if the path begings with a slash
+     - Note: `true` if the path begins with a slash
     */
     public var isAbsolute: Bool {
         return path.hasPrefix(Path.separator)

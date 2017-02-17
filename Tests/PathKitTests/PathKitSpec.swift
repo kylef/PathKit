@@ -2,17 +2,15 @@ import Foundation
 import Spectre
 @testable import PathKit
 
-
 struct ThrowError: Error, Equatable {}
-func == (lhs:ThrowError, rhs:ThrowError) -> Bool { return true }
-
+func == (lhs: ThrowError, rhs: ThrowError) -> Bool { return true }
 
 public func testPathKit() {
 describe("PathKit") {
-  let fixtures = Path(#file).parent() + "Fixtures"
+  let fixtures = Path(#file).parent + "Fixtures"
 
   $0.before {
-    Path.current = Path(#file).parent()
+    Path.current = Path(#file).parent
   }
 
   $0.it("provides the system separator") {
@@ -48,11 +46,11 @@ describe("PathKit") {
     $0.it("can be converted to a string description") {
       try expect(Path("/usr/bin/swift").description) == "/usr/bin/swift"
     }
-    
+
     $0.it("can be converted to a string") {
       try expect(Path("/usr/bin/swift").string) == "/usr/bin/swift"
     }
-    
+
     $0.it("can be converted to a url") {
       try expect(Path("/usr/bin/swift").url) == URL(fileURLWithPath: "/usr/bin/swift")
     }
@@ -79,7 +77,7 @@ describe("PathKit") {
       let path = Path("swift")
 
       $0.it("can be converted to an absolute path") {
-        try expect(path.absolute()) == (Path.current + Path("swift"))
+        try expect(path.absolute) == (Path.current + Path("swift"))
       }
 
       $0.it("is not absolute") {
@@ -97,13 +95,12 @@ describe("PathKit") {
       $0.it("can be converted to an absolute path") {
         #if os(Linux)
           if NSUserName() == "root" {
-            try expect(path.absolute()) == "/root"		
-          }
-          else {
-            try expect(path.absolute()) == "/home/" + NSUserName()
+            try expect(path.absolute) == "/root"
+          } else {
+            try expect(path.absolute) == "/home/" + NSUserName()
           }
         #else
-          try expect(path.absolute()) == "/Users/" + NSUserName()
+          try expect(path.absolute) == "/Users/" + NSUserName()
         #endif
       }
 
@@ -121,7 +118,7 @@ describe("PathKit") {
       let path = Path("/usr/bin/swift")
 
       $0.it("can be converted to an absolute path") {
-        try expect(path.absolute()) == path
+        try expect(path.absolute) == path
       }
 
       $0.it("is absolute") {
@@ -136,28 +133,28 @@ describe("PathKit") {
 
   $0.it("can be normalized") {
     let path = Path("/usr/./local/../bin/swift")
-    try expect(path.normalize()) == Path("/usr/bin/swift")
+    try expect(path.normalized) == Path("/usr/bin/swift")
   }
 
   $0.it("can be abbreviated") {
     let home = Path.home.string
-    
-    try expect(Path("\(home)/foo/bar").abbreviate()) == Path("~/foo/bar")
-    try expect(Path("\(home)").abbreviate()) == Path("~")
-    try expect(Path("\(home)/").abbreviate()) == Path("~")
-    try expect(Path("\(home)/backups\(home)").abbreviate()) == Path("~/backups\(home)")
-    try expect(Path("\(home)/backups\(home)/foo/bar").abbreviate()) == Path("~/backups\(home)/foo/bar")
-    
+
+    try expect(Path("\(home)/foo/bar").abbreviated) == Path("~/foo/bar")
+    try expect(Path("\(home)").abbreviated) == Path("~")
+    try expect(Path("\(home)/").abbreviated) == Path("~")
+    try expect(Path("\(home)/backups\(home)").abbreviated) == Path("~/backups\(home)")
+    try expect(Path("\(home)/backups\(home)/foo/bar").abbreviated) == Path("~/backups\(home)/foo/bar")
+
     #if os(Linux)
-        try expect(Path("\(home.uppercased())").abbreviate()) == Path("\(home.uppercased())")
+        try expect(Path("\(home.uppercased())").abbreviated) == Path("\(home.uppercased())")
     #else
-        try expect(Path("\(home.uppercased())").abbreviate()) == Path("~")
+        try expect(Path("\(home.uppercased())").abbreviated) == Path("~")
     #endif
   }
-  
+
   struct FakeFSInfo: FileSystemInfo {
     let caseSensitive: Bool
-    
+
     func isFSCaseSensitiveAt(path: Path) -> Bool {
       return caseSensitive
     }
@@ -168,24 +165,24 @@ describe("PathKit") {
     let fakeFSInfo = FakeFSInfo(caseSensitive: true)
     var path = Path("\(home.uppercased())")
     path.fileSystemInfo = fakeFSInfo
-    
-    try expect(path.abbreviate().string) == home.uppercased()
+
+    try expect(path.abbreviated.string) == home.uppercased()
   }
-  
+
   $0.it("can abbreviate paths on a case insensitive fs") {
     let home = Path.home.string
     let fakeFSInfo = FakeFSInfo(caseSensitive: false)
     var path = Path("\(home.uppercased())")
     path.fileSystemInfo = fakeFSInfo
-    
-    try expect(path.abbreviate()) == Path("~")
+
+    try expect(path.abbreviated) == Path("~")
   }
 
   $0.describe("symlinking") {
     $0.it("can create a symlink with a relative destination") {
       let path = fixtures + "symlinks/file"
       let resolvedPath = try path.symlinkDestination()
-      try expect(resolvedPath.normalize()) == fixtures + "file"
+      try expect(resolvedPath.normalized) == fixtures + "file"
     }
 
     $0.it("can create a symlink with an absolute destination") {
@@ -198,7 +195,7 @@ describe("PathKit") {
     $0.it("can create a relative symlink in the same directory") {
       let path = fixtures + "symlinks/same-dir"
       let resolvedPath = try path.symlinkDestination()
-      try expect(resolvedPath.normalize()) == fixtures + "symlinks/file"
+      try expect(resolvedPath.normalized) == fixtures + "symlinks/file"
     }
 #endif
   }
@@ -300,7 +297,7 @@ describe("PathKit") {
 
   $0.describe("special paths") {
     $0.it("can provide the home directory") {
-      try expect(Path.home) == Path("~").normalize()
+      try expect(Path.home) == Path("~").normalized
     }
 
     $0.it("can provide the tempoary directory") {
@@ -389,10 +386,10 @@ describe("PathKit") {
   }
 
   $0.it("can return the parent directory of a path") {
-    try expect((fixtures + "directory/child").parent()) == fixtures + "directory"
-    try expect((fixtures + "symlinks/directory").parent()) == fixtures + "symlinks"
-    try expect((fixtures + "directory/..").parent()) == fixtures + "directory/../.."
-    try expect(Path("/").parent()) == "/"
+    try expect((fixtures + "directory/child").parentd) == fixtures + "directory"
+    try expect((fixtures + "symlinks/directory").parentd) == fixtures + "symlinks"
+    try expect((fixtures + "directory/..").parentd) == fixtures + "directory/../.."
+    try expect(Path("/").parentd) == "/"
   }
 
   $0.it("can return the children") {
@@ -428,7 +425,7 @@ describe("PathKit") {
       try expect(children.isEmpty).to.beTrue()
       #endif
     }
-  
+
     $0.it("with options") {
       #if os(Linux)
       throw skip()
