@@ -88,51 +88,56 @@ extension Path : Hashable {
 // MARK: Path Info
 
 extension Path {
-    /// Test whether a path is absolute.
-    ///
-    /// - Returns: `true` iff the path begings with a slash
-    ///
+    /**
+     Test whether a path is absolute.
+
+     - Note: `true` if the path begings with a slash
+    */
     public var isAbsolute: Bool {
         return path.hasPrefix(Path.separator)
     }
 
-    /// Test whether a path is relative.
-    ///
-    /// - Returns: `true` iff a path is relative (not absolute)
-    ///
+    /**
+     Test whether a path is relative.
+
+     - Note: `true` if a path is relative (not absolute)
+    */
     public var isRelative: Bool {
         return !isAbsolute
     }
 
-    /// Concatenates relative paths to the current directory and derives the normalized path
-    ///
-    /// - Returns: the absolute path in the actual filesystem
-    ///
+    /**
+     Concatenates relative paths to the current directory and derives the normalized path
+
+     - Note: the absolute path in the actual filesystem
+    */
     public var absolute: Path {
-        guard !isAbsolute else { return normalize }
+        guard !isAbsolute else { return normalized }
 
         let expandedPath = Path(NSString(string: self.path).expandingTildeInPath)
-        guard !expandedPath.isAbsolute else { return expandedPath.normalize }
+        guard !expandedPath.isAbsolute else { return expandedPath.normalized }
 
-        return (Path.current + self).normalize
+        return (Path.current + self).normalized
     }
 
-    /// Normalizes the path, this cleans up redundant ".." and ".", double slashes
-    /// and resolves "~".
-    ///
-    /// - Returns: a new path made by removing extraneous path components from the underlying String
-    ///   representation.
-    ///
-    public var normalize: Path {
+    /**
+     Normalizes the path, this cleans up redundant ".." and ".", double slashes
+     and resolves "~".
+
+     - Note: a new path made by removing extraneous path components from the underlying String
+       representation.
+    */
+    public var normalized: Path {
         return Path(NSString(string: self.path).standardizingPath)
     }
 
-    /// De-normalizes the path, by replacing the current user home directory with "~".
-    ///
-    /// - Returns: a new path made by removing extraneous path components from the underlying String
-    ///   representation.
-    ///
-    public var abbreviate: Path {
+    /**
+     De-normalizes the path, by replacing the current user home directory with "~".
+
+     - Note: a new path made by removing extraneous path components from the underlying String
+       representation.
+    */
+    public var abbreviated: Path {
         let rangeOptions: String.CompareOptions = fileSystemInfo.isFSCaseSensitiveAt(path: self) ?
             [.anchored] : [.anchored, .caseInsensitive]
         let home = Path.home.string
@@ -148,10 +153,11 @@ extension Path {
         }
     }
 
-    /// Returns the path of the item pointed to by a symbolic link.
-    ///
-    /// - Returns: the path of directory or file to which the symbolic link refers
-    ///
+    /**
+     Returns the path of the item pointed to by a symbolic link.
+
+     - Returns: the path of directory or file to which the symbolic link refers
+    */
     public func symlinkDestination() throws -> Path {
         let symlinkDestination = try Path.fileManager.destinationOfSymbolicLink(atPath: path)
         let symlinkPath = Path(symlinkDestination)
@@ -191,37 +197,40 @@ internal struct DefaultFileSystemInfo: FileSystemInfo {
 // MARK: Path Components
 
 extension Path {
-    /// The last path component
-    ///
-    /// - Returns: the last path component
-    ///
+    /**
+     The last path component
+
+     - Note: the last path component
+    */
     public var lastComponent: String {
         return NSString(string: path).lastPathComponent
     }
 
-    /// The last path component without file extension
-    ///
-    /// - Note: This returns "." for "..".
-    ///
-    /// - Returns: the last path component without file extension
-    ///
+    /**
+     The last path component without file extension
+
+     - Note: The last path component without file extension.
+     This returns "." for "..".
+    */
     public var lastComponentWithoutExtension: String {
         return NSString(string: lastComponent).deletingPathExtension
     }
 
-    /// Splits the string representation on the directory separator.
-    /// Absolute paths remain the leading slash as first component.
-    ///
-    /// - Returns: all path components
-    ///
+    /**
+     Splits the string representation on the directory separator.
+     Absolute paths remain the leading slash as first component.
+
+     - Note: all path components
+    */
     public var components: [String] {
         return NSString(string: path).pathComponents
     }
 
-    /// The file extension behind the last dot of the last component.
-    ///
-    /// - Returns: the file extension
-    ///
+    /**
+     The file extension behind the last dot of the last component.
+
+     - Note: the file extension
+    */
     public var `extension`: String? {
         let pathExtension = NSString(string: path).pathExtension
         guard !pathExtension.isEmpty else { return nil }

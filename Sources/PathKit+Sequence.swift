@@ -17,8 +17,10 @@ extension Path : Sequence {
         }
     }
 
-    /// Enumerates the contents of a directory, returning the paths of all files and directories
-    /// contained within that directory. These paths are relative to the directory.
+    /**
+     Enumerates the contents of a directory, returning the paths of all files and directories
+     contained within that directory. These paths are relative to the directory.
+    */
     public struct DirectoryEnumerator: IteratorProtocol {
         public typealias Element = Path
 
@@ -43,22 +45,24 @@ extension Path : Sequence {
         }
     }
 
-    /// Perform a deep enumeration of a directory.
-    ///
-    /// - Returns: a directory enumerator that can be used to perform a deep enumeration of the
-    ///   directory.
-    ///
+    /**
+     Perform a deep enumeration of a directory.
+
+     - Returns: a directory enumerator that can be used to perform a deep enumeration of the
+       directory.
+    */
     public func makeIterator() -> DirectoryEnumerator {
         return DirectoryEnumerator(path: self)
     }
 
-    /// Perform a deep enumeration of a directory.
-    ///
-    /// - Parameter options: FileManager directory enumerator options.
-    ///
-    /// - Returns: a path sequence that can be used to perform a deep enumeration of the
-    ///   directory.
-    ///
+    /**
+     Perform a deep enumeration of a directory.
+
+     - Parameter options: FileManager directory enumerator options.
+
+     - Returns: a path sequence that can be used to perform a deep enumeration of the
+       directory.
+    */
     public func iterateChildren(options: FileManager.DirectoryEnumerationOptions = []) -> PathSequence {
         return PathSequence(path: self, options: options)
     }

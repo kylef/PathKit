@@ -4,25 +4,27 @@ import Foundation
 
 extension Path : Equatable {}
 
-/// Determines if two paths are identical
-///
-/// - Note: The comparison is string-based. Be aware that two different paths (foo.txt and
-///   ./foo.txt) can refer to the same file.
-///
+/**
+ Determines if two paths are identical
+
+ - Note: The comparison is string-based. Be aware that two different paths (foo.txt and
+   ./foo.txt) can refer to the same file.
+*/
 public func == (lhs: Path, rhs: Path) -> Bool {
     return lhs.path == rhs.path
 }
 
 // MARK: Pattern Matching
 
-/// Implements pattern-matching for paths.
-///
-/// - Returns: `true` iff one of the following conditions is true:
-///     - the paths are equal (based on `Path`'s `Equatable` implementation)
-///     - the paths can be normalized to equal Paths.
-///
+/**
+ Implements pattern-matching for paths.
+
+ - Returns: `true` if one of the following conditions is true:
+     - the paths are equal (based on `Path`'s `Equatable` implementation)
+     - the paths can be normalized to equal Paths.
+*/
 public func ~= (lhs: Path, rhs: Path) -> Bool {
-    return lhs == rhs || lhs.normalize == rhs.normalize
+    return lhs == rhs || lhs.normalized == rhs.normalized
 }
 
 // MARK: Comparable
@@ -85,4 +87,19 @@ internal func + (lhs: String, rhs: String) -> Path {
     }
 
     return Path(components: lSlice + rSlice)
+}
+
+/// Inline concatenate two Paths
+public func += (lhs: inout Path, rhs: Path) {
+    lhs.path += rhs.path
+}
+
+/// Inline concatenate a String to a Path
+public func += (lhs: inout Path, rhs: String) {
+    lhs.path += rhs
+}
+
+/// Inline concatenate a Path to a String
+public func += (lhs: inout String, rhs: Path) {
+    lhs = (lhs + rhs.path).path
 }

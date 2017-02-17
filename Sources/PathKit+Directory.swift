@@ -16,7 +16,7 @@ extension Path {
     /**
      The current working directory of the process
 
-     - Returns: the current working directory of the process
+     - Note: the current working directory of the process
     */
     public static var current: Path {
         get {
@@ -40,6 +40,31 @@ extension Path {
         Path.current = self
         defer { Path.current = previous }
         try closure()
+    }
+}
+
+// MARK: Directory Manipulation
+
+extension Path {
+    /**
+     Create the directory.
+
+     - Note: This method fails if any of the intermediate parent directories does not exist.
+       This method also fails if any of the intermediate path elements corresponds to a file and
+       not a directory.
+    */
+    public func mkdir() throws {
+        try Path.fileManager.createDirectory(atPath: self.path, withIntermediateDirectories: false, attributes: nil)
+    }
+
+    /**
+     Create the directory and any intermediate parent directories that do not exist.
+
+     - Note: This method fails if any of the intermediate path elements corresponds to a file and
+       not a directory.
+    */
+    public func mkpath() throws {
+        try Path.fileManager.createDirectory(atPath: self.path, withIntermediateDirectories: true, attributes: nil)
     }
 }
 
@@ -68,9 +93,10 @@ extension Path {
         return path
     }
 
-    /// - Returns: the path of a temporary directory unique for each call.
-    /// - Note: Based on `NSUUID`.
-    ///
+    /**
+     - Returns: the path of a temporary directory unique for each call.
+     - Note: Based on `NSUUID`.
+    */
     public static func uniqueTemporary() throws -> Path {
         let path = try processUniqueTemporary() + UUID().uuidString
         try path.mkdir()
@@ -81,29 +107,28 @@ extension Path {
 // MARK: Traversing
 
 extension Path {
-    /// Get the parent directory
-    ///
-    /// - Returns: the normalized path of the parent directory
-    ///
-    public func parent() -> Path {
+    /// Get the normalized path of the parent directory
+    public var parent: Path {
         return self + ".."
     }
 
-    /// Performs a shallow enumeration in a directory
-    ///
-    /// - Returns: paths to all files, directories and symbolic links contained in the directory
-    ///
+    /**
+     Performs a shallow enumeration in a directory
+
+     - Returns: paths to all files, directories and symbolic links contained in the directory
+    */
     public func children() throws -> [Path] {
         return try Path.fileManager.contentsOfDirectory(atPath: path).map {
             self + Path($0)
         }
     }
 
-    /// Performs a deep enumeration in a directory
-    ///
-    /// - Returns: paths to all files, directories and symbolic links contained in the directory or
-    ///   any subdirectory.
-    ///
+    /**
+     Performs a deep enumeration in a directory
+
+     - Returns: paths to all files, directories and symbolic links contained in the directory or
+       any subdirectory.
+    */
     public func recursiveChildren() throws -> [Path] {
         return try Path.fileManager.subpathsOfDirectory(atPath: path).map {
             self + Path($0)
