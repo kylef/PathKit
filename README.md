@@ -19,31 +19,31 @@ let path = Path("/usr/bin") + Path("swift")
 #### Determine if a path is absolute
 
 ```swift
-path.isAbsolute()
+path.isAbsolute
 ```
 
 #### Determine if a path is relative
 
 ```swift
-path.isRelative()
+path.isRelative
 ```
 
 #### Determine if a file or directory exists at the path
 
 ```swift
-path.exists()
+path.exists
 ```
 
 #### Determine if a path is a directory
 
 ```swift
-path.isDirectory()
+path.isDirectory
 ```
 
 #### Get an absolute path
 
 ```swift
-let absolutePath = path.absolute()
+let absolutePath = path.absolute
 ```
 
 #### Normalize a path
@@ -51,7 +51,7 @@ let absolutePath = path.absolute()
 This cleans up any redundant `..` or `.` and double slashes in paths.
 
 ```swift
-let normalizedPath = path.normalize()
+let normalizedPath = path.normalize
 ```
 
 #### Deleting a path
@@ -84,7 +84,7 @@ path.chdir {
 #### Children paths
 
 ```swift
-path.children()
+path.children
 ```
 
 #### Reading

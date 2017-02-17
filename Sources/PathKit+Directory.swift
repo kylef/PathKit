@@ -1,0 +1,145 @@
+#if os(Linux)
+import Glibc
+
+let systemGlob = Glibc.glob
+#else
+import Darwin
+
+let systemGlob = Darwin.glob
+#endif
+
+import Foundation
+
+// MARK: Current Directory
+
+extension Path {
+    /**
+     The current working directory of the process
+
+     - Returns: the current working directory of the process
+    */
+    public static var current: Path {
+        get {
+            return self.init(Path.fileManager.currentDirectoryPath)
+        }
+        set {
+            _ = Path.fileManager.changeCurrentDirectoryPath(newValue.description)
+        }
+    }
+
+    /**
+     Changes the current working directory of the process to the path during the execution of the
+     given block.
+
+     - Note: The original working directory is restored when the block returns or throws.
+     - Parameter closure: A closure to be executed while the current directory is configured to
+       the path.
+    */
+    public func chdir(closure: () throws -> Void) rethrows {
+        let previous = Path.current
+        Path.current = self
+        defer { Path.current = previous }
+        try closure()
+    }
+}
+
+// MARK: Temporary
+
+extension Path {
+    /// The path to either the user’s or application’s home directory, depending on the platform.
+    public static var home: Path {
+        return Path(NSHomeDirectory())
+    }
+
+    /// The path of the temporary directory for the current user.
+    public static var temporary: Path {
+        return Path(NSTemporaryDirectory())
+    }
+
+    /**
+     - Returns: the path of a temporary directory unique for the process.
+     - Note: Based on `NSProcessInfo.globallyUniqueString`.
+    */
+    public static func processUniqueTemporary() throws -> Path {
+        let path = temporary + ProcessInfo.processInfo.globallyUniqueString
+        if !path.exists {
+            try path.mkdir()
+        }
+        return path
+    }
+
+    /// - Returns: the path of a temporary directory unique for each call.
+    /// - Note: Based on `NSUUID`.
+    ///
+    public static func uniqueTemporary() throws -> Path {
+        let path = try processUniqueTemporary() + UUID().uuidString
+        try path.mkdir()
+        return path
+    }
+}
+
+// MARK: Traversing
+
+extension Path {
+    /// Get the parent directory
+    ///
+    /// - Returns: the normalized path of the parent directory
+    ///
+    public func parent() -> Path {
+        return self + ".."
+    }
+
+    /// Performs a shallow enumeration in a directory
+    ///
+    /// - Returns: paths to all files, directories and symbolic links contained in the directory
+    ///
+    public func children() throws -> [Path] {
+        return try Path.fileManager.contentsOfDirectory(atPath: path).map {
+            self + Path($0)
+        }
+    }
+
+    /// Performs a deep enumeration in a directory
+    ///
+    /// - Returns: paths to all files, directories and symbolic links contained in the directory or
+    ///   any subdirectory.
+    ///
+    public func recursiveChildren() throws -> [Path] {
+        return try Path.fileManager.subpathsOfDirectory(atPath: path).map {
+            self + Path($0)
+        }
+    }
+}
+
+// MARK: Globbing
+
+extension Path {
+    public static func glob(_ pattern: String) -> [Path] {
+        var gt = glob_t()
+        let cPattern = strdup(pattern)
+        defer {
+            globfree(&gt)
+            free(cPattern)
+        }
+
+        let flags = GLOB_TILDE | GLOB_BRACE | GLOB_MARK
+        if systemGlob(cPattern, flags, nil, &gt) == 0 {
+            #if os(Linux)
+                let matchc = gt.gl_pathc
+            #else
+                let matchc = gt.gl_matchc
+            #endif
+            return (0..<Int(matchc)).flatMap { index in
+                guard let path = String(validatingUTF8: gt.gl_pathv[index]!) else { return nil }
+                return Path(path)
+            }
+        }
+
+        // GLOB_NOMATCH
+        return []
+    }
+
+    public func glob(_ pattern: String) -> [Path] {
+        return Path.glob((self + pattern).description)
+    }
+}
