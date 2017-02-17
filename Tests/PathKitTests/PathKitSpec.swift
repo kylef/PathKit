@@ -426,6 +426,7 @@ describe("PathKit") {
       }
 
       try expect(children.isEmpty).to.beTrue()
+      try expect(Path("/non/existing/directory/path").makeIterator().next()).to.beNil()
       #endif
     }
   
@@ -446,6 +447,7 @@ describe("PathKit") {
       }
 
       try expect(children.isEmpty).to.beTrue()
+      try expect(Path("/non/existing/directory/path").makeIterator().next()).to.beNil()
       #endif
     }
   }
