@@ -25,23 +25,23 @@ extension Path : Sequence {
         public typealias Element = Path
 
         let path: Path
-        let directoryEnumerator: FileManager.DirectoryEnumerator
+        let directoryEnumerator: FileManager.DirectoryEnumerator?
 
         init(path: Path, options mask: FileManager.DirectoryEnumerationOptions = []) {
             let options = FileManager.DirectoryEnumerationOptions(rawValue: mask.rawValue)
             self.path = path
             self.directoryEnumerator = Path.fileManager.enumerator(at:
-                path.url, includingPropertiesForKeys: nil, options: options)!
+                path.url, includingPropertiesForKeys: nil, options: options)
         }
 
         public func next() -> Path? {
-            guard let next = directoryEnumerator.nextObject(), let nextURL = next as? URL else { return nil }
+            guard let next = directoryEnumerator?.nextObject(), let nextURL = next as? URL else { return nil }
             return Path(nextURL.path)
         }
 
         /// Skip recursion into the most recently obtained subdirectory.
         public func skipDescendants() {
-            directoryEnumerator.skipDescendants()
+            directoryEnumerator?.skipDescendants()
         }
     }
 
