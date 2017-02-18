@@ -20,9 +20,13 @@ public struct Path {
         self.path = ""
     }
 
-    /// Create a Path from a given String
-    public init(_ path: String) {
-        self.path = path
+    /// Create a Path from a possibly null String object
+    public init(_ path: String?) {
+        if let p = path {
+            self.path = p
+        } else {
+            self.path = ""
+        }
     }
 
     /// Create a Path by joining multiple path components together
