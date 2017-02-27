@@ -40,18 +40,15 @@ public func < (lhs: Path, rhs: Path) -> Bool {
 
 /// Appends a Path fragment to another Path to produce a new Path
 public func + (lhs: Path, rhs: Path) -> Path {
-    guard lhs.path.characters.last! != "/", rhs.path.characters.first! != "/" else {
+    guard !lhs.path.ends(with: Path.separator), !rhs.path.starts(with: Path.separator) else {
         return Path("\(lhs.path)\(rhs.path)")
     }
-    return Path("\(lhs.path)/\(rhs.path)")
+    return Path("\(lhs.path)\(Path.separator)\(rhs.path)")
 }
 
 /// Appends a String fragment to another Path to produce a new Path
 public func + (lhs: Path, rhs: String) -> Path {
-    guard lhs.path.characters.last! != "/", rhs.characters.first! != "/" else {
-        return Path("\(lhs.path)\(rhs)")
-    }
-    return Path("\(lhs.path)/\(rhs)")
+    return lhs + Path(rhs)
 }
 
 /// Appends a String fragment to another String to produce a new Path
