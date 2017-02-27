@@ -1,0 +1,23 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "E3472B155FC961329A2EA7BFAD3AFAE6EFBD63E5",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "E3472B155FC961329A2EA7BFAD3AFAE6EFBD63E5" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "815DC380-A0F2-49FC-8731-84EF8D4D13CB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "E3472B155FC961329A2EA7BFAD3AFAE6EFBD63E5" : "PathKit\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "PathKit",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "PathKit.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:kylef\/PathKit.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E3472B155FC961329A2EA7BFAD3AFAE6EFBD63E5"
+    }
+  ]
+}
