@@ -77,6 +77,9 @@ extension Path {
     }
 
     public var url: URL {
+        if isDirectory {
+            return URL(fileURLWithPath: path, isDirectory: isDirectory)
+        }
         return URL(fileURLWithPath: path)
     }
 }

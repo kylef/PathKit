@@ -162,21 +162,24 @@ extension Path {
     /**
      Reads the file.
 
+     - Parameter options: the NSData.ReadingOptions to use to read the file.
+       (by default: `NSData.ReadingOptions(rawValue: 0)`)
+
      - Returns: the contents of the file at the specified path.
     */
-    public func read() throws -> Data {
-        return try Data(contentsOf: self.url, options: NSData.ReadingOptions(rawValue: 0))
+    public func read(options: NSData.ReadingOptions = NSData.ReadingOptions(rawValue: 0)) throws -> Data {
+        return try Data(contentsOf: self.url, options: options)
     }
 
     /**
      Reads the file contents and encoded its bytes to string applying the given encoding.
 
      - Parameter encoding: the encoding which should be used to decode the data.
-       (by default: `NSUTF8StringEncoding`)
+       (by default: `.utf8`)
 
      - Returns: the contents of the file at the specified path as string.
     */
-    public func read(_ encoding: String.Encoding = String.Encoding.utf8) throws -> String {
+    public func read(_ encoding: String.Encoding = .utf8) throws -> String {
         return try NSString(contentsOfFile: path, encoding: encoding.rawValue).substring(from: 0) as String
     }
 
@@ -187,9 +190,18 @@ extension Path {
        errors occur — the backup file is renamed to the name specified by path.
 
      - Parameter data: the contents to write to file.
+
+     - Parameter options: the NSData.WritingOptions to use to write the file.
+       (by default: `.atomic`)
+
+     - Parameter force: whether or not to try to forcefull write the file by creating the intermediate directories.
+       (by default: `true`)
     */
-    public func write(_ data: Data) throws {
-        try data.write(to: normalized.url, options: .atomic)
+    public func write(_ data: Data, options: NSData.WritingOptions = .atomic, force: Bool = false) throws {
+        if force {
+            try mkintermediatedirs()
+        }
+        try data.write(to: normalized.url, options: options)
     }
 
     /**
@@ -201,11 +213,15 @@ extension Path {
      - Parameter string: the string to write to file.
 
      - Parameter encoding: the encoding which should be used to represent the string as bytes.
-       (by default: `NSUTF8StringEncoding`)
+       (by default: `.utf8`)
 
-     - Returns: the contents of the file at the specified path as string.
+     - Parameter force: whether or not to try to forcefull write the file by creating the intermediate directories.
+       (by default: `true`)
     */
-    public func write(_ string: String, encoding: String.Encoding = String.Encoding.utf8) throws {
-        try string.write(toFile: normalized.path, atomically: true, encoding: encoding)
+    public func write(_ string: String, atomically: Bool = true, encoding: String.Encoding = .utf8, force: Bool = false) throws {
+        if force {
+            try mkintermediatedirs()
+        }
+        try string.write(to: normalized.url, atomically: atomically, encoding: encoding)
     }
 }

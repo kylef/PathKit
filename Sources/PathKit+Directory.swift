@@ -53,8 +53,8 @@ extension Path {
        This method also fails if any of the intermediate path elements corresponds to a file and
        not a directory.
     */
-    public func mkdir() throws {
-        try Path.fileManager.createDirectory(atPath: self.path, withIntermediateDirectories: false, attributes: nil)
+    public func mkdir(withIntermediateDirectories: Bool = false) throws {
+        try Path.fileManager.createDirectory(atPath: self.path, withIntermediateDirectories: withIntermediateDirectories, attributes: nil)
     }
 
     /**
@@ -64,7 +64,17 @@ extension Path {
        not a directory.
     */
     public func mkpath() throws {
-        try Path.fileManager.createDirectory(atPath: self.path, withIntermediateDirectories: true, attributes: nil)
+        try mkdir(withIntermediateDirectories: true)
+    }
+
+    /**
+     Create the directories up until the last path component
+
+     - Note: This method fails if any of the intermediate path elements corresponds to a file and
+       not a directory.
+    */
+    public func mkintermediatedirs() throws {
+        try Path(components: components.dropLast()).mkpath()
     }
 }
 
