@@ -46,6 +46,11 @@ extension Path {
 // MARK: Directory Manipulation
 
 extension Path {
+    // Linux still uses the FileAttributeKey instead of String
+    #if !os(Linux)
+    typealias FileAttributeKey = String
+    #endif
+
     /**
      Create the directory.
 
@@ -53,8 +58,8 @@ extension Path {
        This method also fails if any of the intermediate path elements corresponds to a file and
        not a directory.
     */
-    public func mkdir(withIntermediateDirectories: Bool = false) throws {
-        try Path.fileManager.createDirectory(atPath: self.path, withIntermediateDirectories: withIntermediateDirectories, attributes: nil)
+    public func mkdir(withIntermediateDirectories: Bool = false, attributes: [FileAttributeKey: Any]? = nil) throws {
+        try Path.fileManager.createDirectory(at: url, withIntermediateDirectories: withIntermediateDirectories, attributes: attributes)
     }
 
     /**
@@ -63,8 +68,8 @@ extension Path {
      - Note: This method fails if any of the intermediate path elements corresponds to a file and
        not a directory.
     */
-    public func mkpath() throws {
-        try mkdir(withIntermediateDirectories: true)
+    public func mkpath(attributes: [FileAttributeKey: Any]? = nil) throws {
+        try mkdir(withIntermediateDirectories: true, attributes: attributes)
     }
 
     /**
@@ -73,8 +78,8 @@ extension Path {
      - Note: This method fails if any of the intermediate path elements corresponds to a file and
        not a directory.
     */
-    public func mkintermediatedirs() throws {
-        try Path(components: components.dropLast()).mkpath()
+    public func ntermediatedirs(attributes: [FileAttributeKey: Any]? = nil) throws {
+        try Path(components: components.dropLast()).mkpath(attributes: attributes)
     }
 }
 
