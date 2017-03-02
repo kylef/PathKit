@@ -59,6 +59,7 @@ extension Path {
        not a directory.
     */
     public func mkdir(withIntermediateDirectories: Bool = false, attributes: [FileAttributeKey: Any]? = nil) throws {
+        guard !isDirectory else { return }
         try Path.fileManager.createDirectory(at: url, withIntermediateDirectories: withIntermediateDirectories, attributes: attributes)
     }
 
@@ -78,7 +79,7 @@ extension Path {
      - Note: This method fails if any of the intermediate path elements corresponds to a file and
        not a directory.
     */
-    public func ntermediatedirs(attributes: [FileAttributeKey: Any]? = nil) throws {
+    public func mkintermediatedirs(attributes: [FileAttributeKey: Any]? = nil) throws {
         try Path(components: components.dropLast()).mkpath(attributes: attributes)
     }
 }

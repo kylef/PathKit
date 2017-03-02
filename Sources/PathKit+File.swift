@@ -162,13 +162,13 @@ extension Path {
     /**
      Reads the file.
 
-     - Parameter options: the NSData.ReadingOptions to use to read the file.
-       (by default: `NSData.ReadingOptions(rawValue: 0)`)
+     - Parameter options: the Data.ReadingOptions to use to read the file.
+       (by default: `Data.ReadingOptions(rawValue: 0)`)
 
      - Returns: the contents of the file at the specified path.
     */
-    public func read(options: NSData.ReadingOptions = NSData.ReadingOptions(rawValue: 0)) throws -> Data {
-        return try Data(contentsOf: self.url, options: options)
+    public func read(options: Data.ReadingOptions = Data.ReadingOptions(rawValue: 0)) throws -> Data {
+        return try Data(contentsOf: normalized.url, options: options)
     }
 
     /**
@@ -180,7 +180,7 @@ extension Path {
      - Returns: the contents of the file at the specified path as string.
     */
     public func read(_ encoding: String.Encoding = .utf8) throws -> String {
-        return try NSString(contentsOfFile: path, encoding: encoding.rawValue).substring(from: 0) as String
+        return try String(contentsOf: normalized.url, encoding: encoding)
     }
 
     /**
@@ -191,13 +191,13 @@ extension Path {
 
      - Parameter data: the contents to write to file.
 
-     - Parameter options: the NSData.WritingOptions to use to write the file.
+     - Parameter options: the Data.WritingOptions to use to write the file.
        (by default: `.atomic`)
 
      - Parameter force: whether or not to try to forcefull write the file by creating the intermediate directories.
        (by default: `true`)
     */
-    public func write(_ data: Data, options: NSData.WritingOptions = .atomic, force: Bool = false) throws {
+    public func write(_ data: Data, options: Data.WritingOptions = .atomic, force: Bool = false) throws {
         if force {
             try mkintermediatedirs()
         }
