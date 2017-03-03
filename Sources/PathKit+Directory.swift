@@ -60,7 +60,7 @@ extension Path {
     */
     public func mkdir(withIntermediateDirectories: Bool = false, attributes: [FileAttributeKey: Any]? = nil) throws {
         guard !isDirectory else { return }
-        try Path.fileManager.createDirectory(at: url, withIntermediateDirectories: withIntermediateDirectories, attributes: attributes)
+        try Path.fileManager.createDirectory(atPath: path, withIntermediateDirectories: withIntermediateDirectories, attributes: attributes)
     }
 
     /**

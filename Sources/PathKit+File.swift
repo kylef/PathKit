@@ -10,7 +10,7 @@ extension Path {
        determined
     */
     public var exists: Bool {
-        return Path.fileManager.fileExists(atPath: self.path)
+        return Path.fileManager.fileExists(atPath: path)
     }
 
     /**
@@ -22,7 +22,7 @@ extension Path {
     */
     public var isDirectory: Bool {
         var directory = ObjCBool(false)
-        guard Path.fileManager.fileExists(atPath: normalized.path, isDirectory: &directory) else { return false }
+        guard Path.fileManager.fileExists(atPath: path, isDirectory: &directory) else { return false }
         #if os(Linux)
             return directory
         #else
@@ -40,7 +40,7 @@ extension Path {
     */
     public var isFile: Bool {
         var directory = ObjCBool(false)
-        guard Path.fileManager.fileExists(atPath: normalized.path, isDirectory: &directory) else { return false }
+        guard Path.fileManager.fileExists(atPath: path, isDirectory: &directory) else { return false }
         #if os(Linux)
             return !directory
         #else
@@ -67,7 +67,7 @@ extension Path {
        file could not be determined.
     */
     public var isReadable: Bool {
-        return Path.fileManager.isReadableFile(atPath: self.path)
+        return Path.fileManager.isReadableFile(atPath: path)
     }
 
     /**
@@ -78,7 +78,7 @@ extension Path {
        file could not be determined.
     */
     public var isWritable: Bool {
-        return Path.fileManager.isWritableFile(atPath: self.path)
+        return Path.fileManager.isWritableFile(atPath: path)
     }
 
     /**
@@ -89,7 +89,7 @@ extension Path {
        file could not be determined.
     */
     public var isExecutable: Bool {
-        return Path.fileManager.isExecutableFile(atPath: self.path)
+        return Path.fileManager.isExecutableFile(atPath: path)
     }
 
     /**
@@ -100,7 +100,7 @@ extension Path {
        file could not be determined.
     */
     public var isDeletable: Bool {
-        return Path.fileManager.isDeletableFile(atPath: self.path)
+        return Path.fileManager.isDeletableFile(atPath: path)
     }
 }
 
@@ -114,7 +114,7 @@ extension Path {
        removed.
     */
     public func delete() throws {
-        try Path.fileManager.removeItem(atPath: self.path)
+        try Path.fileManager.removeItem(atPath: path)
     }
 
     /**
@@ -124,7 +124,7 @@ extension Path {
        directory in its new location.
     */
     public func move(_ destination: Path) throws {
-        try Path.fileManager.moveItem(atPath: self.path, toPath: destination.path)
+        try Path.fileManager.moveItem(atPath: path, toPath: destination.path)
     }
 
     /**
@@ -134,7 +134,7 @@ extension Path {
        directory in its new location.
     */
     public func copy(_ destination: Path) throws {
-        try Path.fileManager.copyItem(atPath: self.path, toPath: destination.path)
+        try Path.fileManager.copyItem(atPath: path, toPath: destination.path)
     }
 
     /**
@@ -143,7 +143,7 @@ extension Path {
      - Parameter destination: The location where the link will be created.
     */
     public func link(_ destination: Path) throws {
-        try Path.fileManager.linkItem(atPath: self.path, toPath: destination.path)
+        try Path.fileManager.linkItem(atPath: path, toPath: destination.path)
     }
 
     /**
@@ -152,7 +152,7 @@ extension Path {
      - Parameter destintation: The location where the link will be created.
     */
     public func symlink(_ destination: Path) throws {
-        try Path.fileManager.createSymbolicLink(atPath: self.path, withDestinationPath: destination.path)
+        try Path.fileManager.createSymbolicLink(atPath: path, withDestinationPath: destination.path)
     }
 }
 
@@ -168,7 +168,7 @@ extension Path {
      - Returns: the contents of the file at the specified path.
     */
     public func read(options: Data.ReadingOptions = Data.ReadingOptions(rawValue: 0)) throws -> Data {
-        return try Data(contentsOf: normalized.url, options: options)
+        return try Data(contentsOf: url, options: options)
     }
 
     /**
@@ -180,7 +180,7 @@ extension Path {
      - Returns: the contents of the file at the specified path as string.
     */
     public func read(_ encoding: String.Encoding = .utf8) throws -> String {
-        return try String(contentsOf: normalized.url, encoding: encoding)
+        return try String(contentsOfFile: path, encoding: encoding)
     }
 
     /**
@@ -201,7 +201,7 @@ extension Path {
         if force {
             try mkintermediatedirs()
         }
-        try data.write(to: normalized.url, options: options)
+        try data.write(to: url, options: options)
     }
 
     /**
@@ -222,6 +222,6 @@ extension Path {
         if force {
             try mkintermediatedirs()
         }
-        try string.write(to: normalized.url, atomically: atomically, encoding: encoding)
+        try string.write(toFile: path, atomically: atomically, encoding: encoding)
     }
 }

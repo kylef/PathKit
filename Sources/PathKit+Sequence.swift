@@ -30,8 +30,7 @@ extension Path : Sequence {
         init(path: Path, options mask: FileManager.DirectoryEnumerationOptions = []) {
             let options = FileManager.DirectoryEnumerationOptions(rawValue: mask.rawValue)
             self.path = path
-            self.directoryEnumerator = Path.fileManager.enumerator(at:
-                path.url, includingPropertiesForKeys: nil, options: options)
+            self.directoryEnumerator = Path.fileManager.enumerator(at: path.url, includingPropertiesForKeys: nil, options: options)
         }
 
         public func next() -> Path? {

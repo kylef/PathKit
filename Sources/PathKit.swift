@@ -17,7 +17,7 @@ public struct Path {
     // MARK: Init
 
     public init() {
-        self.path = ""
+        path = ""
     }
 
     /// Create a Path from a possibly null String object
@@ -57,7 +57,7 @@ extension Path : ExpressibleByStringLiteral {
     }
 
     public init(stringLiteral value: StringLiteralType) {
-        self.path = value
+        path = value
     }
 }
 
@@ -65,7 +65,7 @@ extension Path : ExpressibleByStringLiteral {
 
 extension Path : CustomStringConvertible {
     public var description: String {
-        return self.path
+        return path
     }
 }
 
@@ -73,7 +73,7 @@ extension Path : CustomStringConvertible {
 
 extension Path {
     public var string: String {
-        return self.path
+        return path
     }
 
     public var url: URL {
@@ -121,7 +121,7 @@ extension Path {
     public var absolute: Path {
         guard !isAbsolute else { return normalized }
 
-        let expandedPath = Path(NSString(string: self.path).expandingTildeInPath)
+        let expandedPath = Path(NSString(string: path).expandingTildeInPath)
         guard !expandedPath.isAbsolute else { return expandedPath.normalized }
 
         return (Path.current + self).normalized
@@ -135,7 +135,7 @@ extension Path {
        representation.
     */
     public var normalized: Path {
-        return Path(NSString(string: self.path).standardizingPath)
+        return Path(NSString(string: path).standardizingPath)
     }
 
     /**
@@ -148,8 +148,8 @@ extension Path {
         let rangeOptions: String.CompareOptions = fileSystemInfo.isFSCaseSensitiveAt(path: self) ?
             [.anchored] : [.anchored, .caseInsensitive]
         let home = Path.home.string
-        guard let homeRange = self.path.range(of: home, options: rangeOptions) else { return self }
-        let withoutHome = Path(self.path.replacingCharacters(in: homeRange, with: ""))
+        guard let homeRange = path.range(of: home, options: rangeOptions) else { return self }
+        let withoutHome = Path(path.replacingCharacters(in: homeRange, with: ""))
 
         if withoutHome.path.isEmpty || withoutHome.path == Path.separator {
             return Path("~")
