@@ -48,7 +48,7 @@ extension Path {
 extension Path {
     // Linux still uses the FileAttributeKey instead of String
     #if !os(Linux)
-    typealias FileAttributeKey = String
+    public typealias FileAttributeKey = String
     #endif
 
     /**
