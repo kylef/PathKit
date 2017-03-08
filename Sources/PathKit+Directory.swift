@@ -60,7 +60,9 @@ extension Path {
     */
     public func mkdir(withIntermediateDirectories: Bool = false, attributes: [FileAttributeKey: Any]? = nil) throws {
         guard !isDirectory else { return }
-        try Path.fileManager.createDirectory(atPath: path, withIntermediateDirectories: withIntermediateDirectories, attributes: attributes)
+        try Path.fileManager.createDirectory(atPath: normalized.path,
+            withIntermediateDirectories: withIntermediateDirectories,
+            attributes: attributes)
     }
 
     /**
@@ -134,7 +136,7 @@ extension Path {
      - Returns: paths to all files, directories and symbolic links contained in the directory
     */
     public func children() throws -> [Path] {
-        return try Path.fileManager.contentsOfDirectory(atPath: path).map {
+        return try Path.fileManager.contentsOfDirectory(atPath: normalized.path).map {
             self + Path($0)
         }
     }
@@ -146,7 +148,7 @@ extension Path {
        any subdirectory.
     */
     public func recursiveChildren() throws -> [Path] {
-        return try Path.fileManager.subpathsOfDirectory(atPath: path).map {
+        return try Path.fileManager.subpathsOfDirectory(atPath: normalized.path).map {
             self + Path($0)
         }
     }

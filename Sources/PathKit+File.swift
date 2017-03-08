@@ -10,7 +10,7 @@ extension Path {
        determined
     */
     public var exists: Bool {
-        return Path.fileManager.fileExists(atPath: path)
+        return Path.fileManager.fileExists(atPath: normalized.path)
     }
 
     /**
@@ -22,7 +22,7 @@ extension Path {
     */
     public var isDirectory: Bool {
         var directory = ObjCBool(false)
-        guard Path.fileManager.fileExists(atPath: path, isDirectory: &directory) else { return false }
+        guard Path.fileManager.fileExists(atPath: normalized.path, isDirectory: &directory) else { return false }
         #if os(Linux)
             return directory
         #else
@@ -40,7 +40,7 @@ extension Path {
     */
     public var isFile: Bool {
         var directory = ObjCBool(false)
-        guard Path.fileManager.fileExists(atPath: path, isDirectory: &directory) else { return false }
+        guard Path.fileManager.fileExists(atPath: normalized.path, isDirectory: &directory) else { return false }
         #if os(Linux)
             return !directory
         #else
@@ -55,7 +55,7 @@ extension Path {
        or its existence could not be determined
     */
     public var isSymlink: Bool {
-        guard let _ = try? Path.fileManager.destinationOfSymbolicLink(atPath: path) else { return false }
+        guard let _ = try? Path.fileManager.destinationOfSymbolicLink(atPath: normalized.path) else { return false }
         return true
     }
 
@@ -67,7 +67,7 @@ extension Path {
        file could not be determined.
     */
     public var isReadable: Bool {
-        return Path.fileManager.isReadableFile(atPath: path)
+        return Path.fileManager.isReadableFile(atPath: normalized.path)
     }
 
     /**
@@ -78,7 +78,7 @@ extension Path {
        file could not be determined.
     */
     public var isWritable: Bool {
-        return Path.fileManager.isWritableFile(atPath: path)
+        return Path.fileManager.isWritableFile(atPath: normalized.path)
     }
 
     /**
@@ -89,7 +89,7 @@ extension Path {
        file could not be determined.
     */
     public var isExecutable: Bool {
-        return Path.fileManager.isExecutableFile(atPath: path)
+        return Path.fileManager.isExecutableFile(atPath: normalized.path)
     }
 
     /**
@@ -100,7 +100,7 @@ extension Path {
        file could not be determined.
     */
     public var isDeletable: Bool {
-        return Path.fileManager.isDeletableFile(atPath: path)
+        return Path.fileManager.isDeletableFile(atPath: normalized.path)
     }
 }
 
@@ -114,7 +114,7 @@ extension Path {
        removed.
     */
     public func delete() throws {
-        try Path.fileManager.removeItem(atPath: path)
+        try Path.fileManager.removeItem(atPath: normalized.path)
     }
 
     /**
@@ -124,7 +124,7 @@ extension Path {
        directory in its new location.
     */
     public func move(_ destination: Path) throws {
-        try Path.fileManager.moveItem(atPath: path, toPath: destination.path)
+        try Path.fileManager.moveItem(atPath: normalized.path, toPath: destination.normalized.path)
     }
 
     /**
@@ -134,7 +134,7 @@ extension Path {
        directory in its new location.
     */
     public func copy(_ destination: Path) throws {
-        try Path.fileManager.copyItem(atPath: path, toPath: destination.path)
+        try Path.fileManager.copyItem(atPath: normalized.path, toPath: destination.normalized.path)
     }
 
     /**
@@ -143,7 +143,7 @@ extension Path {
      - Parameter destination: The location where the link will be created.
     */
     public func link(_ destination: Path) throws {
-        try Path.fileManager.linkItem(atPath: path, toPath: destination.path)
+        try Path.fileManager.linkItem(atPath: normalized.path, toPath: destination.normalized.path)
     }
 
     /**
@@ -152,7 +152,7 @@ extension Path {
      - Parameter destintation: The location where the link will be created.
     */
     public func symlink(_ destination: Path) throws {
-        try Path.fileManager.createSymbolicLink(atPath: path, withDestinationPath: destination.path)
+        try Path.fileManager.createSymbolicLink(atPath: normalized.path, withDestinationPath: destination.normalized.path)
     }
 }
 
@@ -180,7 +180,7 @@ extension Path {
      - Returns: the contents of the file at the specified path as string.
     */
     public func read(_ encoding: String.Encoding = .utf8) throws -> String {
-        return try String(contentsOfFile: path, encoding: encoding)
+        return try String(contentsOfFile: normalized.path, encoding: encoding)
     }
 
     /**
@@ -222,6 +222,6 @@ extension Path {
         if force {
             try mkintermediatedirs()
         }
-        try string.write(toFile: path, atomically: atomically, encoding: encoding)
+        try string.write(toFile: normalized.path, atomically: atomically, encoding: encoding)
     }
 }
