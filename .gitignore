@@ -1,3 +1,4 @@
 .build/
 Packages/
-.*.swp
+*.swp
+Package.pins
