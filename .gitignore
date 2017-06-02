@@ -1,4 +1,5 @@
 .build/
 Packages/
-*.swp
+*.sw[po]
 Package.pins
+.DS_Store
