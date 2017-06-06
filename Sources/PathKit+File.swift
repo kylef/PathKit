@@ -128,6 +128,16 @@ extension Path {
     }
 
     /**
+     Move the file or directory to a new location at the same parent path, but with the new file or directory name
+
+     - Parameter newName: The new name of the file or directory
+    */
+    public func rename(_ newName: String) throws {
+        let newPath = parent + newName
+        try move(newPath)
+    }
+
+    /**
      Copy the file or directory to a new location synchronously.
 
      - Parameter destination: The new path. This path must include the name of the file or
