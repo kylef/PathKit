@@ -480,6 +480,8 @@ describe("PathKit") {
     try expect(Path("a")) == "./." + "a"
     try expect(Path(".")) == "." + "."
     try expect(Path(".")) == "./." + "./."
+    try expect(Path("../a")) == "." + "./../a"
+    try expect(Path("../a")) == "." + "../a"
 
     // Appending (to) '..'
     try expect(Path(".")) == "a" + ".."
