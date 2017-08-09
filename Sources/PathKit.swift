@@ -765,8 +765,8 @@ internal func +(lhs: String, rhs: String) -> Path {
     rSlice = rSlice.filter { $0 != "." }.fullSlice
 
     // Eats up trailing components of the left and leading ".." of the right side
-    while lSlice.last != ".." && rSlice.first == ".." {
-      if (lSlice.count > 1 || lSlice.first != Path.separator) && !lSlice.isEmpty {
+    while lSlice.last != ".." && !lSlice.isEmpty && rSlice.first == ".." {
+      if lSlice.count > 1 || lSlice.first != Path.separator {
         // A leading "/" is never popped
         lSlice.removeLast()
       }
