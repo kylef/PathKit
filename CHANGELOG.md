@@ -1,5 +1,13 @@
 # PathKit Changelog
 
+## Master
+
+### Bug Fixes
+
+* Appending to (.) slice started with (..) will return correct path.  
+  [Antondomashnev](https://github.com/Antondomashnev)
+
+
 ## 0.8.0
 
 ### Enhancements
