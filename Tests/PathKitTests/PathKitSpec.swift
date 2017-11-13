@@ -386,10 +386,10 @@ describe("PathKit") {
   }
 
   $0.it("can return the parent directory of a path") {
-    try expect((fixtures + "directory/child").parentd) == fixtures + "directory"
-    try expect((fixtures + "symlinks/directory").parentd) == fixtures + "symlinks"
-    try expect((fixtures + "directory/..").parentd) == fixtures + "directory/../.."
-    try expect(Path("/").parentd) == "/"
+    try expect((fixtures + "directory/child").parent) == fixtures + "directory"
+    try expect((fixtures + "symlinks/directory").parent) == fixtures + "symlinks"
+    try expect((fixtures + "directory/..").parent) == fixtures + "directory/../.."
+    try expect(Path("/").parent) == "/"
   }
 
   $0.it("can return the children") {
@@ -477,6 +477,8 @@ describe("PathKit") {
     try expect(Path("a")) == "./." + "a"
     try expect(Path(".")) == "." + "."
     try expect(Path(".")) == "./." + "./."
+    try expect(Path("../a")) == "." + "./../a"
+    try expect(Path("../a")) == "." + "../a"
 
     // Appending (to) '..'
     try expect(Path(".")) == "a" + ".."
@@ -493,14 +495,14 @@ describe("PathKit") {
       let pattern = (fixtures + "permissions/*able").description
       let paths = Path.glob(pattern)
 
-      let results = try (fixtures + "permissions").children().map { $0.absolute() }.sorted(by: <)
+      let results = try (fixtures + "permissions").children().map { $0.absolute }.sorted(by: <)
       try expect(paths) == results.sorted(by: <)
     }
 
     $0.it("can glob inside a directory") {
       let paths = fixtures.glob("permissions/*able")
 
-      let results = try (fixtures + "permissions").children().map { $0.absolute() }.sorted(by: <)
+      let results = try (fixtures + "permissions").children().map { $0.absolute }.sorted(by: <)
       try expect(paths) == results.sorted(by: <)
     }
   }

@@ -1,5 +1,4 @@
 import Foundation
-import Strings
 
 // MARK: Equatable
 
@@ -41,7 +40,7 @@ public func < (lhs: Path, rhs: Path) -> Bool {
 
 /// Appends a Path fragment to another Path to produce a new Path
 public func + (lhs: Path, rhs: Path) -> Path {
-    guard !lhs.path.ends(with: Path.separator), !rhs.path.starts(with: Path.separator) else {
+    guard !lhs.path.hasSuffix(Path.separator), !rhs.path.hasPrefix(Path.separator) else {
         return Path("\(lhs.path)\(rhs.path)")
     }
     return Path("\(lhs.path)\(Path.separator)\(rhs.path)")
@@ -71,8 +70,8 @@ internal func + (lhs: String, rhs: String) -> Path {
     rSlice = rSlice.filter { $0 != "." }.fullSlice
 
     // Eats up trailing components of the left and leading ".." of the right side
-    while lSlice.last != ".." && rSlice.first == ".." {
-        if (lSlice.count > 1 || lSlice.first != Path.separator) && !lSlice.isEmpty {
+    while lSlice.last != ".." && !lSlice.isEmpty && rSlice.first == ".." {
+        if lSlice.count > 1 || lSlice.first != Path.separator {
             // A leading "/" is never popped
             lSlice.removeLast()
         }

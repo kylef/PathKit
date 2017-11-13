@@ -2,4 +2,6 @@
 Packages/
 *.sw[po]
 Package.pins
+Package.resolved
 .DS_Store
+.AppleDouble

@@ -1,11 +1,18 @@
+// swift-tools-version:4.0
+// The swift-tools-version declares the minimum version of Swift required to build this package.
+
 import PackageDescription
 
 let package = Package(
   name: "PathKit",
-  dependencies: [
-      .Package(url: "https://github.com/Ponyboy47/Strings.git", majorVersion: 1)
+  products: [
+      .library(name: "PathKit", targets: ["PathKit"]),
   ],
-  exclude: [
-      "Tests"
+  dependencies: [
+      .package(url: "https://github.com/kylef/Spectre.git", .upToNextMinor(from: "0.8.0"))
+  ],
+  targets: [
+      .target(name: "PathKit", dependencies: [], path: "Sources"),
+      .testTarget(name: "PathKitTests", dependencies: ["PathKit", "Spectre"], path: "Tests/PathKitTests")
   ]
 )
