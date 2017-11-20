@@ -46,11 +46,6 @@ extension Path {
 // MARK: Directory Manipulation
 
 extension Path {
-    // Linux still uses the FileAttributeKey instead of String
-    #if !os(Linux)
-    public typealias FileAttributeKey = String
-    #endif
-
     /**
      Create the directory.
 
