@@ -3,7 +3,7 @@ import Foundation
 import PackageDescription
 
 var isDevelopment: Bool {
-    return ProcessInfo.processInfo.environment["SWIFTPM_DEVELOPMENT"] == "YES"
+    return ProcessInfo.processInfo.environment["PATHKIT_SWIFTPM_DEVELOPMENT"] == "YES"
 }
 
 func deps() -> [Package.Dependency] {

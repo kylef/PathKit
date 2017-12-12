@@ -1,5 +1,5 @@
 .PHONY = clean update build test bootstrap
-PARAM = SWIFTPM_DEVELOPMENT=YES
+PARAM = PATHKIT_SWIFTPM_DEVELOPMENT=YES
 
 clean:
 	if [ -e Package.resolved ]; then rm Package.resolved; fi
