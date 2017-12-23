@@ -221,7 +221,7 @@ extension Path {
 
   /// The last path component without file extension
   ///
-  /// - Note: This returns "." for "..".
+  /// - Note: This returns "." for ".." on Linux, and ".." on Apple platforms.
   ///
   /// - Returns: the last path component without file extension
   ///
