@@ -564,7 +564,7 @@ extension Path {
   public func children() throws -> [Path] {
     return try Path.fileManager.contentsOfDirectory(atPath: path).map {
       self + Path($0)
-    }
+    }.sorted { $0.lastComponent < $1.lastComponent }
   }
 
   /// Performs a deep enumeration in a directory
