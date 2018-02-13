@@ -42,7 +42,7 @@ public struct Path {
       path = "."
     } else if components.first == Path.separator && components.count > 1 {
       let p = components.joined(separator: Path.separator)
-      path = p.substring(from: p.characters.index(after: p.startIndex))
+      path = p.substring(from: p.index(after: p.startIndex))
     } else {
       path = components.joined(separator: Path.separator)
     }
