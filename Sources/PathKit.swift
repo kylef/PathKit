@@ -42,7 +42,11 @@ public struct Path {
       path = "."
     } else if components.first == Path.separator && components.count > 1 {
       let p = components.joined(separator: Path.separator)
+#if swift(>=4.0)
+      path = String(p[p.index(after: p.startIndex)...])
+#else
       path = p.substring(from: p.characters.index(after: p.startIndex))
+#endif
     } else {
       path = components.joined(separator: Path.separator)
     }
@@ -276,10 +280,10 @@ extension Path {
     guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
       return false
     }
-#if os(Linux)
-    return directory
-#else
+#if !os(Linux) || swift(>=4.1)
     return directory.boolValue
+#else
+    return directory
 #endif
   }
 
@@ -295,10 +299,10 @@ extension Path {
     guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
       return false
     }
-#if os(Linux)
-  return !directory
-#else
+#if !os(Linux) || swift(>=4.1)
   return !directory.boolValue
+#else
+  return !directory
 #endif
   }
 
@@ -598,6 +602,15 @@ extension Path {
 #else
       let matchc = gt.gl_matchc
 #endif
+#if swift(>=4.1)
+      return (0..<Int(matchc)).compactMap { index in
+        if let path = String(validatingUTF8: gt.gl_pathv[index]!) {
+          return Path(path)
+        }
+
+        return nil
+      }
+#else
       return (0..<Int(matchc)).flatMap { index in
         if let path = String(validatingUTF8: gt.gl_pathv[index]!) {
           return Path(path)
@@ -605,6 +618,7 @@ extension Path {
 
         return nil
       }
+#endif
     }
 
     // GLOB_NOMATCH
