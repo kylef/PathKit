@@ -1,6 +1,6 @@
 # PathKit Changelog
 
-## master
+## 0.9.1
 
 ### Bug Fixes
 
