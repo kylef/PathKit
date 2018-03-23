@@ -1,5 +1,12 @@
 # PathKit Changelog
 
+## master
+
+### Bug Fixes
+
+* Fix warning with Swift 4, support 4.1
+  [Keith Smiley](https://github.com/keith)
+
 ## 0.9.0
 
 ### Enhancements

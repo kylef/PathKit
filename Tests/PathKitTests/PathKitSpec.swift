@@ -210,10 +210,10 @@ describe("PathKit") {
 
   $0.it("can return the last component without extension") {
     try expect(Path("a/b/c.d").lastComponentWithoutExtension) == "c"
-    #if os(Linux) // no longer necessary after Swift 4.1
-        try expect(Path("a/..").lastComponentWithoutExtension) == "."
-    #else
+    #if !os(Linux) || swift(>=4.1)
         try expect(Path("a/..").lastComponentWithoutExtension) == ".."
+    #else
+        try expect(Path("a/..").lastComponentWithoutExtension) == "."
     #endif
   }
 
