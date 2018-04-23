@@ -194,13 +194,15 @@ describe("PathKit") {
       try expect(resolvedPath) == Path("/usr/bin/swift")
     }
 
-#if !os(Linux)
     $0.it("can create a relative symlink in the same directory") {
-      let path = fixtures + "symlinks/same-dir"
-      let resolvedPath = try path.symlinkDestination()
-      try expect(resolvedPath.normalize()) == fixtures + "symlinks/file"
+      #if os(Linux)
+        throw skip()
+      #else
+        let path = fixtures + "symlinks/same-dir"
+        let resolvedPath = try path.symlinkDestination()
+        try expect(resolvedPath.normalize()) == fixtures + "symlinks/file"
+      #endif
     }
-#endif
   }
 
   $0.it("can return the last component") {
@@ -268,12 +270,14 @@ describe("PathKit") {
       try expect((fixtures + "permissions/writable").isWritable).to.beTrue()
     }
 
-#if !os(Linux)
     // fatal error: isDeletableFile(atPath:) is not yet implemented
     $0.it("can test if a path is deletable") {
-      try expect((fixtures + "permissions/deletable").isDeletable).to.beTrue()
+      #if os(Linux)
+        throw skip()
+      #else
+        try expect((fixtures + "permissions/deletable").isDeletable).to.beTrue()
+      #endif
     }
-#endif
   }
 
   $0.describe("changing directory") {
