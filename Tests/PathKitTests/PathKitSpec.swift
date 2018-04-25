@@ -418,7 +418,7 @@ describe("PathKit") {
 
   $0.describe("conforms to SequenceType") {
     $0.it("without options") {
-      #if os(Linux)
+      #if !os(Darwin) && !swift(>=4.1)
       throw skip()
       #else
       let path = fixtures + "directory"
