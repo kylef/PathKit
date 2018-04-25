@@ -5,6 +5,13 @@ matrix:
       sudo: required
       dist: trusty
       env:
+        - SWIFT_VERSION=4.1
+        - MAJOR_VERSION=4
+    - os: linux
+      language: generic
+      sudo: required
+      dist: trusty
+      env:
         - SWIFT_VERSION=4.0.3
         - MAJOR_VERSION=4
     - os: linux
