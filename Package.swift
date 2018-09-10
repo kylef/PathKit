@@ -1,4 +1,4 @@
-// swift-tools-version:4.0
+// swift-tools-version:4.2
 import PackageDescription
 
 let package = Package(
@@ -13,5 +13,5 @@ let package = Package(
     .target(name: "PathKit", dependencies: [], path: "Sources"),
     .testTarget(name: "PathKitTests", dependencies: ["PathKit", "Spectre"], path:"Tests/PathKitTests")
   ],
-  swiftLanguageVersions: [3, 4]
+  swiftLanguageVersions: [.v3, .v4, .v4_2]
 )
