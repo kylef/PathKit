@@ -1,5 +1,11 @@
 # PathKit Changelog
 
+## Master
+
+### Enhancements
+
+- Adds support for Swift 4.2.
+
 ## 0.9.1
 
 ### Bug Fixes
