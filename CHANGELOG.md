@@ -1,6 +1,6 @@
 # PathKit Changelog
 
-## Master
+## 0.9.2 (2018-09-10)
 
 ### Enhancements
 
