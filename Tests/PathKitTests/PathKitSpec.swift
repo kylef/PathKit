@@ -7,8 +7,7 @@ struct ThrowError: Error, Equatable {}
 func == (lhs:ThrowError, rhs:ThrowError) -> Bool { return true }
 
 
-public func testPathKit() {
-describe("PathKit") {
+public let testPathKit: ((ContextType) -> Void) = {
   let fixtures = Path(#file).parent() + "Fixtures"
 
   $0.before {
@@ -517,5 +516,4 @@ describe("PathKit") {
       try expect(paths) == results.sorted(by: <)
     }
   }
-}
 }

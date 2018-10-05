@@ -2,6 +2,6 @@ import XCTest
 
 class PathKitTests: XCTestCase {
   func testRunSpectre() {
-    testPathKit()
+    describe("PathKit", testPathKit)
   }
 }
