@@ -21,6 +21,9 @@ public struct Path {
   /// The underlying string representation
   internal var path: String
 
+  /// Direct paths contain no parent or self references (.. or .)
+  internal let direct: Bool
+
   internal static var fileManager = FileManager.default
   
   internal var fileSystemInfo: FileSystemInfo = DefaultFileSystemInfo()
@@ -29,22 +32,33 @@ public struct Path {
 
   public init() {
     self.path = ""
+    self.direct = true
   }
 
   /// Create a Path from a given String
   public init(_ path: String) {
     self.path = path
+    self.direct = !(path as NSString).pathComponents.contains { $0 == ".." || $0 == "." }
+  }
+
+  /// Create a Path from a given String
+  public init(direct path: String) {
+    self.path = path
+    self.direct = true
   }
 
   /// Create a Path by joining multiple path components together
   public init<S : Collection>(components: S) where S.Iterator.Element == String {
     if components.isEmpty {
       path = "."
-    } else if components.first == Path.separator && components.count > 1 {
-      let p = components.joined(separator: Path.separator)
-      path = String(p[p.index(after: p.startIndex)...])
+      self.direct = false
     } else {
-      path = components.joined(separator: Path.separator)
+      if components.first == Path.separator && components.count > 1 {
+        path = components.dropFirst().joined(separator: Path.separator)
+      } else {
+        path = components.joined(separator: Path.separator)
+      }
+      self.direct = components.contains { $0 == ".." || $0 == "." }
     }
   }
 }
@@ -65,7 +79,7 @@ extension Path : ExpressibleByStringLiteral {
   }
 
   public init(stringLiteral value: StringLiteralType) {
-    self.path = value
+    self.init(value)
   }
 }
 
@@ -144,7 +158,7 @@ extension Path {
   ///   representation.
   ///
   public func normalize() -> Path {
-    return Path(NSString(string: self.path).standardizingPath)
+    return Path(direct: NSString(string: self.path).standardizingPath)
   }
 
   /// De-normalizes the path, by replacing the current user home directory with "~".
@@ -434,7 +448,7 @@ extension Path {
   ///
   public static var current: Path {
     get {
-      return self.init(Path.fileManager.currentDirectoryPath)
+      return self.init(direct: Path.fileManager.currentDirectoryPath)
     }
     set {
       _ = Path.fileManager.changeCurrentDirectoryPath(newValue.description)
@@ -464,13 +478,13 @@ extension Path {
   ///   depending on the platform.
   ///
   public static var home: Path {
-    return Path(NSHomeDirectory())
+    return Path(direct: NSHomeDirectory())
   }
 
   /// - Returns: the path of the temporary directory for the current user.
   ///
   public static var temporary: Path {
-    return Path(NSTemporaryDirectory())
+    return Path(direct: NSTemporaryDirectory())
   }
 
   /// - Returns: the path of a temporary directory unique for the process.
@@ -554,7 +568,11 @@ extension Path {
   /// - Returns: the normalized path of the parent directory
   ///
   public func parent() -> Path {
-    return self + ".."
+    if direct {
+      return Path(direct: (self.path as NSString).deletingLastPathComponent)
+    } else {
+      return self + ".."
+    }
   }
 
   /// Performs a shallow enumeration in a directory
@@ -563,7 +581,7 @@ extension Path {
   ///
   public func children() throws -> [Path] {
     return try Path.fileManager.contentsOfDirectory(atPath: path).map {
-      self + Path($0)
+      self + Path(direct: $0)
     }
   }
 
@@ -574,7 +592,7 @@ extension Path {
   ///
   public func recursiveChildren() throws -> [Path] {
     return try Path.fileManager.subpathsOfDirectory(atPath: path).map {
-      self + Path($0)
+      self + Path(direct: $0)
     }
   }
 }
@@ -601,7 +619,7 @@ extension Path {
 #if swift(>=4.1)
       return (0..<Int(matchc)).compactMap { index in
         if let path = String(validatingUTF8: gt.gl_pathv[index]!) {
-          return Path(path)
+          return Path(direct: path)
         }
 
         return nil
@@ -609,7 +627,7 @@ extension Path {
 #else
       return (0..<Int(matchc)).flatMap { index in
         if let path = String(validatingUTF8: gt.gl_pathv[index]!) {
-          return Path(path)
+          return Path(direct: path)
         }
 
         return nil
@@ -673,7 +691,7 @@ extension Path : Sequence {
       let next = directoryEnumerator?.nextObject()
       
       if let next = next as? URL {
-        return Path(next.path)
+        return Path(direct: next.path)
       }
       return nil
     }
@@ -746,24 +764,21 @@ public func <(lhs: Path, rhs: Path) -> Bool {
 
 // MARK: Operators
 
-/// Appends a Path fragment to another Path to produce a new Path
-public func +(lhs: Path, rhs: Path) -> Path {
-  return lhs.path + rhs.path
-}
-
 /// Appends a String fragment to another Path to produce a new Path
 public func +(lhs: Path, rhs: String) -> Path {
-  return lhs.path + rhs
+  return lhs + Path(rhs)
 }
 
-/// Appends a String fragment to another String to produce a new Path
-internal func +(lhs: String, rhs: String) -> Path {
-  if rhs.hasPrefix(Path.separator) {
+/// Appends a Path fragment to another Path to produce a new Path
+public func +(lhs: Path, rhs: Path) -> Path {
+  if rhs.isAbsolute {
     // Absolute paths replace relative paths
-    return Path(rhs)
+    return rhs
+  } else if lhs.direct && rhs.direct {
+    return Path(direct: (lhs.path as NSString).appendingPathComponent(rhs.path))
   } else {
-    var lSlice = NSString(string: lhs).pathComponents.fullSlice
-    var rSlice = NSString(string: rhs).pathComponents.fullSlice
+    var lSlice = lhs.components.fullSlice
+    var rSlice = rhs.components.fullSlice
 
     // Get rid of trailing "/" at the left side
     if lSlice.count > 1 && lSlice.last == Path.separator {
