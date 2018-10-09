@@ -14,7 +14,7 @@ import Foundation
 
 
 /// Represents a filesystem path.
-public struct Path {
+public final class Path {
   /// The character used by the OS to separate two path elements
   public static let separator = "/"
 
@@ -27,17 +27,14 @@ public struct Path {
 
   // MARK: Init
 
-  public init() {
-    self.path = ""
-  }
-
   /// Create a Path from a given String
-  public init(_ path: String) {
+  public init(_ path: String = "") {
     self.path = path
   }
 
   /// Create a Path by joining multiple path components together
-  public init<S : Collection>(components: S) where S.Iterator.Element == String {
+  public convenience init<S : Collection>(components: S) where S.Iterator.Element == String {
+    let path: String
     if components.isEmpty {
       path = "."
     } else if components.first == Path.separator && components.count > 1 {
@@ -46,6 +43,7 @@ public struct Path {
     } else {
       path = components.joined(separator: Path.separator)
     }
+    self.init(path)
   }
 }
 
@@ -56,16 +54,16 @@ extension Path : ExpressibleByStringLiteral {
   public typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
   public typealias UnicodeScalarLiteralType = StringLiteralType
 
-  public init(extendedGraphemeClusterLiteral path: StringLiteralType) {
-    self.init(stringLiteral: path)
+  public convenience init(extendedGraphemeClusterLiteral path: StringLiteralType) {
+    self.init(path)
   }
 
-  public init(unicodeScalarLiteral path: StringLiteralType) {
-    self.init(stringLiteral: path)
+  public convenience init(unicodeScalarLiteral path: StringLiteralType) {
+    self.init(path)
   }
 
-  public init(stringLiteral value: StringLiteralType) {
-    self.path = value
+  public convenience init(stringLiteral value: StringLiteralType) {
+    self.init(value)
   }
 }
 
