@@ -106,7 +106,7 @@ extension Path : Hashable {
 extension Path {
   /// Test whether a path is absolute.
   ///
-  /// - Returns: `true` iff the path begings with a slash
+  /// - Returns: `true` iff the path begins with a slash
   ///
   public var isAbsolute: Bool {
     return path.hasPrefix(Path.separator)
