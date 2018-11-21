@@ -33,7 +33,7 @@ matrix:
       sudo: required
       osx_image: xcode10
       env:
-        - SWIFT_VERSION=4.2
+        - SWIFT_VERSION=4.2.1
         - MAJOR_VERSION=4.2
     - os: osx
       language: generic
