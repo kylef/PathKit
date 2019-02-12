@@ -95,8 +95,8 @@ extension Path {
 // MARK: Hashable
 
 extension Path : Hashable {
-  public var hashValue: Int {
-    return path.hashValue
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(self.path.hashValue)
   }
 }
 
