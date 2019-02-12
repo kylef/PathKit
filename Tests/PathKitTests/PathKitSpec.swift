@@ -212,11 +212,7 @@ describe("PathKit") {
 
   $0.it("can return the last component without extension") {
     try expect(Path("a/b/c.d").lastComponentWithoutExtension) == "c"
-    #if !os(Linux)
-        try expect(Path("a/..").lastComponentWithoutExtension) == ".."
-    #else
-        try expect(Path("a/..").lastComponentWithoutExtension) == "."
-    #endif
+    try expect(Path("a/..").lastComponentWithoutExtension) == ".."
   }
 
   $0.it("can be split into components") {
