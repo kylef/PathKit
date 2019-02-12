@@ -276,7 +276,7 @@ extension Path {
     guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
       return false
     }
-#if !os(Linux) || swift(>=4.1)
+#if !os(Linux)
     return directory.boolValue
 #else
     return directory
@@ -295,7 +295,7 @@ extension Path {
     guard Path.fileManager.fileExists(atPath: normalize().path, isDirectory: &directory) else {
       return false
     }
-#if !os(Linux) || swift(>=4.1)
+#if !os(Linux)
   return !directory.boolValue
 #else
   return !directory
@@ -598,7 +598,6 @@ extension Path {
 #else
       let matchc = gt.gl_matchc
 #endif
-#if swift(>=4.1)
       return (0..<Int(matchc)).compactMap { index in
         if let path = String(validatingUTF8: gt.gl_pathv[index]!) {
           return Path(path)
@@ -606,15 +605,6 @@ extension Path {
 
         return nil
       }
-#else
-      return (0..<Int(matchc)).flatMap { index in
-        if let path = String(validatingUTF8: gt.gl_pathv[index]!) {
-          return Path(path)
-        }
-
-        return nil
-      }
-#endif
     }
 
     // GLOB_NOMATCH

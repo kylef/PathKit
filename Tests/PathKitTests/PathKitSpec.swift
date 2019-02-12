@@ -212,7 +212,7 @@ describe("PathKit") {
 
   $0.it("can return the last component without extension") {
     try expect(Path("a/b/c.d").lastComponentWithoutExtension) == "c"
-    #if !os(Linux) || swift(>=4.1)
+    #if !os(Linux)
         try expect(Path("a/..").lastComponentWithoutExtension) == ".."
     #else
         try expect(Path("a/..").lastComponentWithoutExtension) == "."
@@ -418,9 +418,6 @@ describe("PathKit") {
 
   $0.describe("conforms to SequenceType") {
     $0.it("without options") {
-      #if !os(Darwin) && !swift(>=4.1)
-      throw skip()
-      #else
       let path = fixtures + "directory"
       var children = ["child", "subdirectory", ".hiddenFile"].map { path + $0 }
       let generator = path.makeIterator()
@@ -435,7 +432,6 @@ describe("PathKit") {
 
       try expect(children.isEmpty).to.beTrue()
       try expect(Path("/non/existing/directory/path").makeIterator().next()).to.beNil()
-      #endif
     }
   
     $0.it("with options") {
