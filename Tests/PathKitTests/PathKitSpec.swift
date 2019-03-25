@@ -419,7 +419,7 @@ describe("PathKit") {
       let generator = path.makeIterator()
       while let child = generator.next() {
         generator.skipDescendants()
-        if let index = children.index(of: child) {
+        if let index = children.firstIndex(of: child) {
           children.remove(at: index)
         } else {
           throw failure("Generated unexpected element: <\(child)>")
@@ -439,7 +439,7 @@ describe("PathKit") {
       let generator = path.iterateChildren(options: .skipsHiddenFiles).makeIterator()
       while let child = generator.next() {
         generator.skipDescendants()
-        if let index = children.index(of: child) {
+        if let index = children.firstIndex(of: child) {
           children.remove(at: index)
         } else {
           throw failure("Generated unexpected element: <\(child)>")
