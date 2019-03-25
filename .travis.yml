@@ -7,6 +7,8 @@ matrix:
       env:
         - SWIFT_VERSION=4.2
         - MAJOR_VERSION=4.2
+      install:
+        - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
     - os: osx
       language: generic
       sudo: required
@@ -14,7 +16,19 @@ matrix:
       env:
         - SWIFT_VERSION=4.2
         - MAJOR_VERSION=4.2
-install:
-- eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
+    - os: osx
+      language: generic
+      sudo: required
+      osx_image: xcode10.2
+      env:
+        - SWIFT_VERSION=4.2
+        - MAJOR_VERSION=4.2
+    - os: osx
+      language: generic
+      sudo: required
+      osx_image: xcode10.2
+      env:
+        - SWIFT_VERSION=swift-5.0-DEVELOPMENT-SNAPSHOT-2019-03-10-a
+        - MAJOR_VERSION=5
 script:
 - swift test -Xswiftc -swift-version -Xswiftc $MAJOR_VERSION
