@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name = 'PathKit'
-  spec.version = '0.9.2'
+  spec.version = '1.0.0'
   spec.summary = 'Effortless path operations in Swift.'
   spec.homepage = 'https://github.com/kylef/PathKit'
   spec.license = { :type => 'BSD', :file => 'LICENSE' }
