@@ -1,6 +1,10 @@
 # PathKit Changelog
 
-## master
+## 1.0.0 (2019-03-27)
+
+### Enhancements
+
+- Fix warnings for Swift 5
 
 ### Breaking
 
