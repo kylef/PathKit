@@ -9,10 +9,11 @@ func == (lhs:ThrowError, rhs:ThrowError) -> Bool { return true }
 
 public func testPathKit() {
 describe("PathKit") {
-  let fixtures = Path(#file).parent() + "Fixtures"
+  let filePath = #file
+  let fixtures = Path(filePath).parent() + "Fixtures"
 
   $0.before {
-    Path.current = Path(#file).parent()
+    Path.current = Path(filePath).parent()
   }
 
   $0.it("provides the system separator") {
