@@ -19,11 +19,11 @@ public struct Path {
   public static let separator = "/"
 
   /// The underlying string representation
-  internal var path: String
+  internal let path: String
 
-  internal static var fileManager = FileManager.default
+  internal static let fileManager = FileManager.default
   
-  internal var fileSystemInfo: FileSystemInfo = DefaultFileSystemInfo()
+  internal let fileSystemInfo: FileSystemInfo = DefaultFileSystemInfo()
 
   // MARK: Init
 
