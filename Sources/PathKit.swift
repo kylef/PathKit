@@ -23,21 +23,31 @@ public struct Path {
 
   internal static let fileManager = FileManager.default
   
-  internal let fileSystemInfo: FileSystemInfo = DefaultFileSystemInfo()
+  internal let fileSystemInfo: FileSystemInfo
 
   // MARK: Init
 
   public init() {
-    self.path = ""
+    self.init("")
   }
 
   /// Create a Path from a given String
   public init(_ path: String) {
+    self.init(path, fileSystemInfo: DefaultFileSystemInfo())
+  }
+    
+  internal init(_ path: String, fileSystemInfo: FileSystemInfo) {
     self.path = path
+    self.fileSystemInfo = fileSystemInfo
   }
 
+  internal init(fileSystemInfo: FileSystemInfo) {
+    self.init("", fileSystemInfo: fileSystemInfo)
+  }
+    
   /// Create a Path by joining multiple path components together
   public init<S : Collection>(components: S) where S.Iterator.Element == String {
+    let path: String
     if components.isEmpty {
       path = "."
     } else if components.first == Path.separator && components.count > 1 {
@@ -46,6 +56,7 @@ public struct Path {
     } else {
       path = components.joined(separator: Path.separator)
     }
+    self.init(path)
   }
 }
 
@@ -65,7 +76,7 @@ extension Path : ExpressibleByStringLiteral {
   }
 
   public init(stringLiteral value: StringLiteralType) {
-    self.path = value
+    self.init(value)
   }
 }
 
