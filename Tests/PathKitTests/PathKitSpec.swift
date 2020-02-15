@@ -167,8 +167,7 @@ describe("PathKit") {
   $0.it("can abbreviate paths on a case sensitive fs") {
     let home = Path.home.string
     let fakeFSInfo = FakeFSInfo(caseSensitive: true)
-    var path = Path("\(home.uppercased())")
-    path.fileSystemInfo = fakeFSInfo
+    let path = Path("\(home.uppercased())", fileSystemInfo: fakeFSInfo)
     
     try expect(path.abbreviate().string) == home.uppercased()
   }
@@ -176,8 +175,7 @@ describe("PathKit") {
   $0.it("can abbreviate paths on a case insensitive fs") {
     let home = Path.home.string
     let fakeFSInfo = FakeFSInfo(caseSensitive: false)
-    var path = Path("\(home.uppercased())")
-    path.fileSystemInfo = fakeFSInfo
+    let path = Path("\(home.uppercased())", fileSystemInfo: fakeFSInfo)
     
     try expect(path.abbreviate()) == Path("~")
   }
