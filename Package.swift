@@ -7,10 +7,10 @@ let package = Package(
     .library(name: "PathKit", targets: ["PathKit"]),
   ],
   dependencies: [
-    .package(url:"https://github.com/kylef/Spectre.git", .upToNextMinor(from:"0.9.0"))
+    .package(url:"../CDeps", .upToNextMajor(from: "1.0.1"))
   ],
   targets: [
-    .target(name: "PathKit", dependencies: [], path: "Sources"),
-    .testTarget(name: "PathKitTests", dependencies: ["PathKit", "Spectre"], path:"Tests/PathKitTests")
+    .target(name: "PathKit", dependencies: ["CDeps"], path: "Sources")
+    //.testTarget(name: "PathKitTests", dependencies: ["PathKit", "Spectre"], path:"Tests/PathKitTests")
   ]
 )
