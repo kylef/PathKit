@@ -247,7 +247,19 @@ extension Path {
   /// - Returns: all path components
   ///
   public var components: [String] {
-    return NSString(string: path).pathComponents
+    return string.withCString { (path) -> [String] in
+        var count = 0
+        var temp: UnsafeMutableRawPointer? = nil
+        let strings = PATPathComponents(path, &count, &temp)!
+        var components = ContiguousArray<String>()
+        components.reserveCapacity(count)
+        for i in 0..<count {
+            let string = String(cString: strings[i]!)
+            components.append(string)
+        }
+        PATFreePathComponents(strings, temp)
+        return Array(components)
+    }
   }
 
   /// The file extension behind the last dot of the last component.

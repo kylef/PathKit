@@ -116,8 +116,8 @@
       "OBJ_17" = {
          isa = "PBXGroup";
          children = (
-            "PathKit::PathKit::Product",
-            "CDeps::CDeps::Product"
+            "CDeps::CDeps::Product",
+            "PathKit::PathKit::Product"
          );
          name = "Products";
          path = "";
