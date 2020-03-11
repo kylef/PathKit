@@ -228,7 +228,9 @@ extension Path {
   /// - Returns: the last path component
   ///
   public var lastComponent: String {
-    return NSString(string: path).lastPathComponent
+    var component = NSString(string: path).lastPathComponent
+    component.makeContiguousUTF8()
+    return component
   }
 
   /// The last path component without file extension
@@ -247,19 +249,7 @@ extension Path {
   /// - Returns: all path components
   ///
   public var components: [String] {
-    return string.withCString { (path) -> [String] in
-        var count = 0
-        var temp: UnsafeMutableRawPointer? = nil
-        let strings = PATPathComponents(path, &count, &temp)!
-        var components = ContiguousArray<String>()
-        components.reserveCapacity(count)
-        for i in 0..<count {
-            let string = String(cString: strings[i]!)
-            components.append(string)
-        }
-        PATFreePathComponents(strings, temp)
-        return Array(components)
-    }
+    return getComponents(string)
   }
 
   /// The file extension behind the last dot of the last component.
@@ -578,8 +568,18 @@ extension Path {
   /// - Returns: paths to all files, directories and symbolic links contained in the directory
   ///
   public func children() throws -> [Path] {
-    return try Path.fileManager.contentsOfDirectory(atPath: path).map {
-      self + Path($0)
+    return path.withCString { buffer in
+        var count = 0
+        var temp: UnsafeMutableRawPointer?
+        let contents = PATContentsAt(buffer, &count, &temp)!
+        var array = ContiguousArray<Path>()
+        for i in 0..<count {
+            let entity = String(cString: contents[i]!)
+            let path = self + Path(entity)
+            array.append(path)
+        }
+        PATFreePathComponents(contents, temp)
+        return Array(array)
     }
   }
 
@@ -768,12 +768,43 @@ internal func +(lhs: String, rhs: String) -> Path {
     // Absolute paths replace relative paths
     return Path(rhs)
   } else {
-    var lSlice = NSString(string: lhs).pathComponents.fullSlice
-    var rSlice = NSString(string: rhs).pathComponents.fullSlice
+    if rhs.isEmpty || rhs == "." {
+        if lhs.isEmpty {
+            //short = short ?? Path(".")
+            return Path(".")
+        }
+        //short = short ?? Path(lhs)
+        return Path(lhs)
+    }
+
+    if rhs == ".." {
+        let lSlice = NSString(string: lhs).pathComponents.fullSlice
+        if (lSlice.count >= 1) {
+            return Path(components: lSlice.dropLast())
+        } else {
+            return Path("..")
+        }
+    }
+
+    if lhs == "." || lhs.isEmpty {
+        return Path(rhs)
+    }
+
+    if (!lhs.contains(".") || (!lhs.contains("./") && !lhs.contains("/."))) && (!rhs.contains("/") || !rhs.contains(".")) {
+        if lhs.hasSuffix("/") {
+            //short = short ?? Path(lhs + rhs)
+            return Path(lhs + rhs)
+        } else {
+            return Path(lhs + "/" + rhs)
+        }
+    }
+
+    var lSlice = getComponents(lhs).fullSlice//NSString(string: lhs).pathComponents.fullSlice
+    var rSlice = getComponents(rhs).fullSlice//NSString(string: rhs).pathComponents.fullSlice
 
     // Get rid of trailing "/" at the left side
     if lSlice.count > 1 && lSlice.last == Path.separator {
-      lSlice.removeLast()
+        lSlice.removeLast()
     }
 
     // Advance after the first relevant "."
@@ -802,6 +833,22 @@ internal func +(lhs: String, rhs: String) -> Path {
 
     return Path(components: lSlice + rSlice)
   }
+}
+
+func getComponents(_ string: String) -> [String] {
+    return string.withCString { (path) -> [String] in
+        var count = 0
+        var temp: UnsafeMutableRawPointer? = nil
+        let strings = PATPathComponents(path, &count, &temp)!
+        var components = ContiguousArray<String>()
+        components.reserveCapacity(count)
+        for i in 0..<count {
+            let string = String(cString: strings[i]!)
+            components.append(string)
+        }
+        PATFreePathComponents(strings, temp)
+        return Array(components)
+    }
 }
 
 extension Array {
