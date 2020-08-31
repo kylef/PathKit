@@ -229,6 +229,8 @@ extension Path {
   ///
   public var lastComponent: String {
     var component = NSString(string: path).lastPathComponent
+    // .lastPathComponent leaves us with a bridged NSString, which can be slow to perform operations like == on later.
+    // So, make it a swifty contiguous UTF-8 string here
     component.makeContiguousUTF8()
     return component
   }
@@ -773,7 +775,7 @@ internal func +(lhs: String, rhs: String) -> Path {
 
     // Get rid of trailing "/" at the left side
     if lSlice.count > 1 && lSlice.last == Path.separator {
-        lSlice.removeLast()
+      lSlice.removeLast()
     }
 
     // Advance after the first relevant "."
