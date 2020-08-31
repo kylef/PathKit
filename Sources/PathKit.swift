@@ -11,6 +11,7 @@ let system_glob = Darwin.glob
 #endif
 
 import Foundation
+import PathKitCExt
 
 
 /// Represents a filesystem path.
