@@ -11,6 +11,7 @@ let system_glob = Darwin.glob
 #endif
 
 import Foundation
+import PathKitCExt
 
 
 /// Represents a filesystem path.
@@ -227,7 +228,11 @@ extension Path {
   /// - Returns: the last path component
   ///
   public var lastComponent: String {
-    return NSString(string: path).lastPathComponent
+    var component = NSString(string: path).lastPathComponent
+    // .lastPathComponent leaves us with a bridged NSString, which can be slow to perform operations like == on later.
+    // So, make it a swifty contiguous UTF-8 string here
+    component.makeContiguousUTF8()
+    return component
   }
 
   /// The last path component without file extension
@@ -246,7 +251,7 @@ extension Path {
   /// - Returns: all path components
   ///
   public var components: [String] {
-    return NSString(string: path).pathComponents
+    return getComponents(string)
   }
 
   /// The file extension behind the last dot of the last component.
@@ -565,8 +570,18 @@ extension Path {
   /// - Returns: paths to all files, directories and symbolic links contained in the directory
   ///
   public func children() throws -> [Path] {
-    return try Path.fileManager.contentsOfDirectory(atPath: path).map {
-      self + Path($0)
+    return path.withCString { buffer in
+        var count = 0
+        var temp: UnsafeMutableRawPointer?
+        let contents = PATContentsAt(buffer, &count, &temp)!
+        var array = ContiguousArray<Path>()
+        for i in 0..<count {
+            let entity = String(cString: contents[i]!)
+            let path = self + Path(entity)
+            array.append(path)
+        }
+        PATFreePathComponents(contents, temp)
+        return Array(array)
     }
   }
 
@@ -755,8 +770,8 @@ internal func +(lhs: String, rhs: String) -> Path {
     // Absolute paths replace relative paths
     return Path(rhs)
   } else {
-    var lSlice = NSString(string: lhs).pathComponents.fullSlice
-    var rSlice = NSString(string: rhs).pathComponents.fullSlice
+    var lSlice = getComponents(lhs).fullSlice
+    var rSlice = getComponents(rhs).fullSlice
 
     // Get rid of trailing "/" at the left side
     if lSlice.count > 1 && lSlice.last == Path.separator {
@@ -789,6 +804,22 @@ internal func +(lhs: String, rhs: String) -> Path {
 
     return Path(components: lSlice + rSlice)
   }
+}
+
+func getComponents(_ string: String) -> [String] {
+    return string.withCString { (path) -> [String] in
+        var count = 0
+        var temp: UnsafeMutableRawPointer? = nil
+        let strings = PATPathComponents(path, &count, &temp)!
+        var components = ContiguousArray<String>()
+        components.reserveCapacity(count)
+        for i in 0..<count {
+            let string = String(cString: strings[i]!)
+            components.append(string)
+        }
+        PATFreePathComponents(strings, temp)
+        return Array(components)
+    }
 }
 
 extension Array {
