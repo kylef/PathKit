@@ -768,39 +768,8 @@ internal func +(lhs: String, rhs: String) -> Path {
     // Absolute paths replace relative paths
     return Path(rhs)
   } else {
-    if rhs.isEmpty || rhs == "." {
-        if lhs.isEmpty {
-            //short = short ?? Path(".")
-            return Path(".")
-        }
-        //short = short ?? Path(lhs)
-        return Path(lhs)
-    }
-
-    if rhs == ".." {
-        let lSlice = NSString(string: lhs).pathComponents.fullSlice
-        if (lSlice.count >= 1) {
-            return Path(components: lSlice.dropLast())
-        } else {
-            return Path("..")
-        }
-    }
-
-    if lhs == "." || lhs.isEmpty {
-        return Path(rhs)
-    }
-
-    if (!lhs.contains(".") || (!lhs.contains("./") && !lhs.contains("/."))) && (!rhs.contains("/") || !rhs.contains(".")) {
-        if lhs.hasSuffix("/") {
-            //short = short ?? Path(lhs + rhs)
-            return Path(lhs + rhs)
-        } else {
-            return Path(lhs + "/" + rhs)
-        }
-    }
-
-    var lSlice = getComponents(lhs).fullSlice//NSString(string: lhs).pathComponents.fullSlice
-    var rSlice = getComponents(rhs).fullSlice//NSString(string: rhs).pathComponents.fullSlice
+    var lSlice = getComponents(lhs).fullSlice
+    var rSlice = getComponents(rhs).fullSlice
 
     // Get rid of trailing "/" at the left side
     if lSlice.count > 1 && lSlice.last == Path.separator {
