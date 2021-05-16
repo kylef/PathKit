@@ -3,6 +3,15 @@ matrix:
     - os: linux
       language: generic
       sudo: required
+      dist: bionic
+      env:
+        - SWIFT_VERSION=5.3.1
+        - MAJOR_VERSION=5.3
+      install:
+        - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
+    - os: linux
+      language: generic
+      sudo: required
       dist: trusty
       env:
         - SWIFT_VERSION=4.2
