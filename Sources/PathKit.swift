@@ -60,6 +60,22 @@ public struct Path {
   }
 }
 
+// MARK: Codable
+
+extension Path : Encodable {
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.singleValueContainer()
+    try container.encode(path)
+  }
+}
+
+extension Path : Decodable {
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.singleValueContainer()
+    let decodedString = try container.decode(String.self)
+    self.init(decodedString)
+  }
+}
 
 // MARK: StringLiteralConvertible
 
