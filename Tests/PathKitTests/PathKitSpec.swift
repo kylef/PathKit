@@ -508,5 +508,20 @@ describe("PathKit") {
       try expect(paths) == results.sorted(by: <)
     }
   }
+
+  $0.describe("#match") {
+    $0.it("can match pattern against relative path") {
+      try expect(Path("test.txt").match("test.txt")).to.beTrue()
+      try expect(Path("test.txt").match("*.txt")).to.beTrue()
+      try expect(Path("test.txt").match("*")).to.beTrue()
+      try expect(Path("test.txt").match("test.md")).to.beFalse()
+    }
+
+    $0.it("can match pattern against absolute path") {
+      try expect(Path("/home/kyle/test.txt").match("*.txt")).to.beTrue()
+      try expect(Path("/home/kyle/test.txt").match("/home/*.txt")).to.beTrue()
+      try expect(Path("/home/kyle/test.txt").match("*.md")).to.beFalse()
+    }
+  }
 }
 }

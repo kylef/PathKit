@@ -617,6 +617,16 @@ extension Path {
   public func glob(_ pattern: String) -> [Path] {
     return Path.glob((self + pattern).description)
   }
+
+  public func match(_ pattern: String) -> Bool {
+    let cPattern = strdup(pattern)
+    let cPath = strdup(path)
+    defer {
+      free(cPattern)
+      free(cPath)
+    }
+    return fnmatch(cPattern, cPath, 0) == 0
+  }
 }
 
 

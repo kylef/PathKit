@@ -1,5 +1,12 @@
 # PathKit Changelog
 
+## TBD
+
+### Enhancements
+
+- Path's can now be tested against a glob-like pattern using
+  `Path(...).match(pattern)`.
+
 ## 1.0.0 (2019-03-27)
 
 ### Enhancements
