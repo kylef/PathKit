@@ -586,9 +586,18 @@ extension Path {
 // MARK: Globbing
 
 extension Path {
-  public static func glob(_ pattern: String) -> [Path] {
+    
+  private static func makeInsensitive(_ pattern: String) -> String {
+    pattern.reduce(into: "") { newPattern, char in
+      char.isLetter ?
+        newPattern.append("[\(char.lowercased())\(char.uppercased())]") :
+        newPattern.append(char)
+    }
+  }
+    
+  public static func glob(_ pattern: String, caseInsensitive: Bool = false) -> [Path] {
     var gt = glob_t()
-    let cPattern = strdup(pattern)
+    let cPattern = strdup(caseInsensitive ? Self.makeInsensitive(pattern) : pattern)
     defer {
       globfree(&gt)
       free(cPattern)
@@ -614,8 +623,8 @@ extension Path {
     return []
   }
 
-  public func glob(_ pattern: String) -> [Path] {
-    return Path.glob((self + pattern).description)
+  public func glob(_ pattern: String, caseInsensitive: Bool = false) -> [Path] {
+    return Path.glob((self + pattern).description, caseInsensitive: caseInsensitive)
   }
 
   public func match(_ pattern: String) -> Bool {
