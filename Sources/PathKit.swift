@@ -591,7 +591,9 @@ extension Path {
     let cPattern = strdup(pattern)
     defer {
       globfree(&gt)
-      free(cPattern)
+        if let cPattern = cPattern {
+            free(cPattern)
+        }
     }
 
     let flags = GLOB_TILDE | GLOB_BRACE | GLOB_MARK
@@ -622,8 +624,12 @@ extension Path {
     let cPattern = strdup(pattern)
     let cPath = strdup(path)
     defer {
-      free(cPattern)
-      free(cPath)
+      if let cPattern = cPattern {
+        free(cPattern)
+      }
+      if let cPath = cPath {
+        free(cPath)
+      }
     }
     return fnmatch(cPattern, cPath, 0) == 0
   }
