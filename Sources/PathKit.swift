@@ -588,7 +588,9 @@ extension Path {
 extension Path {
   public static func glob(_ pattern: String) -> [Path] {
     var gt = glob_t()
-    let cPattern = strdup(pattern)
+    guard let cPattern = strdup(pattern) else {
+      fatalError("strdup returned null: Likely out of memory")
+    }
     defer {
       globfree(&gt)
       free(cPattern)
@@ -619,8 +621,10 @@ extension Path {
   }
 
   public func match(_ pattern: String) -> Bool {
-    let cPattern = strdup(pattern)
-    let cPath = strdup(path)
+    guard let cPattern = strdup(pattern),
+          let cPath = strdup(path) else {
+      fatalError("strdup returned null: Likely out of memory")
+    }
     defer {
       free(cPattern)
       free(cPath)
