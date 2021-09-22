@@ -456,7 +456,7 @@ extension Path {
     Path.current = self
     defer { Path.current = previous }
     try closure()
-    }
+  }
 }
 
 

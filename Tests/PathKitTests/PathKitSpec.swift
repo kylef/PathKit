@@ -49,11 +49,11 @@ describe("PathKit") {
     $0.it("can be converted to a string description") {
       try expect(Path("/usr/bin/swift").description) == "/usr/bin/swift"
     }
-    
+
     $0.it("can be converted to a string") {
       try expect(Path("/usr/bin/swift").string) == "/usr/bin/swift"
     }
-    
+
     $0.it("can be converted to a url") {
       try expect(Path("/usr/bin/swift").url) == URL(fileURLWithPath: "/usr/bin/swift")
     }
@@ -290,12 +290,12 @@ describe("PathKit") {
       let current = Path.current
       let error = ThrowError()
 
-      try expect({
+      try expect {
         try Path("/usr/bin").chdir {
           try expect(Path.current) == Path("/usr/bin")
           throw error
         }
-      }).toThrow(error)
+      }.toThrow(error)
 
       try expect(Path.current) == current
     }
@@ -324,9 +324,9 @@ describe("PathKit") {
     $0.it("errors when you read from a non-existing file as NSData") {
       let path = Path("/tmp/pathkit-testing")
 
-      try expect({
+      try expect {
         try path.read() as Data
-      }).toThrow()
+      }.toThrow()
     }
 
     $0.it("can read a String from a file") {
@@ -339,9 +339,9 @@ describe("PathKit") {
     $0.it("errors when you read from a non-existing file as a String") {
       let path = Path("/tmp/pathkit-testing")
 
-      try expect({
+      try expect {
         try path.read() as String
-      }).toThrow()
+      }.toThrow()
     }
   }
 

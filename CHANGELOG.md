@@ -1,8 +1,10 @@
 # PathKit Changelog
 
-## TBD
+## 1.0.1 (2021-09-22)
 
 ### Enhancements
+
+- Adds support for Xcode 13.
 
 - Path's can now be tested against a glob-like pattern using
   `Path(...).match(pattern)`.
