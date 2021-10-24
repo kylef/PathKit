@@ -17,7 +17,11 @@ describe("PathKit") {
   }
 
   $0.it("provides the system separator") {
+    #if os(Windows)
+    try expect(Path.separator) == "\\"
+    #else
     try expect(Path.separator) == "/"
+    #endif
   }
 
   $0.it("returns the current working directory") {
@@ -474,6 +478,13 @@ describe("PathKit") {
   }
 
   $0.it("can be appended to") {
+    #if os(Windows)
+    try expect(Path("a\\b")) == "a" + "b"
+    try expect(Path("a\\b")) == "a\\" + "b"
+
+    throw skip()
+    #endif
+
     // Trivial cases.
     try expect(Path("a/b")) == "a" + "b"
     try expect(Path("a/b")) == "a/" + "b"
@@ -502,6 +513,7 @@ describe("PathKit") {
     try expect(Path("a/c")) == "a/b" + "../c"
     try expect(Path("a/b/d/e")) == "a/b/c" + "../d/e"
     try expect(Path("../../a")) == ".." + "../a"
+    #endif
   }
 
   $0.describe("glob") {
