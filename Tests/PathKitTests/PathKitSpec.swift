@@ -494,33 +494,49 @@ describe("PathKit") {
 
   $0.describe("glob") {
     $0.it("Path static glob") {
+      #if os(Windows)
+      throw skip()
+      #else
       let pattern = (fixtures + "permissions/*able").description
       let paths = Path.glob(pattern)
 
       let results = try (fixtures + "permissions").children().map { $0.absolute() }.sorted(by: <)
       try expect(paths) == results.sorted(by: <)
+      #endif
     }
 
     $0.it("can glob inside a directory") {
+      #if os(Windows)
+      throw skip()
+      #else
       let paths = fixtures.glob("permissions/*able")
 
       let results = try (fixtures + "permissions").children().map { $0.absolute() }.sorted(by: <)
       try expect(paths) == results.sorted(by: <)
+      #endif
     }
   }
 
   $0.describe("#match") {
     $0.it("can match pattern against relative path") {
+      #if os(Windows)
+      throw skip()
+      #else
       try expect(Path("test.txt").match("test.txt")).to.beTrue()
       try expect(Path("test.txt").match("*.txt")).to.beTrue()
       try expect(Path("test.txt").match("*")).to.beTrue()
       try expect(Path("test.txt").match("test.md")).to.beFalse()
+      #endif
     }
 
     $0.it("can match pattern against absolute path") {
+      #if os(Windows)
+      throw skip()
+      #else
       try expect(Path("/home/kyle/test.txt").match("*.txt")).to.beTrue()
       try expect(Path("/home/kyle/test.txt").match("/home/*.txt")).to.beTrue()
       try expect(Path("/home/kyle/test.txt").match("*.md")).to.beFalse()
+      #endif
     }
   }
 }
