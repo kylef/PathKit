@@ -586,6 +586,7 @@ extension Path {
 
 // MARK: Globbing
 
+#if !os(Windows)
 extension Path {
   public static func glob(_ pattern: String) -> [Path] {
     var gt = glob_t()
@@ -633,6 +634,7 @@ extension Path {
     return fnmatch(cPattern, cPath, 0) == 0
   }
 }
+#endif
 
 
 // MARK: SequenceType
