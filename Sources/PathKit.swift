@@ -17,13 +17,17 @@ import Foundation
 /// Represents a filesystem path.
 public struct Path {
   /// The character used by the OS to separate two path elements
+#if os(Windows)
+  public static let separator = "\\"
+#else
   public static let separator = "/"
+#endif
 
   /// The underlying string representation
   internal let path: String
 
   internal static let fileManager = FileManager.default
-  
+
   internal let fileSystemInfo: FileSystemInfo
 
   // MARK: Init
@@ -36,7 +40,7 @@ public struct Path {
   public init(_ path: String) {
     self.init(path, fileSystemInfo: DefaultFileSystemInfo())
   }
-    
+
   internal init(_ path: String, fileSystemInfo: FileSystemInfo) {
     self.path = path
     self.fileSystemInfo = fileSystemInfo
@@ -45,7 +49,7 @@ public struct Path {
   internal init(fileSystemInfo: FileSystemInfo) {
     self.init("", fileSystemInfo: fileSystemInfo)
   }
-    
+
   /// Create a Path by joining multiple path components together
   public init<S : Collection>(components: S) where S.Iterator.Element == String {
     let path: String

@@ -96,9 +96,13 @@ describe("PathKit") {
       let path = Path("~")
 
       $0.it("can be converted to an absolute path") {
+        #if os(Windows)
+        throw skip()
+        #endif
+
         #if os(Linux)
           if NSUserName() == "root" {
-            try expect(path.absolute()) == "/root"		
+            try expect(path.absolute()) == "/root"
           }
           else {
             try expect(path.absolute()) == "/home/" + NSUserName()
@@ -142,23 +146,23 @@ describe("PathKit") {
 
   $0.it("can be abbreviated") {
     let home = Path.home.string
-    
+
     try expect(Path("\(home)/foo/bar").abbreviate()) == Path("~/foo/bar")
     try expect(Path("\(home)").abbreviate()) == Path("~")
     try expect(Path("\(home)/").abbreviate()) == Path("~")
     try expect(Path("\(home)/backups\(home)").abbreviate()) == Path("~/backups\(home)")
     try expect(Path("\(home)/backups\(home)/foo/bar").abbreviate()) == Path("~/backups\(home)/foo/bar")
-    
+
     #if os(Linux)
         try expect(Path("\(home.uppercased())").abbreviate()) == Path("\(home.uppercased())")
     #else
         try expect(Path("\(home.uppercased())").abbreviate()) == Path("~")
     #endif
   }
-  
+
   struct FakeFSInfo: FileSystemInfo {
     let caseSensitive: Bool
-    
+
     func isFSCaseSensitiveAt(path: Path) -> Bool {
       return caseSensitive
     }
@@ -168,27 +172,35 @@ describe("PathKit") {
     let home = Path.home.string
     let fakeFSInfo = FakeFSInfo(caseSensitive: true)
     let path = Path("\(home.uppercased())", fileSystemInfo: fakeFSInfo)
-    
+
     try expect(path.abbreviate().string) == home.uppercased()
   }
-  
+
   $0.it("can abbreviate paths on a case insensitive fs") {
     let home = Path.home.string
     let fakeFSInfo = FakeFSInfo(caseSensitive: false)
     let path = Path("\(home.uppercased())", fileSystemInfo: fakeFSInfo)
-    
+
     try expect(path.abbreviate()) == Path("~")
   }
 
   $0.describe("symlinking") {
     $0.it("can create a symlink with a relative destination") {
-      let path = fixtures + "symlinks/file"
+      #if os(Windows)
+      throw skip()
+      #endif
+
+      let path = fixtures + "symlinks" + "file"
       let resolvedPath = try path.symlinkDestination()
       try expect(resolvedPath.normalize()) == fixtures + "file"
     }
 
     $0.it("can create a symlink with an absolute destination") {
-      let path = fixtures + "symlinks/swift"
+      #if os(Windows)
+      throw skip()
+      #endif
+
+      let path = fixtures + "symlinks" + "swift"
       let resolvedPath = try path.symlinkDestination()
       try expect(resolvedPath) == Path("/usr/bin/swift")
     }
@@ -197,9 +209,9 @@ describe("PathKit") {
       #if os(Linux)
         throw skip()
       #else
-        let path = fixtures + "symlinks/same-dir"
+        let path = fixtures + "symlinks" + "same-dir"
         let resolvedPath = try path.symlinkDestination()
-        try expect(resolvedPath.normalize()) == fixtures + "symlinks/file"
+        try expect(resolvedPath.normalize()) == fixtures + "symlinks" + "file"
       #endif
     }
   }
@@ -240,29 +252,29 @@ describe("PathKit") {
   $0.describe("file info") {
     $0.it("can test if a path is a directory") {
       try expect((fixtures + "directory").isDirectory).to.beTrue()
-      try expect((fixtures + "symlinks/directory").isDirectory).to.beTrue()
+      try expect((fixtures + "symlinks" + "directory").isDirectory).to.beTrue()
     }
 
     $0.it("can test if a path is a symlink") {
-      try expect((fixtures + "file/file").isSymlink).to.beFalse()
-      try expect((fixtures + "symlinks/file").isSymlink).to.beTrue()
+      try expect((fixtures + "file" + "file").isSymlink).to.beFalse()
+      try expect((fixtures + "symlinks" + "file").isSymlink).to.beTrue()
     }
 
     $0.it("can test if a path is a file") {
       try expect((fixtures + "file").isFile).to.beTrue()
-      try expect((fixtures + "symlinks/file").isFile).to.beTrue()
+      try expect((fixtures + "symlinks" + "file").isFile).to.beTrue()
     }
 
     $0.it("can test if a path is executable") {
-      try expect((fixtures + "permissions/executable").isExecutable).to.beTrue()
+      try expect((fixtures + "permissions" + "executable").isExecutable).to.beTrue()
     }
 
     $0.it("can test if a path is readable") {
-      try expect((fixtures + "permissions/readable").isReadable).to.beTrue()
+      try expect((fixtures + "permissions" + "readable").isReadable).to.beTrue()
     }
 
     $0.it("can test if a path is writable") {
-      try expect((fixtures + "permissions/writable").isWritable).to.beTrue()
+      try expect((fixtures + "permissions" + "writable").isWritable).to.beTrue()
     }
 
     // fatal error: isDeletableFile(atPath:) is not yet implemented
@@ -270,7 +282,7 @@ describe("PathKit") {
       #if os(Linux)
         throw skip()
       #else
-        try expect((fixtures + "permissions/deletable").isDeletable).to.beTrue()
+        try expect((fixtures + "permissions" + "deletable").isDeletable).to.beTrue()
       #endif
     }
   }
