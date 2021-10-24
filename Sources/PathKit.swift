@@ -4,6 +4,7 @@
 import Glibc
 
 let system_glob = Glibc.glob
+#elseif os(Windows)
 #else
 import Darwin
 
