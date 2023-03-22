@@ -4,6 +4,8 @@
 import Glibc
 
 let system_glob = Glibc.glob
+#elseif os(Windows)
+import WinSDK
 #else
 import Darwin
 
@@ -587,6 +589,26 @@ extension Path {
 
 extension Path {
   public static func glob(_ pattern: String) -> [Path] {
+#if os(Windows)
+    var fdData: WIN32_FIND_DATAW = WIN32_FIND_DATAW()
+    let hSearch: HANDLE = pattern.withCString(encodedAs: UTF16.self) {
+      FindFirstFileW($0, &fdData)
+    }
+    if (hSearch == INVALID_HANDLE_VALUE) {
+      return []
+    }
+    defer { FindClose(hSearch) }
+    var paths: [Path] = []
+    repeat {
+      let path: String = withUnsafePointer(to: fdData.cFileName) {
+        $0.withMemoryRebound(to: UInt16.self, capacity: Int(MAX_PATH)) {
+          String(decodingCString: $0, as: UTF16.self)
+        }
+      }
+      paths.append(Path(path))
+    } while (FindNextFileW(hSearch, &fdData))
+    return paths
+#else
     var gt = glob_t()
     guard let cPattern = strdup(pattern) else {
       fatalError("strdup returned null: Likely out of memory")
@@ -614,6 +636,7 @@ extension Path {
 
     // GLOB_NOMATCH
     return []
+#endif
   }
 
   public func glob(_ pattern: String) -> [Path] {
@@ -621,6 +644,13 @@ extension Path {
   }
 
   public func match(_ pattern: String) -> Bool {
+#if os(Windows)
+    return path.withCString(encodedAs: UTF16.self) { lpwszPath in
+      return pattern.withCString(encodedAs: UTF16.self) { lpwszPattern in
+        PathMatchSpecExW(lpwszPath, lpwszPattern, DWORD(PMSF_NORMAL)) == S_OK
+      }
+    }
+#else
     guard let cPattern = strdup(pattern),
           let cPath = strdup(path) else {
       fatalError("strdup returned null: Likely out of memory")
@@ -630,6 +660,7 @@ extension Path {
       free(cPath)
     }
     return fnmatch(cPattern, cPath, 0) == 0
+#endif
   }
 }
 
